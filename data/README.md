@@ -1,6 +1,6 @@
 # Data
 This directory contains:
-- **`histones`**: FASTA sequences of terminal histone IDRs
+- **`histones/`**: FASTA sequences of terminal histone IDRs
 - `Data.ipynb`: Notebook for orchestrating data download and processing of sequences
 - `accession_numbers.json`: JSON containing accession numbers for proteins (see format below)
 
