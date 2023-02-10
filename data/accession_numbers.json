@@ -1,5 +1,32 @@
 {
     "histones": {
-        "Human histone H2B": "NP_003519.1"
+        "Human H1-0": {
+            "acc_num": "NP_005309.1",
+            "terminal": "CTD"
+        },
+        "Human H1-1": {
+            "acc_num": "NP_005316.1",
+            "terminal": "CTD"
+        },
+        "Human H1-2": {
+            "acc_num": "NP_005310.1",
+            "terminal": "CTD"
+        },
+        "Human H1-3": {
+            "acc_num": "NP_005311.1",
+            "terminal": "CTD"
+        },
+        "Human H1-4": {
+            "acc_num": "NP_005312.1",
+            "terminal": "CTD"
+        },
+        "Human H2B": {
+            "acc_num": "NP_003519.1",
+            "terminal": "NTD"
+        },
+        "Human H3-4": {
+            "acc_num": "NP_003484.1",
+            "terminal": "NTD"
+        }
     }
 }
