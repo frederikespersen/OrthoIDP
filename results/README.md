@@ -7,4 +7,5 @@ Most of the input processes of this directory is orchestrated either on remote s
 ## Contents
 This directory contains:
 - **``calvados``**: Files from coarse grain molecular dynamics simulations using [CALVADOS](https://www.pnas.org/doi/10.1073/pnas.2111696118)
-    -**``<variant_id>``**: Variant specific simulation
+    - **``<experiment>**``**: Files from a specific experiment
+        - **``<variant_id>``**: Variant specific simulation
