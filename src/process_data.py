@@ -92,7 +92,8 @@ def extract_idr_fasta(gp_path: str, i_idr: int=0, length_order=False, fasta_dir=
             Whether to sort the disordered regions by descending length before choosing with ``i_idr``
     
         ``fasta_dir``: ``str``
-            Directory to save file in
+            Directory to save file in;
+            Filename will mimick filename from ``gp_path``
     
         ``fasta_id``: ``str``
             The ID to use for the fasta file;
@@ -101,7 +102,8 @@ def extract_idr_fasta(gp_path: str, i_idr: int=0, length_order=False, fasta_dir=
         ``fasta_desc``: ``str``
             The description to use for the fasta file
     
-        ``verbose``: Whether to print file actions
+        ``verbose``: ``bool``
+            Whether to print file actions
 
     Returns
     -------
