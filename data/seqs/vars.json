@@ -2,148 +2,148 @@
     "H1-0_WT": {
         "template": "H1-0",
         "variant": "wt",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H1-0_WT.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H1-0_RAND": {
         "template": "H1-0",
         "variant": "rand",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H1-0_RAND.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H1-0_CLUST": {
         "template": "H1-0",
         "variant": "clust",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H1-0_CLUST.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H1-1_WT": {
         "template": "H1-1",
         "variant": "wt",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H1-1_WT.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H1-1_RAND": {
         "template": "H1-1",
         "variant": "rand",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H1-1_RAND.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H1-1_CLUST": {
         "template": "H1-1",
         "variant": "clust",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H1-1_CLUST.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H1-2_WT": {
         "template": "H1-2",
         "variant": "wt",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H1-2_WT.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H1-2_RAND": {
         "template": "H1-2",
         "variant": "rand",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H1-2_RAND.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H1-2_CLUST": {
         "template": "H1-2",
         "variant": "clust",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H1-2_CLUST.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H1-3_WT": {
         "template": "H1-3",
         "variant": "wt",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H1-3_WT.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H1-3_RAND": {
         "template": "H1-3",
         "variant": "rand",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H1-3_RAND.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H1-3_CLUST": {
         "template": "H1-3",
         "variant": "clust",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H1-3_CLUST.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H1-4_WT": {
         "template": "H1-4",
         "variant": "wt",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H1-4_WT.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H1-4_RAND": {
         "template": "H1-4",
         "variant": "rand",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H1-4_RAND.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H1-4_CLUST": {
         "template": "H1-4",
         "variant": "clust",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H1-4_CLUST.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H2B_WT": {
         "template": "H2B",
         "variant": "wt",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H2B_WT.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H2B_RAND": {
         "template": "H2B",
         "variant": "rand",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H2B_RAND.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H2B_CLUST": {
         "template": "H2B",
         "variant": "clust",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H2B_CLUST.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H3-4_WT": {
         "template": "H3-4",
         "variant": "wt",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H3-4_WT.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H3-4_RAND": {
         "template": "H3-4",
         "variant": "rand",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H3-4_RAND.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     },
     "H3-4_CLUST": {
         "template": "H3-4",
         "variant": "clust",
-        "seed": 834744962,
+        "seed": 7420687855,
         "var_data": "data/seqs/var/H3-4_CLUST.fasta",
-        "timestamp": "2023-02-15 10:55:56.496122"
+        "timestamp": "2023-02-15 21:09:07.043747"
     }
 }
