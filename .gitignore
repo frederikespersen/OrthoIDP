@@ -1,0 +1,11 @@
+# Byte-compiled / optimized files
+__pycache__/
+
+# Data
+data/seqs/raw/
+data/seqs/idr/
+data/seqs/var/
+results/calvados/
+
+# Other
+.todo.md

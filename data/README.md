@@ -1,12 +1,14 @@
 # Data
-This directory contains:
-- **`histones/`**: FASTA sequences of terminal histone IDRs
-- `Data.ipynb`: Notebook for orchestrating data download and processing of sequences
-- `accession_numbers.json`: JSON containing accession numbers for proteins (see format below)
 
-## Format of accession_numbers.json
-The JSON has the following structure:
-- `[Group]`: The directory for the data
-  - `[Protein name]`: The name for the data file (followed by `terminal`)
-    - `acc_num`: The accession number of the chosen RefSeq for the protein
-    - `terminal`: Whether to use the first (`NTD`) or last (`CTD`) disordered region in the protein
+## Description
+This directory contains input data for the project.
+Most of the input processes of this directory is orchestrated in ``~/Data.ipynb`` using ``~/src/process_data.py``.
+
+## Contents
+This directory contains:
+- **``seqs``**: Sequence files
+    - **``raw``**: Genbank format files of raw protein sequences from accession numbers
+    - **``idr``**: FASTA format files of longest IDR region of proteins in ``raw``
+    - **``var``**: FASTA format files (one-line-sequence) of variants of sequences in ``ìdr``
+    - ``seqs.json``: Meta data on files in ``raw``and ``idr``
+    - ``vars.json``: Meta data on files in ``var``
