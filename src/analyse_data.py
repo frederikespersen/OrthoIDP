@@ -1,5 +1,5 @@
 """
-    ``ANALYSE_DATA``
+    Analyse_data
     --------------------------------------------------------------------------------
 
     Utils for analysing sequences prior to simulation.
@@ -18,12 +18,28 @@ from localcider.sequenceParameters import SequenceParameters
 
 def load_fasta_seq(fasta_path: str) -> tuple[str]:
     """
+
     Takes a FASTA file path, returns the id, description, and encoded sequence.
 
     --------------------------------------------------------------------------------
 
-    :param fasta_path: Path to .fasta file
-    :return: The sequence, id, and description in the FASTA file as a tuple
+    Parameters
+    ----------
+
+        fasta_path: str
+            Path to .fasta file
+
+    Returns
+    -------
+
+        ``seq``: ``str``
+            The sequence in the FASTA file
+
+        ``id``: ``str``
+            The id in the FASTA file
+
+        ``desc``: ``str``
+            The description in the FASTA file
 
     """
 
@@ -46,8 +62,9 @@ def load_fasta_seq(fasta_path: str) -> tuple[str]:
 #··································· C I D E R ··········································#
 #························································································#
 
-def cider_parameters(seq: str, name=0) -> pd.DataFrame:
+def cider_parameters(seq: str, name: str | int = 0) -> pd.DataFrame:
     """
+
     Takes a sequence, returns a DataFrame of its CIDER parameters.
 
     --------------------------------------------------------------------------------
@@ -58,9 +75,20 @@ def cider_parameters(seq: str, name=0) -> pd.DataFrame:
 
     --------------------------------------------------------------------------------
 
-    :param seq: Sequence to calculate parameters for
-    :param name: Index of the single row in the DataFrame
-    :return: A single-row DataFrame with select CIDER parameters
+    Parameters
+    ----------
+    
+        ``seq``: ``str``
+            Sequence to calculate parameters for
+    
+        ``name``: ``str | int``
+            Index of the single row in the DataFrame
+
+    Returns
+    -------
+
+        ``params``: ``pandas.DataFrame``
+            A single-row DataFrame with select CIDER parameters
 
     """
     

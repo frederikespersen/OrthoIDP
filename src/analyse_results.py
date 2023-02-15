@@ -1,5 +1,5 @@
 """
-    ``ANALYSE_RESULTS``
+    Analyse_results
     --------------------------------------------------------------------------------
 
     Utils for analysing simulation results.
@@ -18,14 +18,24 @@ import mdtraj as md
 
 def simulation_time(trajlog_path: str) -> float:
     """
+    
     Takes a trajectory log file path, returns the duration of the simulation.
     
     Assumes log file is tab-delimited and uses the ``Elapsed Time (s)``-column.
 
     --------------------------------------------------------------------------------
 
-    :param trajlog_path: Path to traj.log file
-    :return: The time of the simulation in hours
+    Parameters
+    ----------
+
+        ``trajlog_path``: ``str``
+            Path to traj.log file
+
+    Returns
+    -------
+    
+        ``time``: ``float``
+            The time of the simulation in hours
 
     """
 

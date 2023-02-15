@@ -1,5 +1,5 @@
 """
-    ``PROCESS_DATA``
+    Process_data
     --------------------------------------------------------------------------------
 
     Utils for downloading and preprocessing sequences prior to simulation.
@@ -23,15 +23,31 @@ Entrez.email = 'tgw325@alumni.ku.dk'
 
 def get_protein_gp(acc_num: str, filename: str, dir='data/seqs/raw', verbose=False) -> str:
     """
+
     Takes a RefSeq protein accession number, downloads it in genbank format.
 
     --------------------------------------------------------------------------------
 
-    :param ``acc_num``: Accession number of the RefSeq protein
-    :param ``filename``: Filename without .gp suffix
-    :param ``dir``: Directory to save file in
-    :param ``verbose``: Whether to print file actions
-    :return: Path to file
+    Parameters
+    ----------
+    
+        ``acc_num``: ``str``
+            Accession number of the RefSeq protein
+    
+        ``filename``: ``str``
+            Filename without .gp suffix
+    
+        ``dir``: ``str``
+            Directory to save file in
+    
+        ``verbose``: ``bool``
+            Whether to print file actions
+
+    Returns
+    -------
+
+        ``filepath``: ``str``
+            Path to file
 
     """
 
@@ -56,18 +72,45 @@ def get_protein_gp(acc_num: str, filename: str, dir='data/seqs/raw', verbose=Fal
 
 def extract_idr_fasta(gp_path: str, i_idr: int=0, length_order=False, fasta_dir='data/seqs/idr', fasta_id='', fasta_desc='', verbose=False) -> tuple[str]:
     """
+
     Takes a genbank protein file path, extracts a specified IDR region of the protein in FASTA format.
 
     --------------------------------------------------------------------------------
 
-    :param ``gp_path``: Path to the .gp file
-    :param ``i_idr``: The index of the disordered region in the protein [0 = first/NTD; -1 =last/CTD] (See ``length order``though)
-    :param ``length_order``: Whether to sort the disordered regions by descending length before choosing with ``i_idr``
-    :param ``fasta_dir``: Directory to save file in
-    :param ``fasta_id``: The ID to use for the fasta file
-    :param ``fasta_desc``: The description to use for the fasta file
-    :param ``verbose``: Whether to print file actions
-    :return: Path to file and location of IDR
+    Parameters
+    ----------
+
+        ``gp_path``: ``str``
+            Path to the .gp file
+    
+        ``i_idr``: ``int``
+            The index of the disordered region in the protein
+            [0 = first/NTD; -1 =last/CTD]
+            (See ``length order`` below)
+    
+        ``length_order``: ``bool``
+            Whether to sort the disordered regions by descending length before choosing with ``i_idr``
+    
+        ``fasta_dir``: ``str``
+            Directory to save file in
+    
+        ``fasta_id``: ``str``
+            The ID to use for the fasta file;
+            Defaults to the filename in ``gp_path`` without .gp-suffix
+    
+        ``fasta_desc``: ``str``
+            The description to use for the fasta file
+    
+        ``verbose``: Whether to print file actions
+
+    Returns
+    -------
+    
+        ``filepath``: ``str``
+            Path to file
+            
+        ``idr_loc``: ``str``
+            Location of IDR
 
     """
 
@@ -136,11 +179,13 @@ variant_types = {
         "function": lambda seq, seed: cluster_seq(seq, ['K', 'R'], ['D', 'E'], seed)}
 }
 """
+
 A dictionary containing descriptions and mapping functions for generating variants.
 
 --------------------------------------------------------------------------------
 
-Schema:
+Schema
+------
 
 ``<variant_id>``
 
@@ -154,24 +199,45 @@ Schema:
 #························································································#
 def generate_variant_fasta(fasta_path: str, variant: str, filename: str, dir='data/seqs/var', seed=None) -> str:
     """
+
     Takes a FASTA IDR file path, 
     generates a variant of the sequence and saves it in FASTA format with a 1-line sequence.
     
     --------------------------------------------------------------------------------
 
-    Possible variants (See ``variant_types``):
+    Possible variants
+    -----------------
+    (See ``variant_types``):
     - ``wt``: Wild type
-    - ``rand``: Randomly shuffled (See ``shuffle_seq()``)
+    - ``rand``: Randomly shuffled
     - ``clust``: Positive charges clustered in C-terminal end, negative charges in N-terminal end
 
     --------------------------------------------------------------------------------
 
-    :param fasta_path: Path to the .fasta file
-    :param variant: The variant to generate, choose from: ``wt``, ``rand``, or ``clust``
-    :param filename: Filename without .fasta suffix
-    :param dir: Directory to save file in
-    :param seed: Seed for random events
-    :return: Path to file
+    Parameters
+    ----------
+
+        ``fasta_path``: ``str``
+            Path to the .fasta file
+    
+        ``variant``: ``str``
+            The variant to generate; 
+            See ``variant_types`` for options
+    
+        ``filename``: ``str``
+            Filename without .fasta-suffix
+    
+        ``dir``: ``str``
+            Directory to save file in
+    
+        ``seed``: ``int``
+            Seed for random events
+    
+    Returns
+    -------
+        
+        ``filepath``: ``str``
+            Path to file
 
     """
 
@@ -204,13 +270,25 @@ def generate_variant_fasta(fasta_path: str, variant: str, filename: str, dir='da
 #························································································#
 def shuffle_seq(seq: str, seed=None) -> str:
     """
+
     Takes a sequence, shuffles it randomly.
 
     --------------------------------------------------------------------------------
 
-    :param seq: Sequence to be shuffled
-    :param seed: Seed for random event
-    :return: The shuffled sequence
+    Parameters
+    ----------
+
+        ``seq``: 
+            ``str``Sequence to be shuffled
+    
+        ``seed``: ``int``
+            Seed for random event
+    
+    Returns
+    -------
+        
+        ``seq``: ``str``
+            The shuffled sequence
 
     """
     
@@ -228,20 +306,40 @@ def shuffle_seq(seq: str, seed=None) -> str:
 
 
 #························································································#
-def cluster_seq(seq: str, ngroup: list, cgroup: list, seed=None, mc_threshold=1.) -> str:
+def cluster_seq(seq: str, ngroup: list[str], cgroup: list[str], seed=None, mc_threshold=1.) -> str:
     """
+
     Takes a sequence, clusters two groups of distinct amino acids in oppposite 
     ends of a sequence by switiching residue positions in the sequence.
+    
     Optional parameter for whether or not to do Monte Carlo criteria for switching.
 
     --------------------------------------------------------------------------------
 
-    :param seq: Sequence to be clustered
-    :param ngroup: List of amino acids to cluster in the N-terminal end of the sequence
-    :param cgroup: List of amino acids to cluster in the C-terminal end of the sequence
-    :param seed: Seed for random events
-    :param mc_threshold: Minimum random value in [0:1] for switching to occur (1 = 100% chance of switching to cluster, i.e. no randomness)
-    :return: The clustered sequence
+    Parameters
+    ----------
+    
+        ``seq``: ``str``
+            Sequence to be clustered
+    
+        ``ngroup``: ``list[str]``
+            List of amino acids (one-letter codes) to cluster in the N-terminal end of the sequence
+    
+        ``cgroup``: ``list[str]``
+            List of amino acids (one-letter codes) to cluster in the C-terminal end of the sequence
+    
+        ``seed``: ``int``
+            Seed for random events
+    
+        ``mc_threshold``: ``float``
+            Minimum random value in [0:1] for switching to occur
+            (1 = 100% chance of switching to cluster, i.e. no randomness)
+    
+    Returns
+    -------
+    
+        ``seq``: ``str``
+            The clustered sequence
 
     """
 
