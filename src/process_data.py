@@ -1,11 +1,11 @@
 ##########################################################################################
-#
+
 # PROCESS_DATA.py
 # Utils for downloading and preprocessing sequences prior to simulation.
-#
+
 ##########################################################################################
 
-##### SETUP #####
+
 import os
 import random
 from Bio import Entrez
@@ -15,18 +15,24 @@ from Bio.SeqRecord import SeqRecord
 Entrez.email = 'tgw325@alumni.ku.dk'
 
 
+#························································································#
+#······································ R A W ···········································#
+#························································································#
 
-##### RAW #####
 def get_protein_gp(acc_num: str, filename: str, dir='data/seqs/raw', verbose=False) -> str:
     """
     Takes a RefSeq protein accession number, downloads it in genbank format.
+
+    --------------------------------------------------------------------------------
 
     :param ``acc_num``: Accession number of the RefSeq protein
     :param ``filename``: Filename without .gp suffix
     :param ``dir``: Directory to save file in
     :param ``verbose``: Whether to print file actions
     :return: Path to file
+
     """
+
     # Fetching file as genbank record
     handle = Entrez.efetch(db='protein',id=acc_num, rettype='gp', retmode='text')
     record = SeqIO.read(handle, 'genbank')
@@ -42,11 +48,15 @@ def get_protein_gp(acc_num: str, filename: str, dir='data/seqs/raw', verbose=Fal
     return filepath
 
 
+#························································································#
+#····························· P R E P R O C E S S I N G·································#
+#························································································#
 
-##### PREPROCESSING #####
 def extract_idr_fasta(gp_path: str, i_idr: int=0, length_order=False, fasta_dir='data/seqs/idr', fasta_id='', fasta_desc='', verbose=False) -> tuple[str]:
     """
     Takes a genbank protein file path, extracts a specified IDR region of the protein in FASTA format.
+
+    --------------------------------------------------------------------------------
 
     :param ``gp_path``: Path to the .gp file
     :param ``i_idr``: The index of the disordered region in the protein [0 = first/NTD; -1 =last/CTD] (See ``length order``though)
@@ -56,7 +66,9 @@ def extract_idr_fasta(gp_path: str, i_idr: int=0, length_order=False, fasta_dir=
     :param ``fasta_desc``: The description to use for the fasta file
     :param ``verbose``: Whether to print file actions
     :return: Path to file and location of IDR
+
     """
+
     # Loading genbank file
     with open(gp_path, 'r') as file:
         records = list(SeqIO.parse(file, 'genbank'))
@@ -105,9 +117,10 @@ def extract_idr_fasta(gp_path: str, i_idr: int=0, length_order=False, fasta_dir=
     return filepath, str(idr_loc)
 
 
+#························································································#
+#······································ F I N A L ·······································#
+#························································································#
 
-##### FINAL #####
-# 
 variant_types = {
     "wt": {
         "name": "Wild-type",
@@ -123,6 +136,8 @@ variant_types = {
 """
 A dictionary containing descriptions and mapping functions for generating variants.
 
+--------------------------------------------------------------------------------
+
 Schema:
 
 ``<variant_id>``
@@ -130,16 +145,24 @@ Schema:
         ``name``: Description of variant
 
         ``function``: Lambda function for generating variant from sequence and seed
+
 """
 
+
+#························································································#
 def generate_variant_fasta(fasta_path: str, variant: str, filename: str, dir='data/seqs/var', seed=None) -> str:
     """
-    Takes a FASTA IDR file path, generates a variant of the sequence and saves it in FASTA format with a 1-line sequence.
+    Takes a FASTA IDR file path, 
+    generates a variant of the sequence and saves it in FASTA format with a 1-line sequence.
     
+    --------------------------------------------------------------------------------
+
     Possible variants (See ``variant_types``):
     - ``wt``: Wild type
     - ``rand``: Randomly shuffled (See ``shuffle_seq()``)
     - ``clust``: Positive charges clustered in C-terminal end, negative charges in N-terminal end
+
+    --------------------------------------------------------------------------------
 
     :param fasta_path: Path to the .fasta file
     :param variant: The variant to generate, choose from: ``wt``, ``rand``, or ``clust``
@@ -147,7 +170,9 @@ def generate_variant_fasta(fasta_path: str, variant: str, filename: str, dir='da
     :param dir: Directory to save file in
     :param seed: Seed for random events
     :return: Path to file
+
     """
+
     # Loading FASTA file
     with open(fasta_path, 'r') as file:
         records = list(SeqIO.parse(file, 'fasta'))
@@ -173,14 +198,20 @@ def generate_variant_fasta(fasta_path: str, variant: str, filename: str, dir='da
 
     return filepath
     
+
+#························································································#
 def shuffle_seq(seq: str, seed=None) -> str:
     """
     Takes a sequence, shuffles it randomly.
 
+    --------------------------------------------------------------------------------
+
     :param seq: Sequence to be shuffled
     :param seed: Seed for random event
     :return: The shuffled sequence
+
     """
+    
     # Prepping
     seq = list(seq)
 
@@ -193,10 +224,15 @@ def shuffle_seq(seq: str, seed=None) -> str:
 
     return seq
 
+
+#························································································#
 def cluster_seq(seq: str, ngroup: list, cgroup: list, seed=None, mc_threshold=1.) -> str:
     """
-    Takes a sequence, clusters two groups of distinct amino acids in oppposite ends of a sequence by switiching residue positions in the sequence.
+    Takes a sequence, clusters two groups of distinct amino acids in oppposite 
+    ends of a sequence by switiching residue positions in the sequence.
     Optional parameter for whether or not to do Monte Carlo criteria for switching.
+
+    --------------------------------------------------------------------------------
 
     :param seq: Sequence to be clustered
     :param ngroup: List of amino acids to cluster in the N-terminal end of the sequence
@@ -204,7 +240,9 @@ def cluster_seq(seq: str, ngroup: list, cgroup: list, seed=None, mc_threshold=1.
     :param seed: Seed for random events
     :param mc_threshold: Minimum random value in [0:1] for switching to occur (1 = 100% chance of switching to cluster, i.e. no randomness)
     :return: The clustered sequence
+
     """
+
     # Prepping
     random.seed(seed)
     seq = list(seq)
@@ -266,3 +304,4 @@ def cluster_seq(seq: str, ngroup: list, cgroup: list, seed=None, mc_threshold=1.
     seq = ''.join(seq)
 
     return seq
+
