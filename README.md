@@ -3,8 +3,7 @@ A bachelor's project on the effect of amino acid content and arrangement on the 
 
 ## Contents
 This directory contains:
-- **``data``**: Input data for simulations and analysis
-- **``results``**: Output data from simulations and analysis
+- **``exp``**: Experiments using [CALVADOS](https://doi.org/10.1073/pnas.2111696118) CG MD simulations
 - **``auth``**: Files with confidential data used for remote access (*.gitignored*)
 - **``src``**: Source code
 - ``Data.ipynb``: Notebook for orchestrating data generation
