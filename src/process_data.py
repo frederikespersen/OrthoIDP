@@ -21,33 +21,25 @@ Entrez.email = 'tgw325@alumni.ku.dk'
 #······································ R A W ···········································#
 #························································································#
 
-def get_protein_gp(acc_num: str, filename: str, dir='data/seqs/raw', verbose=False) -> str:
+def get_protein_gp(acc_num: str) -> SeqRecord:
     """
 
-    Takes a RefSeq protein accession number, downloads it in genbank format.
+    Takes a RefSeq protein accession number,
+    returns the corresponding genbank file as a SeqRecord object.
 
     --------------------------------------------------------------------------------
-
+ 
     Parameters
     ----------
     
         ``acc_num``: ``str``
             Accession number of the RefSeq protein
-    
-        ``filename``: ``str``
-            Filename without .gp suffix
-    
-        ``dir``: ``str``
-            Directory to save file in
-    
-        ``verbose``: ``bool``
-            Whether to print file actions
 
     Returns
     -------
 
-        ``filepath``: ``str``
-            Path to file
+        ``record``: ``Bio.SeqRecord``
+            The genbank file as a SeqRecord object
 
     """
 
@@ -55,33 +47,27 @@ def get_protein_gp(acc_num: str, filename: str, dir='data/seqs/raw', verbose=Fal
     handle = Entrez.efetch(db='protein',id=acc_num, rettype='gp', retmode='text')
     record = SeqIO.read(handle, 'genbank')
 
-    # Saving as genbank file
-    filepath = "/".join([dir, filename + '.gp'])
-    os.makedirs(dir, exist_ok=True)
-    with open(filepath, 'w') as file:
-        SeqIO.write(record, file, 'genbank')
-    if verbose:
-        print(f"The RefSeq {acc_num} has been downloaded as '{filepath}'")
-
-    return filepath
+    return record
 
 
 #························································································#
 #····························· P R E P R O C E S S I N G·································#
 #························································································#
 
-def extract_idr_fasta(gp_path: str, i_idr: int=0, length_order=False, fasta_dir='data/seqs/idr', fasta_id='', fasta_desc='', verbose=False) -> tuple[str]:
+def extract_idr(gp, i_idr: int=0, length_order=False) -> tuple[str]:
     """
 
-    Takes a genbank protein file path, extracts a specified IDR region of the protein in FASTA format.
+    Takes a protein genbank file as a SeqRecord object,
+    extracts a specified IDR region of the protein.
+    Returns the sequence, region (NTD, INT, CTD), and location of the IDR.
 
     --------------------------------------------------------------------------------
 
     Parameters
     ----------
 
-        ``gp_path``: ``str``
-            Path to the .gp file
+        ``gp``: ``Bio.SeqRecord``
+            A genbank file as a SeqRecord object
     
         ``i_idr``: ``int``
             The index of the disordered region in the protein
@@ -90,40 +76,23 @@ def extract_idr_fasta(gp_path: str, i_idr: int=0, length_order=False, fasta_dir=
     
         ``length_order``: ``bool``
             Whether to sort the disordered regions by descending length before choosing with ``i_idr``
-    
-        ``fasta_dir``: ``str``
-            Directory to save file in;
-            Filename will mimick filename from ``gp_path``
-    
-        ``fasta_id``: ``str``
-            The ID to use for the fasta file;
-            Defaults to the filename in ``gp_path`` without .gp-suffix
-    
-        ``fasta_desc``: ``str``
-            The description to use for the fasta file
-    
-        ``verbose``: ``bool``
-            Whether to print file actions
 
     Returns
     -------
     
-        ``filepath``: ``str``
-            Path to file
-            
-        ``idr_loc``: ``str``
-            Location of IDR
+        ``seq``: ``str``
+            The extracted IDR sequence
+
+        ``region``: ``str``
+            The general location of the IDR, either N-terminal (NTD), internal (INT), or C-terminal (CTD)
+
+        ``location``: ``str``
+            The positionwise location of the IDR int he format [i:j] (0-indexed)
 
     """
 
-    # Loading genbank file
-    with open(gp_path, 'r') as file:
-        records = list(SeqIO.parse(file, 'genbank'))
-
-        # Getting record
-        assert len(records) != 0, f"No record contained in {gp_path}!"
-        assert len(records) == 1, f"More than one record contained in {gp_path}!"
-        record = records[0]
+    # Loading genbank record
+    record = gp
 
     # Finding disordered regions
     idrs = []
@@ -135,42 +104,24 @@ def extract_idr_fasta(gp_path: str, i_idr: int=0, length_order=False, fasta_dir=
     # Choosing IDR
     if length_order:
         idrs.sort(key=lambda f: len(f), reverse=True)
-    idr_feature = idrs[i_idr]
-    idr_seq = idr_feature.extract(record.seq)
-    idr_loc = idr_feature.location
+    idr = idrs[i_idr]
+    seq = idr.extract(record.seq)
+    location = idr.location
 
     # Checking whether domain is terminal
-    idr_pos = 'IDR'
-    if 0 in idr_loc:
-        idr_pos = "NTD"
-    elif len(record.seq)-1 in idr_loc:
-        idr_pos = "CTD"
-    
-    # Creating SeqIO object
-    name = gp_path.split('/')[-1][:-3] + '_' + idr_pos
-    if fasta_id == '':
-        fasta_id = name
-    assert ' ' not in fasta_id, f"Fasta identifier must not contain whitespace! {fasta_id}"
-    record = SeqRecord(idr_seq, id=str(fasta_id), description=str(fasta_desc))
+    region = 'INT'
+    if 0 in location:
+        region = "NTD"
+    elif len(record.seq)-1 in location:
+        region = "CTD"
 
-    # Saving as FASTA file
-    filepath = '/'.join([fasta_dir, name + '.fasta'])
-    os.makedirs(fasta_dir, exist_ok=True)
-    with open(filepath, 'w') as file:
-        SeqIO.write(record, file, 'fasta')
-    if verbose:
-        print(f"The IDR in {idr_loc} of {gp_path} has been extracted to '{filepath}'")
-
-    return filepath, str(idr_loc)
+    return str(seq), region, str(location)
 
 
 #························································································#
-#······································ F I N A L ·······································#
-#························································································#
-
 variant_types = {
     "wt": {
-        "name": "Wild-type",
+        "name": "Wild type",
         "function": lambda seq, seed: seq    
     },
     "rand": {
@@ -199,11 +150,11 @@ Schema
 
 
 #························································································#
-def generate_variant_fasta(fasta_path: str, variant: str, filename: str, dir='data/seqs/var', seed=None) -> str:
+def generate_variant(seq: str, variant: str, seed=None) -> str:
     """
 
-    Takes a FASTA IDR file path, 
-    generates a variant of the sequence and saves it in FASTA format with a 1-line sequence.
+    Takes a sequence, 
+    generates and returns a variant of the sequence.
     
     --------------------------------------------------------------------------------
 
@@ -219,18 +170,12 @@ def generate_variant_fasta(fasta_path: str, variant: str, filename: str, dir='da
     Parameters
     ----------
 
-        ``fasta_path``: ``str``
-            Path to the .fasta file
+        ``seq``: ``str``
+            A protein sequence
     
         ``variant``: ``str``
             The variant to generate; 
             See ``variant_types`` for options
-    
-        ``filename``: ``str``
-            Filename without .fasta-suffix
-    
-        ``dir``: ``str``
-            Directory to save file in
     
         ``seed``: ``int``
             Seed for random events
@@ -238,35 +183,21 @@ def generate_variant_fasta(fasta_path: str, variant: str, filename: str, dir='da
     Returns
     -------
         
-        ``filepath``: ``str``
-            Path to file
+        ``seq``: ``str``
+            The variant sequence
 
     """
 
-    # Loading FASTA file
-    with open(fasta_path, 'r') as file:
-        records = list(SeqIO.parse(file, 'fasta'))
-
-        # Getting record
-        assert len(records) != 0, f"No record contained in {fasta_path}!"
-        assert len(records) == 1, f"More than one record contained in {fasta_path}!"
-        record = records[0]
-
-    # Generating variant
+    # Getting variant transformation
     try:
         map_func = variant_types[variant]["function"]
     except KeyError:
         raise ValueError(f"Variant type '{variant}' is not valid, see documentation!")
-    seq = map_func(str(record.seq), seed)
 
-    # Saving as (one-line-sequence) FASTA file
-    filepath = '/'.join([dir, filename + '.fasta'])
-    os.makedirs(dir, exist_ok=True)
-    with open(filepath, 'w') as file:
-        file.write('>' + filename + '\n')
-        file.write(seq)
+    # Applying transformation
+    seq = map_func(seq, seed)
 
-    return filepath
+    return seq
     
 
 #························································································#

@@ -1,0 +1,62 @@
+{
+    "accession_numbers": {
+        "H1-0": "NP_005309.1",
+        "H2B": "NP_003519.1"
+    },
+    "data": {
+        "H1-0_WT": {
+            "template": "H1-0",
+            "name": "histone H1.0",
+            "species": "Homo sapiens (human)",
+            "sequence": "TKGVGASGSFRLAKSDEPKKSVAFKKTKKEIKKVATPKKASKPKKAASKAPTKKPKATPVKKAKKKLAATPKKAKKPKTVKAKPVKASKPKKAKPVKPKAKSSAKRAGKKK",
+            "region": "CTD",
+            "location": "[83:194]",
+            "variant": "Wild type"
+        },
+        "H1-0_RAND": {
+            "template": "H1-0",
+            "name": "histone H1.0",
+            "species": "Homo sapiens (human)",
+            "sequence": "VADSKKTSAKAKKKKAKPAKRKAPTGKKPSSTAKKKKAPKKKAKLKKVVAAKKKLSVKGTKVKKKAPKSKGPKTKVPAKKKAESAGTPEAVAAFPKKPTARKFSPIKKSPK",
+            "region": "CTD",
+            "location": "[83:194]",
+            "variant": "Randomly shuffled"
+        },
+        "H1-0_CLUST": {
+            "template": "H1-0",
+            "name": "histone H1.0",
+            "species": "Homo sapiens (human)",
+            "sequence": "KKKRKKKKKKKKKKKKKKKKKRKKKKKKKKKKKKKKKKKKKKKKKAASFAPTASPAATPVAVAAGSLAATPPPASGPPTVLASPVTASIPGTAVPVSPAATSSAFVAGEED",
+            "region": "CTD",
+            "location": "[83:194]",
+            "variant": "Terminally clustered charges"
+        },
+        "H2B_WT": {
+            "template": "H2B",
+            "name": "histone H2B type 2-E",
+            "species": "Homo sapiens (human)",
+            "sequence": "MPEPAKSAPAPKKGSKKAVTKAQKKDGKKRKRSRK",
+            "region": "NTD",
+            "location": "[0:35]",
+            "variant": "Wild type"
+        },
+        "H2B_RAND": {
+            "template": "H2B",
+            "name": "histone H2B type 2-E",
+            "species": "Homo sapiens (human)",
+            "sequence": "PPKKRPKSAEVDSPKKSAMAKAKAKGKGTQKKKRR",
+            "region": "NTD",
+            "location": "[0:35]",
+            "variant": "Randomly shuffled"
+        },
+        "H2B_CLUST": {
+            "template": "H2B",
+            "name": "histone H2B type 2-E",
+            "species": "Homo sapiens (human)",
+            "sequence": "KRKRKKKKKKKKRKKAPAVTGAQAMPGASPSPSDE",
+            "region": "NTD",
+            "location": "[0:35]",
+            "variant": "Terminally clustered charges"
+        }
+    }
+}

@@ -3,10 +3,9 @@ __pycache__/
 
 # Data
 auth/
-data/seqs/raw/
-data/seqs/idr/
-data/seqs/var/
-results/calvados/
+exp/*/data/
+exp/*/results/
 
 # Other
 .todo.md
+.DS_Store

@@ -19,7 +19,7 @@ from localcider.sequenceParameters import SequenceParameters
 def load_fasta_seq(fasta_path: str) -> tuple[str]:
     """
 
-    Takes a FASTA file path, returns the id, description, and encoded sequence.
+    Takes a FASTA file path, returns the sequence, id, and description.
 
     --------------------------------------------------------------------------------
 
