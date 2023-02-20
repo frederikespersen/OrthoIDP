@@ -32,13 +32,13 @@ def load_fasta_seq(fasta_path: str) -> tuple[str]:
     Returns
     -------
 
-        ``seq``: ``str``
+        `seq`: `str`
             The sequence in the FASTA file
 
-        ``id``: ``str``
+        `id`: `str`
             The id in the FASTA file
 
-        ``desc``: ``str``
+        `desc`: `str`
             The description in the FASTA file
 
     """
@@ -78,16 +78,16 @@ def cider_parameters(seq: str, name: str | int = 0) -> pd.DataFrame:
     Parameters
     ----------
     
-        ``seq``: ``str``
+        `seq`: `str`
             Sequence to calculate parameters for
     
-        ``name``: ``str | int``
+        `name`: `str | int`
             Index of the single row in the DataFrame
 
     Returns
     -------
 
-        ``params``: ``pandas.DataFrame``
+        `params`: `pandas.DataFrame`
             A single-row DataFrame with select CIDER parameters
 
     """

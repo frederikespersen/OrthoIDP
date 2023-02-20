@@ -32,13 +32,13 @@ def get_protein_gp(acc_num: str) -> SeqRecord:
     Parameters
     ----------
     
-        ``acc_num``: ``str``
+        `acc_num`: `str`
             Accession number of the RefSeq protein
 
     Returns
     -------
 
-        ``record``: ``Bio.SeqRecord``
+        `record`: `Bio.SeqRecord`
             The genbank file as a SeqRecord object
 
     """
@@ -66,27 +66,27 @@ def extract_idr(gp, i_idr: int=0, length_order=False) -> tuple[str]:
     Parameters
     ----------
 
-        ``gp``: ``Bio.SeqRecord``
+        `gp`: `Bio.SeqRecord`
             A genbank file as a SeqRecord object
     
-        ``i_idr``: ``int``
+        `i_idr`: `int`
             The index of the disordered region in the protein
             [0 = first/NTD; -1 =last/CTD]
-            (See ``length order`` below)
+            (See `length order` below)
     
-        ``length_order``: ``bool``
-            Whether to sort the disordered regions by descending length before choosing with ``i_idr``
+        `length_order`: `bool`
+            Whether to sort the disordered regions by descending length before choosing with `i_idr`
 
     Returns
     -------
     
-        ``seq``: ``str``
+        `seq`: `str`
             The extracted IDR sequence
 
-        ``region``: ``str``
+        `region`: `str`
             The general location of the IDR, either N-terminal (NTD), internal (INT), or C-terminal (CTD)
 
-        ``location``: ``str``
+        `location`: `str`
             The positionwise location of the IDR int he format [i:j] (0-indexed)
 
     """
@@ -140,11 +140,11 @@ A dictionary containing descriptions and mapping functions for generating varian
 Schema
 ------
 
-``<variant_id>``
+`<variant_id>`
 
-        ``name``: Description of variant
+        `name`: Description of variant
 
-        ``function``: Lambda function for generating variant from sequence and seed
+        `function`: Lambda function for generating variant from sequence and seed
 
 """
 
@@ -160,30 +160,30 @@ def generate_variant(seq: str, variant: str, seed=None) -> str:
 
     Possible variants
     -----------------
-    (See ``variant_types``):
-    - ``wt``: Wild type
-    - ``rand``: Randomly shuffled
-    - ``clust``: Positive charges clustered in C-terminal end, negative charges in N-terminal end
+    (See `variant_types`):
+    - `wt`: Wild type
+    - `rand`: Randomly shuffled
+    - `clust`: Positive charges clustered in C-terminal end, negative charges in N-terminal end
 
     --------------------------------------------------------------------------------
 
     Parameters
     ----------
 
-        ``seq``: ``str``
+        `seq`: `str`
             A protein sequence
     
-        ``variant``: ``str``
+        `variant`: `str`
             The variant to generate; 
-            See ``variant_types`` for options
+            See `variant_types` for options
     
-        ``seed``: ``int``
+        `seed`: `int`
             Seed for random events
     
     Returns
     -------
         
-        ``seq``: ``str``
+        `seq`: `str`
             The variant sequence
 
     """
@@ -211,16 +211,16 @@ def shuffle_seq(seq: str, seed=None) -> str:
     Parameters
     ----------
 
-        ``seq``: 
-            ``str``Sequence to be shuffled
+        `seq`: 
+            `str`Sequence to be shuffled
     
-        ``seed``: ``int``
+        `seed`: `int`
             Seed for random event
     
     Returns
     -------
         
-        ``seq``: ``str``
+        `seq`: `str`
             The shuffled sequence
 
     """
@@ -252,26 +252,26 @@ def cluster_seq(seq: str, ngroup: list[str], cgroup: list[str], seed=None, mc_th
     Parameters
     ----------
     
-        ``seq``: ``str``
+        `seq`: `str`
             Sequence to be clustered
     
-        ``ngroup``: ``list[str]``
+        `ngroup`: `list[str]`
             List of amino acids (one-letter codes) to cluster in the N-terminal end of the sequence
     
-        ``cgroup``: ``list[str]``
+        `cgroup`: `list[str]`
             List of amino acids (one-letter codes) to cluster in the C-terminal end of the sequence
     
-        ``seed``: ``int``
+        `seed`: `int`
             Seed for random events
     
-        ``mc_threshold``: ``float``
+        `mc_threshold`: `float`
             Minimum random value in [0:1] for switching to occur
             (1 = 100% chance of switching to cluster, i.e. no randomness)
     
     Returns
     -------
     
-        ``seq``: ``str``
+        `seq`: `str`
             The clustered sequence
 
     """
