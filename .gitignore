@@ -2,10 +2,15 @@
 __pycache__/
 
 # Data
-auth/
 exp/*/data/
 exp/*/results/
+
+# Secrets
+auth/
+src/sim/*.sh
+cleanup/
 
 # Other
 .todo.md
 .DS_Store
+test/
