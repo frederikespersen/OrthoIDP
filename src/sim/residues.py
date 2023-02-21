@@ -20,7 +20,7 @@ residues = pd.DataFrame(
         "three":"ARG",
         "MW":156.19,
         "AH_lambda":0.7249915948,
-        "ah_AH_sigma":0.656,
+        "AH_sigma":0.656,
         "q":1,
         "HPS":0.0,
         "HPSUrry":0.478824,
