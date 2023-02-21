@@ -12,8 +12,9 @@ import os
 from datetime import datetime as dt
 import pandas as pd
 import numpy as np
-from residues import residues
-from conditions import conditions
+
+from sim.residues import residues
+from sim.conditions import conditions
 
 import mdtraj as md
 from simtk import openmm, unit
@@ -177,7 +178,7 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
 
     # Generating trajectory without equilibration
     if verbose:
-        print(f"[{dt.now()}] Saving formatted trajectory in '{dir}/traj.dcd'")
+        print(f"[{dt.now()}] Saving formatted trajectory in '{dir}/traj.dcd'", "\n")
     save_dcd(traj_path=f'{dir}/pretraj.dcd', top_path=f'{dir}/top.pdb', file_path=f'{dir}/traj.dcd', eqsteps=eqsteps)
 
 
@@ -258,6 +259,7 @@ def generate_save_topology(seq: str, boxlength: float, file_path: str) -> None:
             The path to save the file as (include `.pdb` suffix).
 
     """
+    
     # Generating initial residue coordinates; straight chain centered on the z-axis
     N = len(seq)
     rise_per_residue = 0.38

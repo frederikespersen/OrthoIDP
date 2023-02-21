@@ -13,7 +13,10 @@
 
 import argparse
 import os
-from simulation_utils import simulate
+import sys
+
+sys.path.append("[TEMPLATE] - //TODO Put source code directory")
+from sim.simulate_utils import simulate
 
 
 #························································································#
