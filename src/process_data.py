@@ -24,8 +24,8 @@ Entrez.email = 'tgw325@alumni.ku.dk'
 def get_protein_gp(acc_num: str) -> SeqRecord:
     """
 
-    Takes a RefSeq protein accession number,
-    returns the corresponding genbank file as a SeqRecord object.
+    Takes a protein accession number, like RefSeq or UniProt ID,
+    returns the corresponding GenPept file as a SeqRecord object.
 
     --------------------------------------------------------------------------------
  
@@ -33,17 +33,18 @@ def get_protein_gp(acc_num: str) -> SeqRecord:
     ----------
     
         `acc_num`: `str`
-            Accession number of the RefSeq protein
+            A protein identifier, like a RefSeq accession number or an UniProt ID
+
 
     Returns
     -------
 
         `record`: `Bio.SeqRecord`
-            The genbank file as a SeqRecord object
+            The GenPept file as a SeqRecord object
 
     """
 
-    # Fetching file as genbank record
+    # Fetching file as GenPept record
     handle = Entrez.efetch(db='protein',id=acc_num, rettype='gp', retmode='text')
     record = SeqIO.read(handle, 'genbank')
 
@@ -57,7 +58,7 @@ def get_protein_gp(acc_num: str) -> SeqRecord:
 def extract_idr(gp, i_idr: int=0, length_order=False) -> tuple[str]:
     """
 
-    Takes a protein genbank file as a SeqRecord object,
+    Takes a protein GenPept file as a SeqRecord object,
     extracts a specified IDR region of the protein.
     Returns the sequence, region (NTD, INT, CTD), and location of the IDR.
 
@@ -67,7 +68,7 @@ def extract_idr(gp, i_idr: int=0, length_order=False) -> tuple[str]:
     ----------
 
         `gp`: `Bio.SeqRecord`
-            A genbank file as a SeqRecord object
+            A GenPept file as a SeqRecord object
     
         `i_idr`: `int`
             The index of the disordered region in the protein
@@ -91,7 +92,7 @@ def extract_idr(gp, i_idr: int=0, length_order=False) -> tuple[str]:
 
     """
 
-    # Loading genbank record
+    # Loading GenPept record
     record = gp
 
     # Finding disordered regions
