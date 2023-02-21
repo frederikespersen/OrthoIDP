@@ -7,7 +7,7 @@ This directory contains utility scripts for both data orchestration, analysis, a
 This directory contains:
 - **`sim`**: Scripts for simulations
   - `run_simulate.sh`: **Template** shell script for submitting a simulation with Slurm (*.gitignored*)
-  - `simulate.py`: **Temlate** python script for submitting a simulation
+  - `simulate.py`: **Temlate** Python script for submitting a simulation
   - `simulate_utils.py`: Utilitary functions for `simulate.py`
   - `residues.py`: Residue-level data and parameters as a Python object
   - `conditions.py`: Standard condition sets as a Python object
