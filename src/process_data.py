@@ -8,67 +8,140 @@
 """
 
 
-import os
+import requests
+import io
 import random
-from Bio import Entrez
 from Bio import SeqIO
-from Bio.SeqRecord import SeqRecord
-
-Entrez.email = 'tgw325@alumni.ku.dk'
+from Bio import SwissProt
+from Bio.SwissProt import Record
 
 
 #························································································#
-#······································ R A W ···········································#
+#······························· D O W N L O A D I N G ··································#
 #························································································#
 
-def get_protein_gp(acc_num: str) -> SeqRecord:
+def get_protein_xml_record(uniprot_id: str) -> Record:
     """
 
-    Takes a protein accession number, like RefSeq or UniProt ID,
-    returns the corresponding GenPept file as a SeqRecord object.
+     Takes a protein UniProt ID,
+     returns a SeqRecord object of the corresponding UniProt .xml file.
 
     --------------------------------------------------------------------------------
- 
+
     Parameters
     ----------
+
+        `uniprot_id`: `str`
+            A UniProt ID
     
-        `acc_num`: `str`
-            A protein identifier, like a RefSeq accession number or an UniProt ID
-
-
     Returns
     -------
 
         `record`: `Bio.SeqRecord`
-            The GenPept file as a SeqRecord object
+            A UniProt .xml file as a ecord object retrived with the `uniprot_id`
 
     """
 
-    # Fetching file as GenPept record
-    handle = Entrez.efetch(db='protein',id=acc_num, rettype='gp', retmode='text')
-    record = SeqIO.read(handle, 'genbank')
+    # Fetching UniProt .xml record
+    url = f"https://rest.uniprot.org/uniprotkb/{uniprot_id}.xml"
+    response = requests.get(url)
+    content = io.StringIO(response.content.decode("utf-8"))
+    record = SeqIO.read(content, 'uniprot-xml')
 
     return record
 
 
 #························································································#
-#····························· P R E P R O C E S S I N G·································#
-#························································································#
-
-def extract_idr(gp, i_idr: int=0, length_order=False) -> tuple[str]:
+def get_protein_txt_record(uniprot_id: str) -> Record:
     """
 
-    Takes a protein GenPept file as a SeqRecord object,
-    extracts a specified IDR region of the protein.
-    Returns the sequence, region (NTD, INT, CTD), and location of the IDR.
+     Takes a protein UniProt ID,
+     returns a Bio.SwissProt.Record object of the corresponding UniProt .txt (SwissProt) file.
 
     --------------------------------------------------------------------------------
 
     Parameters
     ----------
 
-        `gp`: `Bio.SeqRecord`
-            A GenPept file as a SeqRecord object
+        `uniprot_id`: `str`
+            A UniProt ID
+    
+    Returns
+    -------
+
+        `record`: `Bio.SwissProt.Record`
+            A UniProt .txt (SwissProt) file as a ecord object retrived with the `uniprot_id`
+
+    """
+
+    # Fetching UniProt .txt (SwissProt) record
+    url = f"https://rest.uniprot.org/uniprotkb/{uniprot_id}.txt"
+    response = requests.get(url)
+    content = io.StringIO(response.content.decode("utf-8"))
+    record = list(SwissProt.parse(content))[0]
+
+    return record
+
+
+#························································································#
+def get_protein_metadata(uniprot_id: str) -> tuple[str]:
+    """
+    
+    Takes a protein UniProt ID,
+    Returns the UniProt data on the name, description, species of origin, and full-length sequence of the protein.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `uniprot_id`: `str`
+            A UniProt ID
+
+    Returns
+    -------
+
+        `name`: `str`
+            The UniProt name of the protein
+
+        `description`: `str`
+            The UniProt description of the protein
+
+        `organism`: `str`
+            The species of origin (organism) of the protein
+
+        `sequence`: `str``
+            The protein sequence
+
+    """
+    
+    # Fetching UniProt XML record
+    record = get_protein_xml_record(uniprot_id)
+
+    # Extracting metadata
+    name = record.name
+    description = record.description
+    organism = record.annotations["organism"]
+    sequence = str(record.seq)
+
+    return name, description, organism, sequence
+
+
+#························································································#
+def get_protein_idr(uniprot_id: str, i_idr: int=0, length_order=False, region_threshold: int=0) -> tuple[str]:
+    """
+
+    Takes an intrinsically disordered protein (IDP) UniProt ID,
+    extracts a specified intrinsically disordered region (IDR) of the protein.
+    Returns the sequence, location, and region (NTD, INT, CTD) of the IDR.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `uniprot_id`: `str`
+            A UniProt ID, corresponding to a protein with an IDR
     
         `i_idr`: `int`
             The index of the disordered region in the protein
@@ -78,48 +151,60 @@ def extract_idr(gp, i_idr: int=0, length_order=False) -> tuple[str]:
         `length_order`: `bool`
             Whether to sort the disordered regions by descending length before choosing with `i_idr`
 
+        `region_threshold`: `int`
+            The difference in residue positions between N/C-terminal and region end to classify NTD/CTD;
+            Default 4 (I.e. within 0-4 residues of NTD/CTD residue)
+
     Returns
     -------
     
         `seq`: `str`
             The extracted IDR sequence
 
+        `location`: `str`
+            The positionwise location of the IDR int the sequence [i:j] (1-indexed)
+
         `region`: `str`
             The general location of the IDR, either N-terminal (NTD), internal (INT), or C-terminal (CTD)
 
-        `location`: `str`
-            The positionwise location of the IDR int he format [i:j] (0-indexed)
-
     """
 
-    # Loading GenPept record
-    record = gp
+    # Fetching UniProt XML record
+    record = get_protein_txt_record(uniprot_id)
 
     # Finding disordered regions
     idrs = []
     for feature in record.features:
-            if feature.type == 'Region':
-                if 'Disordered' in feature.qualifiers['region_name'][0]:
-                    idrs.append(feature)
-    
+        if 'Disordered' in feature.qualifiers.values():
+            start = feature.location.start.position
+            end = feature.location.end.position
+            idrs.append((start, end))
+    if not idrs:
+        raise ValueError(f"No disordered regions were found for UniProt ID {uniprot_id}!")
+
     # Choosing IDR
     if length_order:
-        idrs.sort(key=lambda f: len(f), reverse=True)
+        idrs.sort(key=lambda p: p[1] - p[0], reverse=True)
     idr = idrs[i_idr]
-    seq = idr.extract(record.seq)
-    location = idr.location
 
-    # Checking whether domain is terminal
+    # Parsing sequence, location, and description
+    seq = str(record.sequence[idr[0]:idr[1]])
+    location = f'{idr[0]}:{idr[1]}'
+
+    # Describing whether region is terminal
     region = 'INT'
-    if 0 in location:
+    if idr[0] <= region_threshold:
         region = "NTD"
-    elif len(record.seq)-1 in location:
+    elif len(record.sequence) - idr[1] <= region_threshold:
         region = "CTD"
 
-    return str(seq), region, str(location)
+    return seq, location, region
 
 
 #························································································#
+#····························· P R E P R O C E S S I N G·································#
+#························································································#
+
 variant_types = {
     "wt": {
         "name": "Wild type",

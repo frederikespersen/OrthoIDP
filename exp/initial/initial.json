@@ -1,61 +1,61 @@
 {
-    "accession_numbers": {
-        "H1-0": "NP_005309.1",
-        "H2B": "NP_003519.1"
+    "templates": {
+        "H1-0": {
+            "uniprot_id": "P07305",
+            "name": "H10_HUMAN",
+            "description": "Histone H1.0",
+            "species": "Homo sapiens (Human)",
+            "sequence": "MTENSTSAPAAKPKRAKASKKSTDHPKYSDMIVAAIQAEKNRAGSSRQSIQKYIKSHYKVGENADSQIKLSIKRLVTTGVLKQTKGVGASGSFRLAKSDEPKKSVAFKKTKKEIKKVATPKKASKPKKAASKAPTKKPKATPVKKAKKKLAATPKKAKKPKTVKAKPVKASKPKKAKPVKPKAKSSAKRAGKKK"
+        },
+        "H2B": {
+            "uniprot_id": "B4DR52",
+            "name": "B4DR52_HUMAN",
+            "description": "Histone H2B",
+            "species": "Homo sapiens (Human)",
+            "sequence": "MPDPAKSAPAPKKGSKKAVTKVQKKDGKKRKRSRKESYSVYVYKVLKQVHPDTGISSKAMGIMNSFVNDIFERIAGEASRLAHYNKRSTITSREIQTAVRLLLPGELAKHAVSEGTKAVTKYTSSNPRNLSPTKPGGSEDRQPPPSQLSAIPPFCLVLRAGIAGQV"
+        }
     },
     "data": {
         "H1-0_WT": {
             "template": "H1-0",
-            "name": "histone H1.0",
-            "species": "Homo sapiens (human)",
             "sequence": "TKGVGASGSFRLAKSDEPKKSVAFKKTKKEIKKVATPKKASKPKKAASKAPTKKPKATPVKKAKKKLAATPKKAKKPKTVKAKPVKASKPKKAKPVKPKAKSSAKRAGKKK",
+            "location": "83:194",
             "region": "CTD",
-            "location": "[83:194]",
             "variant": "Wild type"
         },
         "H1-0_RAND": {
             "template": "H1-0",
-            "name": "histone H1.0",
-            "species": "Homo sapiens (human)",
-            "sequence": "VADSKKTSAKAKKKKAKPAKRKAPTGKKPSSTAKKKKAPKKKAKLKKVVAAKKKLSVKGTKVKKKAPKSKGPKTKVPAKKKAESAGTPEAVAAFPKKPTARKFSPIKKSPK",
+            "sequence": "PGTKKPKSTKTKKALAKAKKAKVKGSKAEKATSAAKKSVKPKKSKAPKAPKPIAASPVKVRVKKTPKKPKAKKKFKKGLEVSKVKAKKKPAKKKAAAPPASKSGKKTRDFT",
+            "location": "83:194",
             "region": "CTD",
-            "location": "[83:194]",
             "variant": "Randomly shuffled"
         },
         "H1-0_CLUST": {
             "template": "H1-0",
-            "name": "histone H1.0",
-            "species": "Homo sapiens (human)",
-            "sequence": "KKKRKKKKKKKKKKKKKKKKKRKKKKKKKKKKKKKKKKKKKKKKKAASFAPTASPAATPVAVAAGSLAATPPPASGPPTVLASPVTASIPGTAVPVSPAATSSAFVAGEED",
+            "sequence": "KKKKKKKKKKRKKKKKKKKKKKKKKKKKKKKKRKKKKKKKKKKKKAASVAPTGLPAATPVSGATATLAATPVPAGPPSTVAAPPVAASFPVSASPVIPFATSSAASAGEDE",
+            "location": "83:194",
             "region": "CTD",
-            "location": "[83:194]",
             "variant": "Terminally clustered charges"
         },
         "H2B_WT": {
             "template": "H2B",
-            "name": "histone H2B type 2-E",
-            "species": "Homo sapiens (human)",
-            "sequence": "MPEPAKSAPAPKKGSKKAVTKAQKKDGKKRKRSRK",
+            "sequence": "MPDPAKSAPAPKKGSKKAVTKVQKKDGKKRKRSRKE",
+            "location": "0:36",
             "region": "NTD",
-            "location": "[0:35]",
             "variant": "Wild type"
         },
         "H2B_RAND": {
             "template": "H2B",
-            "name": "histone H2B type 2-E",
-            "species": "Homo sapiens (human)",
-            "sequence": "PPKKRPKSAEVDSPKKSAMAKAKAKGKGTQKKKRR",
+            "sequence": "EKKKKSDMKPKRKPVASQAAKPKSRKKKTPGRGAA",
+            "location": "0:36",
             "region": "NTD",
-            "location": "[0:35]",
             "variant": "Randomly shuffled"
         },
         "H2B_CLUST": {
             "template": "H2B",
-            "name": "histone H2B type 2-E",
-            "species": "Homo sapiens (human)",
-            "sequence": "KRKRKKKKKKKKRKKAPAVTGAQAMPGASPSPSDE",
+            "sequence": "RKRKKKKKKKRKKKKASAVTAAQGPPGSAPPMSED",
+            "location": "0:36",
             "region": "NTD",
-            "location": "[0:35]",
             "variant": "Terminally clustered charges"
         }
     }
