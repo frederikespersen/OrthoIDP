@@ -13,8 +13,8 @@ This directory contains:
 
 Each experiment is structures as:
 - **`<experiment>**`**: Files from a specific experiment
-    - **`data`**: Input data for simulations and analysis
-    - **`results`**: Output data from simulations and analysis
+    - **`data`**: Input data for simulations and analysis (*.gitignored*)
+    - **`results`**: Output data from simulations and analysis (*.gitignored*)
         - **`<variant_id>`**: Variant specific simulation
     - `<experiment>.json`: Metadata on experiment (See below)
 
@@ -36,6 +36,6 @@ The file has the following schema:
         - `sequence`: The sequence in the .fasta file with the corresponding `<sequence_id>`
         - `region`: The general location of the extracted IDR, like NTD, CTD, or INT (Internal)
         - `location`: The precise location of the IDR in the full length protein
-        - `variant`: Which variant off the `<protein_id>` that is used
+        - `variant`: Which variant of the `<protein_id>` that is used
 
 **To first generate data for the experiment the file must have entries in `templates`.**
