@@ -84,8 +84,10 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
     if verbose:
         print(f"[{dt.now()}] Preparing simulation with '{cond}' conditions")
     condition = conditions[cond]
-    residues = residues.copy()
-    
+
+    # Formating terminal residues as special residue types
+    sequence, residues = format_terminal_res(sequence)
+
     # Setting CALVADOS model
     assert vmodel in [0, 1, 2], "Must between CALVADOS model 1, 2, or 3!"
     residues['AH_lambda'] = residues[f'M{vmodel}']
@@ -93,9 +95,6 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
     # Calculating histidine charge based on Henderson-Hasselbalch equation
     H_pKa = 6
     residues.loc['H','q'] = 1. / (1 + 10**(condition.pH - H_pKa))
-
-    # Formating terminal residues as special residue types
-    sequence, residues = format_terminal_res(sequence, residues)
 
 
     # Initiating OpenMM system
@@ -186,7 +185,7 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
 #····························· P R E P A R A T I O N ····································#
 #························································································#
 
-def format_terminal_res(seq: str|list, res: pd.DataFrame):
+def format_terminal_res(seq: str|list, res: pd.DataFrame=residues.copy()):
     """
     
     Takes a sequence and a `residues` DataFrame, modifies the sequence with special terminal residue types 'X' and 'Z'

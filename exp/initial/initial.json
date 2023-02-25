@@ -39,7 +39,7 @@
         },
         "H2B_WT": {
             "template": "H2B",
-            "sequence": "MPDPAKSAPAPKKGSKKAVTKVQKKDGKKRKRSRKE",
+            "sequence": "MPDPAKSAPAPKKGSKKAVTKVQKKDGKKRKRSRK",
             "location": "0:36",
             "region": "NTD",
             "variant": "Wild type"
