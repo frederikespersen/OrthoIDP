@@ -14,8 +14,9 @@ This directory contains:
 Each experiment is structures as:
 - **`<experiment>**`**: Files from a specific experiment
     - **`data`**: Input data for simulations and analysis (*.gitignored*)
-    - **`results`**: Output data from simulations and analysis (*.gitignored*)
-        - **`<variant_id>`**: Variant specific simulation
+    - **`results`**: Output data from simulations and analysis 
+        - **`<analysis>`**: Results and figures from specific experiment analysis
+        - **`<variant_id>`**: Variant specific simulation (*.gitignored*)
     - `<experiment>.json`: Metadata on experiment (See below)
 
 

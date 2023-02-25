@@ -16,6 +16,13 @@ from localcider.sequenceParameters import SequenceParameters
 #································· G E N E R A L ········································#
 #························································································#
 
+amino_acids = ['A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y']
+"""
+
+A list of the one-letter codes of the naturally occuring amino acids.
+
+"""
+
 def load_fasta_seq(fasta_path: str) -> tuple[str]:
     """
 
@@ -56,6 +63,40 @@ def load_fasta_seq(fasta_path: str) -> tuple[str]:
     desc = ' '.join(lines[0].split(' ')[1:])
 
     return seq, id, desc
+
+def amino_acid_content(seq: str, name: str | int = 0) -> pd.DataFrame:
+    """
+    Takes a sequence, returns a DataFrame of the frequency of amino acids.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+    
+        `seq`: `str`
+            Sequence to calculate frequencies for
+    
+        `name`: `str | int`
+            Index of the single row in the DataFrame
+
+    Returns
+    -------
+
+        `freqs`: `pandas.DataFrame`
+            A single-row DataFrame with the amino acid frequency for each amino acid.
+
+    """
+    
+    # Initiating DataFrame
+    freqs = pd.DataFrame(index=[name])
+
+    # Calculating frequencies
+    seq = seq.upper()
+    N = len(seq)
+    for aa in amino_acids:
+        freqs[aa] = len(list(filter(lambda s: s == aa,seq))) / N
+
+    return freqs
 
 
 #························································································#
