@@ -8,6 +8,7 @@
 """
 
 
+import json
 import pandas as pd
 from localcider.sequenceParameters import SequenceParameters
 
@@ -15,13 +16,6 @@ from localcider.sequenceParameters import SequenceParameters
 #························································································#
 #································· G E N E R A L ········································#
 #························································································#
-
-amino_acids = ['A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y']
-"""
-
-A list of the one-letter codes of the naturally occuring amino acids.
-
-"""
 
 def load_fasta_seq(fasta_path: str) -> tuple[str]:
     """
@@ -64,37 +58,93 @@ def load_fasta_seq(fasta_path: str) -> tuple[str]:
 
     return seq, id, desc
 
-def amino_acid_content(seq: str, name: str | int = 0) -> pd.DataFrame:
+
+#························································································#
+def load_metadata(metadata_path: str) -> pd.DataFrame:
     """
-    Takes a sequence, returns a DataFrame of the frequency of amino acids.
+    
+    Takes the path to a meta data .json-file, returns the meta data loaded into a DataFrame.
+
+    Row granularity is variants in 'data' field of .json file.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `metadata_path`: `str`
+            The path to the meta deta .json file to load in
+
+    Returns
+    -------
+
+        `metadata`: `pandas.DataFrame`
+            A DataFrame containing the meta data fields
+
+    """
+
+    # Loading meta data file
+    with open(metadata_path, 'r') as file:
+        metadata = json.load(file)
+    
+    # Parsing data and templates fields
+    data = pd.DataFrame(metadata['data']).transpose()
+    templates = pd.DataFrame(metadata['templates']).transpose()
+
+    # Joining templates on to data (unique fields only)
+    unique_fields = list(set(templates) - set(data))
+    metadata = data.join(templates[unique_fields])
+
+    return metadata
+
+
+#························································································#
+#····························· A M I N O   A C I D S ····································#
+#························································································#
+
+amino_acids = ['A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y']
+"""
+
+A list of the one-letter codes of the naturally occuring amino acids.
+
+"""
+
+
+#························································································#
+def amino_acid_content(seqs: str|list|pd.Series) -> pd.DataFrame:
+    """
+
+    Takes one or more sequences, returns a DataFrame of the frequencies of amino acids.
 
     --------------------------------------------------------------------------------
 
     Parameters
     ----------
     
-        `seq`: `str`
-            Sequence to calculate frequencies for
-    
-        `name`: `str | int`
-            Index of the single row in the DataFrame
+        `seqs`: `str | list | pandas.Series`
+            Sequence(s) to calculate frequencies for
 
     Returns
     -------
 
         `freqs`: `pandas.DataFrame`
-            A single-row DataFrame with the amino acid frequency for each amino acid.
+            A DataFrame with the amino acid frequency for each amino acid in the sequence(s).
 
     """
+
+    # Formatting sequence(s) as a pd.Series
+    if type(seqs) == str:
+        seqs = pd.Series([seqs])
+    elif type(seqs) == list:
+        seqs = pd.Series(seqs)
     
     # Initiating DataFrame
-    freqs = pd.DataFrame(index=[name])
+    freqs = pd.DataFrame(index=seqs.index)
 
     # Calculating frequencies
-    seq = seq.upper()
-    N = len(seq)
+    seqs = seqs.str.upper()
     for aa in amino_acids:
-        freqs[aa] = len(list(filter(lambda s: s == aa,seq))) / N
+        freqs[aa] = seqs.apply(lambda seq: len(list(filter(lambda s: s == aa, seq))) / len(seq))
 
     return freqs
 
@@ -103,10 +153,10 @@ def amino_acid_content(seq: str, name: str | int = 0) -> pd.DataFrame:
 #··································· C I D E R ··········································#
 #························································································#
 
-def cider_parameters(seq: str, name: str | int = 0) -> pd.DataFrame:
+def cider_parameters(seqs: str|list|pd.Series) -> pd.DataFrame:
     """
 
-    Takes a sequence, returns a DataFrame of its CIDER parameters.
+    Takes one or more sequences, returns a DataFrame of CIDER parameters.
 
     --------------------------------------------------------------------------------
 
@@ -119,32 +169,35 @@ def cider_parameters(seq: str, name: str | int = 0) -> pd.DataFrame:
     Parameters
     ----------
     
-        `seq`: `str`
-            Sequence to calculate parameters for
-    
-        `name`: `str | int`
-            Index of the single row in the DataFrame
+        `seqs`: `str | list | pandas.Series`
+            Sequence(s) to calculate parameters for
 
     Returns
     -------
 
         `params`: `pandas.DataFrame`
-            A single-row DataFrame with select CIDER parameters
+            A DataFrame with select CIDER parameters calcualted for the sequence(s)
 
     """
+
+    # Formatting sequence(s) as a pd.Series
+    if type(seqs) == str:
+        seqs = pd.Series([seqs])
+    elif type(seqs) == list:
+        seqs = pd.Series(seqs)
     
-    # Creating a SequenceParameters object from sequence
-    SeqOb = SequenceParameters(seq)
+    # Mapping sequence(s) to a SequenceParameteres object
+    seqs = seqs.map(SequenceParameters)
 
     # Initiating DataFrame
-    params = pd.DataFrame(index=[name])
+    params = pd.DataFrame(index=seqs.index)
 
     # Calculating parameters
-    params['kappa'] = SeqOb.get_kappa()
-    params['FCR'] = SeqOb.get_FCR()
-    params['NCPR'] = SeqOb.get_NCPR()
-    params['Hydrophobicity'] = SeqOb.get_mean_hydropathy()
-    params['Frac. dis. prom.'] = SeqOb.get_fraction_disorder_promoting()
+    params['kappa'] = seqs.apply(lambda SeqOb: SeqOb.get_kappa())
+    params['FCR'] = seqs.apply(lambda SeqOb: SeqOb.get_FCR())
+    params['NCPR'] = seqs.apply(lambda SeqOb: SeqOb.get_NCPR())
+    params['Hydrophobicity'] = seqs.apply(lambda SeqOb: SeqOb.get_mean_hydropathy())
+    params['Frac. dis. prom.'] = seqs.apply(lambda SeqOb: SeqOb.get_fraction_disorder_promoting())
 
     return params
 
