@@ -12,7 +12,7 @@ This directory contains:
 
 
 Each experiment is structures as:
-- **`<experiment>**`**: Files from a specific experiment
+- **`<experiment>`**: Files from a specific experiment
     - **`data`**: Input data for simulations and analysis (*.gitignored*)
     - **`results`**: Output data from simulations and analysis 
         - **`<variant_id>`**: Variant specific simulation (*.gitignored*)
