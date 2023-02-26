@@ -1,28 +1,27 @@
 #!/bin/bash
 
-##
-##   Run_simulation
+##   Run_simulate
 ##   -------
 ##   [Template]
 ##   Takes a .fasta file, runs a simulation using the sequence and puts results in directory with the same name as the .fasta file.
-##
+##   Template variables are marked like `<variable>`.
 
 
-## Setting SBATCH parameters [Note: specify partition for cluster]
+## Setting SBATCH parameters
 #SBATCH --job-name=sim
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH -t 500:00:00
 #SBATCH -o out
 #SBATCH -e err
-#SBATCH --partition=sbinlab_gpu
+#SBATCH --partition=<partition>
 #SBATCH --gres=gpu:1
 
 
-## Pointing to source code (Using Francesco's)
-source /groups/sbinlab/fpesce/.bashrc
-conda activate openmm
+## Pointing to source code for Python dependencies
+source <source>
+conda activate <env>
 
 
 ## Running simulation script
-python sim.py --fasta $1
+python <simulate_submit> --fasta $1

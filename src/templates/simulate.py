@@ -5,7 +5,7 @@
     [Template]
     Script for running a simulation.
     Takes shell arguments, orchestrates preparations, and initiates simulation.
-    May be experiment specific.
+    Template variables are marked like `<variable>`.
 
     --------------------------------------------------------------------------------
 """
@@ -15,7 +15,7 @@ import argparse
 import os
 import sys
 
-sys.path.append("[TEMPLATE] - //TODO Put source code directory")
+sys.path.append("<sim source code dir>")
 from sim.simulate_utils import simulate
 
 
