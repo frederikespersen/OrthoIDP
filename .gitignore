@@ -7,7 +7,6 @@ exp/*/results/
 
 # Secrets
 auth/
-src/sim/*.sh
 cleanup/
 
 # Other

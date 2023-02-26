@@ -13,8 +13,8 @@ from datetime import datetime as dt
 import pandas as pd
 import numpy as np
 
-from sim.residues import residues
-from sim.conditions import conditions
+from residues import residues
+from conditions import conditions
 
 import mdtraj as md
 from simtk import openmm, unit
