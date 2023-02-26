@@ -1,4 +1,4 @@
-# Results
+# Experiments
 
 ## Description
 This directory contains data from separate experiments.
