@@ -1,7 +1,8 @@
-# Results
+# Experiments
 
 ## Description
-This directory contains data from separate experiments.
+This directory contains data from separate experiments. The experiments all involve simulating IDRs using CALVADOS.
+
 Most of the input processes of this directory is orchestrated either on remote servers or in `~/Data.ipynb` and `~/Analyse.ipynb`.
 
 
