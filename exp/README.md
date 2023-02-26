@@ -7,16 +7,16 @@ Most of the input processes of this directory is orchestrated either on remote s
 
 ## Contents
 This directory contains:
-- **`initial`**: Initial test run of 3 variants of 2 human histones to verify histones as a model system
-- **`ortho`**: [*To be completed*]
+- **`initial/`**: Initial test run of 3 variants of 2 human histones to verify histones as a model system
+- **`ortho/`**: [*To be completed*]
 
 
 Each experiment is structures as:
-- **`<experiment>**`**: Files from a specific experiment
-    - **`data`**: Input data for simulations and analysis (*.gitignored*)
-    - **`results`**: Output data from simulations and analysis 
-        - **`<analysis>`**: Results and figures from specific experiment analysis
-        - **`<variant_id>`**: Variant specific simulation (*.gitignored*)
+- **`<experiment>/**`**: Files from a specific experiment
+    - **`data/`**: Input data for simulations and analysis (*.gitignored*)
+    - **`results/`**: Output data from simulations and analysis 
+        - **`<analysis>/`**: Results and figures from specific experiment analysis
+        - **`<variant_id>/`**: Variant specific simulation (*.gitignored*)
     - `<experiment>.json`: Metadata on experiment (See below)
 
 
