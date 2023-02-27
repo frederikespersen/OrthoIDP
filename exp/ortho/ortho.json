@@ -4001,9 +4001,9 @@
         },
         "186_BRUMA": {
             "template": "186_BRUMA",
-            "sequence": "MEAAAVELPSPPRISGPTGKSPKKRSAVQGTSKARSKRQGAKVMKNHP",
-            "location": "0:48",
-            "region": "NTD",
+            "sequence": "SFRLGTTTETKTKRGPHKQKEITSKKEKKN",
+            "location": "116:146",
+            "region": "CTD",
             "variant": "Wild type"
         },
         "188_LOALO": {
@@ -4020,18 +4020,11 @@
             "region": "CTD",
             "variant": "Wild type"
         },
-        "190_NECAM": {
-            "template": "190_NECAM",
-            "sequence": "TGGTPSFKVVSDRAQKKTATPRVKKPVAKNATDEPKVGKKAVATKPNAEEKAKSPAIETVPKVKGKRTVKSKAV",
-            "location": "92:166",
-            "region": "INT",
-            "variant": "Wild type"
-        },
         "191_NECAM": {
             "template": "191_NECAM",
-            "sequence": "AAPTVKKPVAKKATSEPIAPKKAPAPKPKIEKKLKTPKKEVV",
-            "location": "111:153",
-            "region": "INT",
+            "sequence": "RKEVVRKEAAQKAKPTRNTTGSSSRKTVKSVKKSTASRV",
+            "location": "168:207",
+            "region": "CTD",
             "variant": "Wild type"
         },
         "192_STRRB": {
