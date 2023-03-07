@@ -13,4 +13,4 @@ This directory contains:
 - `analyse_results.py`: Script for analysing output results
 - **`templates/`**: Templates to fill out for submitting simulations
     - `run_simulate.sh`: **Template** Shell script for submitting a simulation with Slurm
-    - `simulate.py`: **Temlate** Python script for submitting a simulation
+    - `simulate.py`: **Template** Python script for submitting a simulation
