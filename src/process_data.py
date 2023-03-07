@@ -312,7 +312,7 @@ def format_terminal_res(seq: str|list, res: pd.DataFrame=residues.copy()):
     seq = list(seq)
     seq[0] = 'X'
     seq[-1] = 'Z'
-    seq = str(seq)
+    seq = ''.join(seq)
 
     return seq, res
 
