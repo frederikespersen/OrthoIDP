@@ -8,7 +8,7 @@
 
 
 ## Setting SBATCH parameters
-#SBATCH --job-name=sim
+#SBATCH --job-name=orthoidp
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH -t <walltime-hours>:00:00
@@ -24,4 +24,4 @@ conda activate <env>
 
 
 ## Running simulation script
-python <simulate_submit> --fasta $1
+python <simulate_submit> --fasta $1 --platform <platform>
