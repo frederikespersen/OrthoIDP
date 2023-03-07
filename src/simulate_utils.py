@@ -18,16 +18,17 @@ from conditions import conditions
 from process_data import format_terminal_res
 
 import mdtraj as md
-from simtk import openmm, unit
-from simtk.openmm import app
-from simtk.openmm import XmlSerializer
+from openmm import openmm
+from openmm import unit
+from openmm import app
+from openmm import XmlSerializer
 
 
 #························································································#
 #······························ S I M U L A T I O N ·····································#
 #························································································#
 
-def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int=1000, cond: str='default', vmodel: int=3, platform='CUDA', stride: int=1000, verbose=True) -> None:
+def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int=1000, cond: str='default', vmodel: int=3, platform=None, stride: int=1000, verbose=True) -> None:
     """
     
     Takes a sequence and simulation specifications,
@@ -84,13 +85,13 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
     # Getting conditions and residue data
     if verbose:
         print(f"[{dt.now()}] Preparing simulation with '{cond}' conditions")
-    condition = conditions[cond]
+    condition = conditions.loc[cond]
 
     # Formating terminal residues as special residue types
     sequence, residues = format_terminal_res(sequence)
 
     # Setting CALVADOS model
-    assert vmodel in [0, 1, 2], "Must between CALVADOS model 1, 2, or 3!"
+    assert vmodel in [1, 2, 3], "Must between CALVADOS model 1, 2, or 3!"
     residues['AH_lambda'] = residues[f'M{vmodel}']
 
     # Calculating histidine charge based on Henderson-Hasselbalch equation
@@ -116,7 +117,7 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
     top = app.pdbfile.PDBFile(top_path)
 
     # Adding molecular weights
-    for mw in map(lambda aa: residues[aa].MW, sequence):
+    for mw in map(lambda aa: residues.MW[aa], sequence):
         system.addParticle(mw*unit.amu)
     
     # Adding energy terms
@@ -126,17 +127,17 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
 
     # Serialising system
     serialized_system = XmlSerializer.serialize(system)
-    with open('system.xml','w') as file:
+    with open(f'{dir}/system.xml','w') as file:
         file.write(serialized_system)
     
     # Setting integrator and CPU/GPU
     friction = 0.01
     stepsize = 0.010 # 10 fs timestep
-    integrator = openmm.openmm.LangevinIntegrator(condition.temp*unit.kelvin, friction/unit.picosecond, stepsize*unit.picosecond) 
-    platform = openmm.Platform.getPlatformByName(platform)
+    integrator = openmm.LangevinIntegrator(condition.temp*unit.kelvin, friction/unit.picosecond, stepsize*unit.picosecond) 
+    #platform = openmm.Platform.getPlatformByName(platform)
 
     # Initiating simulation object
-    simulation = app.simulation.Simulation(top.topology, system, integrator, platform) #, dict(CudaPrecision='mixed')) 
+    simulation = app.simulation.Simulation(top.topology, system, integrator)#, platform) #, dict(CudaPrecision='mixed')) 
 
     # Checking for checkpoint to start from
     check_point = f'{dir}/restart.chk'
@@ -234,7 +235,7 @@ def generate_save_topology(seq: str, boxlength: float, file_path: str) -> None:
 #·································· M O D E L S ·········································#
 #························································································#
 
-def openmm_harmonic_bond(seq: str|list, r_0=0.38, k=8033) -> simtk.openmm.openmm.HarmonicBondForce:
+def openmm_harmonic_bond(seq: str|list, r_0=0.38, k=8033) -> openmm.HarmonicBondForce:
     """
     
     Sets up a harmonic bond restraint energy term,
@@ -259,13 +260,13 @@ def openmm_harmonic_bond(seq: str|list, r_0=0.38, k=8033) -> simtk.openmm.openmm
     Returns
     -------
 
-        `hb`: `simtk.openmm.openmm.HarmonicBondForce`
+        `hb`: `openmm.HarmonicBondForce`
             An OpenMM HarmonicBondForce object
 
     """
 
     # Initiating model object
-    hb = openmm.openmm.HarmonicBondForce()
+    hb = openmm.HarmonicBondForce()
 
     # Specifying topology indices
     N = len(seq)
@@ -279,7 +280,7 @@ def openmm_harmonic_bond(seq: str|list, r_0=0.38, k=8033) -> simtk.openmm.openmm
 
 
 #························································································#
-def openmm_ashbaugh_hatch(seq: str|list, res: pd.DataFrame, epsilon_factor: float, r_cutoff=4.) -> simtk.openmm.openmm.CustomNonbondedForce:
+def openmm_ashbaugh_hatch(seq: str|list, res: pd.DataFrame, epsilon_factor: float, r_cutoff=4.) -> openmm.CustomNonbondedForce:
     """
     
     Sets up a Ashbaugh-Hatch energy term,
@@ -308,7 +309,7 @@ def openmm_ashbaugh_hatch(seq: str|list, res: pd.DataFrame, epsilon_factor: floa
     Returns
     -------
 
-        `ah`: `simtk.openmm.openmm.CustomNonbondedForce`
+        `ah`: `openmm.CustomNonbondedForce`
             An OpenMM CustomNonbondedForce object of the energy term
 
     """
@@ -316,7 +317,7 @@ def openmm_ashbaugh_hatch(seq: str|list, res: pd.DataFrame, epsilon_factor: floa
     # Initiating model object
     energy_expression = 'select(step(r-2^(1/6)*s),4*epsilon*l*((s/r)^12-(s/r)^6),4*epsilon*((s/r)^12-(s/r)^6)+epsilon*(1-l))'
     parameter_expression = 's=0.5*(s1+s2); l=0.5*(l1+l2)'
-    ah = openmm.openmm.CustomNonbondedForce(energy_expression+';'+parameter_expression)
+    ah = openmm.CustomNonbondedForce(energy_expression+';'+parameter_expression)
 
     # Calculating Lennard-Jones epsilon parameter
     epsilon = ah_parameters(epsilon_factor)
@@ -328,7 +329,7 @@ def openmm_ashbaugh_hatch(seq: str|list, res: pd.DataFrame, epsilon_factor: floa
     ah.addPerParticleParameter('s')
     ah.addPerParticleParameter('l')
     for aa in seq:
-        aa = residues.loc[aa]
+        aa = res.loc[aa]
         ah.addParticle([aa.AH_sigma*unit.nanometer, aa.AH_lambda*unit.dimensionless])
 
     # Excluding neighbour interactions
@@ -337,14 +338,14 @@ def openmm_ashbaugh_hatch(seq: str|list, res: pd.DataFrame, epsilon_factor: floa
         ah.addExclusion(i, i+1)
     
     # Set periodic boundary conditions with specified r_cutoff
-    ah.setNonbondedMethod(openmm.openmm.CustomNonbondedForce.CutoffPeriodic)
+    ah.setNonbondedMethod(openmm.CustomNonbondedForce.CutoffPeriodic)
     ah.setCutoffDistance(r_cutoff*unit.nanometer)
 
     return ah
 
 
 #························································································#
-def openmm_debye_huckel(seq: str|list, res: pd.DataFrame, T: float, c: float, r_cutoff=4.) -> simtk.openmm.openmm.CustomNonbondedForce:
+def openmm_debye_huckel(seq: str|list, res: pd.DataFrame, T: float, c: float, r_cutoff=4.) -> openmm.CustomNonbondedForce:
     """
     
     Sets up a Debye-Hückel energy term,
@@ -376,29 +377,29 @@ def openmm_debye_huckel(seq: str|list, res: pd.DataFrame, T: float, c: float, r_
     Returns
     -------
 
-        `dh`: `simtk.openmm.openmm.CustomNonbondedForce`
+        `dh`: `openmm.CustomNonbondedForce`
             An OpenMM CustomNonbondedForce object of the energy term
 
     """
 
     # Initiating model object
-    energy_expression = 'q*epsilon*(exp(-kappa*r)/r - exp(-kappa*4)/4)'
+    energy_expression = 'q*yukawa_epsilon*(exp(-yukawa_kappa*r)/r - exp(-yukawa_kappa*4)/4)'
     parameter_expression = 'q=q1*q2'
-    dh = openmm.openmm.CustomNonbondedForce(energy_expression+';'+parameter_expression)
+    dh = openmm.CustomNonbondedForce(energy_expression+';'+parameter_expression)
 
     # Calculating the inverse Debye length kappa and
-    # the pDebye-Hückel potential coefficients epsilon
+    # the Debye-Hückel potential coefficients epsilon
     # (Also known as Yukawa kappa/epsilon)
-    kappa, epsilon = dh_parameters(seq, res, T, c)
+    yukawa_kappa, yukawa_epsilon = dh_parameters(T, c)
 
     # Adding global parameters
-    dh.addGlobalParameter('kappa', kappa/unit.nanometer)
-    dh.addGlobalParameter('epsilon', epsilon*unit.nanometer*unit.kilojoules_per_mole)
+    dh.addGlobalParameter('yukawa_kappa', yukawa_kappa/unit.nanometer)
+    dh.addGlobalParameter('yukawa_epsilon', yukawa_epsilon*unit.nanometer*unit.kilojoules_per_mole)
     
     # Specifying position specific parameter q
     dh.addPerParticleParameter('q')
     for aa in seq:
-        aa = residues.loc[aa]
+        aa = res.loc[aa]
         dh.addParticle([aa.q])
 
     # Excluding neighbour interactions
@@ -407,7 +408,7 @@ def openmm_debye_huckel(seq: str|list, res: pd.DataFrame, T: float, c: float, r_
         dh.addExclusion(i, i+1)
     
     # Set periodic boundary conditions with specified r_cutoff
-    dh.setNonbondedMethod(openmm.openmm.CustomNonbondedForce.CutoffPeriodic)
+    dh.setNonbondedMethod(openmm.CustomNonbondedForce.CutoffPeriodic)
     dh.setCutoffDistance(r_cutoff*unit.nanometer)
 
     return dh
@@ -445,7 +446,7 @@ def ah_parameters(epsilon_factor: float) -> float:
 
 
 #························································································#
-def dh_parameters(T: float, c: float) -> tuple(float):
+def dh_parameters(T: float, c: float) -> tuple[float]:
     """
     
     Calculates the Yukawa epsilon and kappa parameters.
@@ -491,12 +492,12 @@ def dh_parameters(T: float, c: float) -> tuple(float):
 
     # Calculating inverse Debye-Hückel length
     # //FIXME Follow up on descrepancy from source code (yukawa_kappa = np.sqrt(8*np.pi*lB*params.ionic*6.022/10))
-    kappa = 1 / D
+    yukawa_kappa = 1 / D
 
     # Calculating the coefficient of the Debye–Hückel equation
-    epsilon = (e**2) / (4*np.pi*eps_0*eps_r)
+    yukawa_epsilon = (e**2) / (4*np.pi*eps_0*eps_r)
 
-    return kappa, epsilon
+    return yukawa_kappa, yukawa_epsilon
 
 
 #························································································#

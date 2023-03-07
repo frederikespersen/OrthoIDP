@@ -1,5 +1,5 @@
 """
-    Simulation
+    Simulate
     --------------------------------------------------------------------------------
 
     Script for running a simulation.
