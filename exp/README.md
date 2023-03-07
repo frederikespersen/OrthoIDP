@@ -9,7 +9,7 @@ Most of the input processes of this directory is orchestrated either on remote s
 ## Contents
 This directory contains:
 - **`initial/`**: Initial test run of 3 variants of 2 human histones to verify histones as a model system
-- **`ortho/`**: [*To be completed*]
+- **`ortho_h1-0/`**: [*To be completed*]
 
 
 Each experiment is structures as:
