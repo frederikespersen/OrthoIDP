@@ -8,5 +8,5 @@ This directory contains:
 - **`src/`**: Source code
 - `Data.ipynb`: Notebook for orchestrating data generation
 - `Analysis.ipynb`: Notebook for analysis of input data and output results
-- `Remote.ipynb`: Notebook for orchestrating work on remote servers
+- `Remote.ipynb`: Notebook for orchestrating work on remote servers (*.gitignored*)
 - `environment.yml`: Conda environment dependencies
