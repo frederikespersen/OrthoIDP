@@ -12,7 +12,7 @@ import pandas as pd
 import mdtraj as md
 import numpy as np
 
-import simulate_utils
+import process_data
 
 
 #························································································#
@@ -45,7 +45,7 @@ def calculate_rg(seq: str|list, traj: md.Trajectory) -> np.ndarray:
     """
 
     # Recreating sequence and residue-type data
-    seq, res = simulate_utils.format_terminal_res(seq)
+    seq, res = process_data.format_terminal_res(seq)
 
     # Getting molecular weights for sequence
     mass = np.array([res.loc[aa, 'MW'] for aa in seq])
