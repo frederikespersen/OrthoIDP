@@ -19,7 +19,7 @@ import process_data
 #······························ T R A J E C T O R Y ·····································#
 #························································································#
 
-def calculate_rg(seq: str|list, traj: md.Trajectory) -> np.ndarray:
+def compute_rg(seq: str|list, traj: md.Trajectory) -> np.ndarray:
     """
     
     Takes a trajectory and the original sequence for the simulation,
