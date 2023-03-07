@@ -71,8 +71,7 @@ if source_path is None:
 sys.path.append(source_path)
 
 # Importing source code
-#from simulate_utils import simulate
-from conditions import conditions
+from simulate_utils import simulate
 from process_data import read_fasta
 
 #························································································#
