@@ -23,7 +23,7 @@ conditions = pd.DataFrame(
         "ionic":0.2
     }
 ]
-)
+).set_index('name')
 """
 
 A DataFrame containing standard condition setups.
