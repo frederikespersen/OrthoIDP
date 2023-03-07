@@ -1,8 +1,8 @@
 """
-    Analyse_data
+    Analyse_utils
     --------------------------------------------------------------------------------
 
-    Utils for analysing sequences prior to simulation.
+    Utils for analysis.
 
     --------------------------------------------------------------------------------
 """
@@ -11,9 +11,11 @@
 import json
 import pandas as pd
 from localcider.sequenceParameters import SequenceParameters
+import mdtraj as md
+import numpy as np
 
 from residues import residues
-import process_data
+import data_utils
 
 
 #························································································#
@@ -288,6 +290,95 @@ def average_sequence(seqs: list|pd.Series) -> str:
     avg = ''
     for aa, c in counts.items():
         avg += aa * round(c)
-    avg = process_data.shuffle_seq(avg, seed=1)
+    avg = data_utils.shuffle_seq(avg, seed=1)
 
     return avg
+
+
+#························································································#
+#······························ T R A J E C T O R Y ·····································#
+#························································································#
+
+def compute_rg(seq: str|list, traj: md.Trajectory) -> np.ndarray:
+    """
+    
+    Takes a trajectory and the original sequence for a simulation,
+    returns the radius of gyration for each frame.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+    
+        `seq`: `str|list``
+            The sequence for the trajectory
+
+        `traj`: `md.Trajectory``
+            An OpenMM Trajectory object
+
+    Returns
+    -------
+
+        `rg`: `np.ndarray`
+            An array of radius of gyration value for each frame
+
+    """
+
+    # Recreating sequence and residue-type data
+    seq, res = data_utils.format_terminal_res(seq)
+
+    # Getting molecular weights for sequence
+    mass = np.array([res.loc[aa, 'MW'] for aa in seq])
+
+    # Creating mass-frame matrix (I.e. sequence molecular weights for each frame)
+    framemass = np.tile(mass, (traj.n_frames, 1))
+
+    # Calculate and return a Rg Series
+    rg = md.compute_rg(traj, framemass)
+
+    return rg
+
+#························································································#
+def compute_distances(traj: md.Trajectory) -> tuple[np.ndarray]:
+    """
+    
+    Takes a trajectory for a simulation,
+    returns the distance between all residue pairs for each frame and
+    a mask array for non-bonded pairs.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `traj`: `md.Trajectory``
+            An OpenMM Trajectory object
+
+    Returns
+    -------
+
+        `distances`: `np.ndarray`
+            An array of distances between all residue; Dimensions: (`frame`, `pair`)
+
+        `mask`: `np.array`
+            A mask array for whether a pair is bonded
+
+    """
+
+    # Selecting all pairs of residues
+    pairs = traj.top.select_pairs('all','all')
+
+    # Finding pairs that corresponds to bonds (difference of ID number in [-1,0,1]) (Not used for AH- and DH-potentials)
+    mask = np.abs(pairs[:,0]-pairs[:,1]) > 1
+    pairs = pairs[mask]
+
+    # Computing pairs between distances over trajectory
+    distances = md.compute_distances(traj, pairs).astype(np.float32)
+
+    # Setting threshold for distances for energy calculations
+    distance_threshold = 4.
+    distances[distances > distance_threshold] = np.inf
+
+    return distances, mask
+
+#························································································#

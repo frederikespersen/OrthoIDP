@@ -15,7 +15,7 @@ import numpy as np
 
 from residues import residues
 from conditions import conditions
-from process_data import format_terminal_res
+from data_utils import format_terminal_res
 
 import mdtraj as md
 from openmm import openmm

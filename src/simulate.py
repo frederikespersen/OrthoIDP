@@ -72,7 +72,7 @@ sys.path.append(source_path)
 
 # Importing source code
 from simulate_utils import simulate
-from process_data import read_fasta
+from data_utils import read_fasta
 
 #························································································#
 
