@@ -11,7 +11,7 @@
 #SBATCH --job-name=sim
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH -t 500:00:00
+#SBATCH -t <walltime-hours>:00:00
 #SBATCH -o out
 #SBATCH -e err
 #SBATCH --partition=<partition>
