@@ -15,4 +15,4 @@ This directory contains:
 - `analyse_data.py`: Script for analysing input data
 - `analyse_results.py`: Script for analysing output results
 - **`templates/`**: Templates to fill out for submitting simulations
-    - `run_simulate.sh`: **Template** Shell script for submitting a simulation with Slur
+    - `run_simulate.sh`: **Template** Shell script for submitting a simulation with Slurm
