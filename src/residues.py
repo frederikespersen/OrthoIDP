@@ -317,7 +317,7 @@ Fields
 
     `AH_lambda`: `float`
         Lambda parameter in Ashbaugh-Hatch potential interactions quantifying residue hydrophobicity [];
-        Switched out by CALVADOS parameters M1, M2, or M3
+        Default set to M1 Calvados parameters
 
     `AH_sigma`: `float`
         Sigma parameter in Ashbaugh-Hatch potential interactions quantifying residue size [nm]
@@ -332,7 +332,7 @@ Fields
         Lambda parameter in HPS-Urry model []
 
     `AVG`: `float`
-        TODO ??? [?]
+        Average lambda parameter from 81 sets []
 
     `M1`: `float`
         CALVADOS "stickyness" parameter for Ashbaugh-Hatch potential lambda value (Version 1) []
@@ -344,3 +344,8 @@ Fields
         CALVADOS "stickyness" parameter for Ashbaugh-Hatch potential lambda value (Version 3) []
 
 """
+
+#························································································#
+
+if __name__ == '__main__':
+    print(residues)

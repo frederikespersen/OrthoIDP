@@ -56,3 +56,8 @@ Fields
         The ionic strength of the solution [mM]
 
 """
+
+#························································································#
+
+if __name__ == '__main__':
+    print(conditions)
