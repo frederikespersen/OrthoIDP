@@ -7,9 +7,9 @@ This directory contains utility scripts for both data orchestration, analysis, a
 This directory contains:
 - `data_utils.py`: Script for generating input data
 - `analyse_utils.py`: Script for analysis
-- `simulate.py`: Python script for submitting a simulation
+- `simulate.py`: Script for submitting a simulation
 - `simulate_utils.py`: Utilitary functions for `simulate.py`
-- `evolve.py`: Python script for submitting an evolution
+- `evolve.py`: Script for submitting an evolution
 - `evolve_utils.py`: Utilitary functions for `evolve.py`
 - `residues.py`: Residue-level data and parameters as a Python object
 - `conditions.py`: Standard condition sets foorsimulatin as a Python object
