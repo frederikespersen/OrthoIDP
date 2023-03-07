@@ -60,7 +60,7 @@ def read_fasta(path: str, just_seq: bool=False) -> dict|str|list:
         if line[0] == '>':
 
             # Setting ID for subsequent sequence
-            id = line[1:]
+            id = line[1:].split(' ')[0]
             seqs[id] = ''
 
         # Finding sequences
