@@ -58,14 +58,12 @@ def read_fasta(path: str, just_seq: bool=False) -> dict|str|list:
 
         # Finding IDs
         if line[0] == '>':
-
             # Setting ID for subsequent sequence
             id = line[1:].split(' ')[0]
             seqs[id] = ''
 
         # Finding sequences
         else:
-
             # Appending to last ID
             seqs[id] += line
     
@@ -74,9 +72,7 @@ def read_fasta(path: str, just_seq: bool=False) -> dict|str|list:
 
         # As list
         seqs = list(seqs.values())
-
         if len(seqs) == 1:
-            
             # As string
             seqs = seqs[0]
 
@@ -414,8 +410,8 @@ def shuffle_seq(seq: str, seed=None) -> str:
     Parameters
     ----------
 
-        `seq`: 
-            `str`Sequence to be shuffled
+        `seq`: `str`
+            Sequence to be shuffled
     
         `seed`: `int`
             Seed for random event
