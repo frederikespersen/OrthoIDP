@@ -28,7 +28,7 @@ from openmm import XmlSerializer
 #······························ S I M U L A T I O N ·····································#
 #························································································#
 
-def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int=1000, cond: str='default', vmodel: int=3, platform=None, stride: int=1000, verbose=True) -> None:
+def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int=1000, cond: str='default', vmodel: int=1, platform=None, stride: int=1000, verbose=True) -> None:
     """
     
     Takes a sequence and simulation specifications,
