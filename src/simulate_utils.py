@@ -15,6 +15,7 @@ import numpy as np
 
 from residues import residues
 from conditions import conditions
+from process_data import format_terminal_res
 
 import mdtraj as md
 from simtk import openmm, unit
@@ -185,56 +186,6 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
 #····························· P R E P A R A T I O N ····································#
 #························································································#
 
-def format_terminal_res(seq: str|list, res: pd.DataFrame=residues.copy()):
-    """
-    
-    Takes a sequence and a `residues` DataFrame, modifies the sequence with special terminal residue types 'X' and 'Z'
-    for the N- and C-terminal respectively.
-    Returns the modified sequence and the modified `residues` DataFrame.
-
-    --------------------------------------------------------------------------------
-
-    Parameters
-    ----------
-
-        `seq`: `str|list`
-            An amino acid sequence
-
-        `res`: `pandas.DataFrame`
-            A `residues` DataFrame
-
-    Returns
-    -------
-
-        `seq`: `str`
-            The modified sequence with terminal 'X'/'Z' residues
-
-        `res`: `pandas.DataFrame`
-            A modified `residues` DataFrame with 'X'/'Z' residue types
-
-    """
-
-    # Gettning standard residue data
-    res = res.set_index('one')
-
-    # Adding new residue types, and using original terminal residues as templates
-    res.loc['X'] = res.loc[seq[0]].copy()
-    res.loc['Z'] = res.loc[seq[-1]].copy()
-    res.loc['X','MW'] += 2
-    res.loc['Z','MW'] += 16
-    res.loc['X','q'] += 1
-    res.loc['Z','q'] -= 1
-
-    # Modfiying sequence
-    seq = list(seq)
-    seq[0] = 'X'
-    seq[-1] = 'Z'
-    seq = str(seq)
-
-    return seq, res
-
-
-#························································································#
 def generate_save_topology(seq: str, boxlength: float, file_path: str) -> None:
     """
     
@@ -532,7 +483,8 @@ def dh_parameters(T: float, c: float) -> tuple(float):
     eps_r = 5321*(T**-1) + 233.76 - 0.9297*(T) + 0.1417*1e-2*(T**2) - 0.8292*1e-6*(T**3) # [unitless] | Emperical scalar
 
     # Calculating Bjerrum length
-    B = 1e9 * N_A * (e**2) / (4*pi*eps_0*eps_r*R*T) # nm
+    B = N_A * (e**2) / (4*pi*eps_0*eps_r*R*T) # m
+    B *= 1e9 # nm
 
     # Calculating Debye-Hückel length
     D = 1 / np.sqrt(8*pi*B*c) # 

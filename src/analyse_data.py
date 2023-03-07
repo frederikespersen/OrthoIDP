@@ -12,6 +12,8 @@ import json
 import pandas as pd
 from localcider.sequenceParameters import SequenceParameters
 
+from residues import residues
+
 
 #························································································#
 #································· G E N E R A L ········································#
@@ -106,6 +108,46 @@ amino_acids = ['A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 
 """
 
 A list of the one-letter codes of the naturally occuring amino acids.
+
+"""
+
+
+#························································································#
+amino_acid_types = {
+    'A': 'Hydrophobic',
+    'C': 'Polar',
+    'D': 'Negative',
+    'E': 'Negative',
+    'F': 'Hydrophobic',
+    'G': 'Special',
+    'H': 'Polar',
+    'I': 'Hydrophobic',
+    'K': 'Positive',
+    'L': 'Hydrophobic',
+    'M': 'Hydrophobic',
+    'N': 'Polar',
+    'P': 'Special',
+    'Q': 'Polar',
+    'R': 'Positive',
+    'S': 'Polar',
+    'T': 'Polar',
+    'V': 'Hydrophobic',
+    'W': 'Hydrophobic',
+    'Y': 'Polar'
+}
+"""
+
+A dict of the general types (Hydrophobic, Polar, Positive, Negative, Special) of amino acids.
+
+--------------------------------------------------------------------------------
+
+Schema
+------
+
+    `<AA>`: One-letter code for amino acid
+
+        `<type>`: The general type of the amino acid
+
 
 """
 
