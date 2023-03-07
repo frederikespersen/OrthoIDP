@@ -1,8 +1,7 @@
 # Byte-compiled / optimized files
 __pycache__/
 
-# Data
-exp/*/data/
+# Heavy files
 exp/*/results/
 
 # Secrets
