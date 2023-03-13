@@ -13,7 +13,7 @@ from datetime import datetime as dt
 import pandas as pd
 import numpy as np
 
-from utils import log
+from utils import log as logger
 from residues import residues
 from conditions import conditions
 
@@ -26,7 +26,7 @@ from simtk.openmm import app, XmlSerializer
 #······························ S I M U L A T I O N ·····································#
 #························································································#
 
-def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int=1000, cond: str='default', vmodel: int=1, platform=None, stride: int=1000, verbose=True) -> None:
+def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int=1000, cond: str='default', vmodel: int=1, platform=None, stride: int=1000, verbose=True, log=False) -> None:
     """
     
     Takes a sequence and simulation specifications,
@@ -74,15 +74,19 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
         `verbose`: `bool`
             Whether to print log messages to stdout
 
+        `log`: `bool`
+            Whether to write log messages to `<dir>/simulate.log`
+
     """
     
     if verbose:
-        print(f"SIMULATION '{dir}' ")
-        print(f"Sequence: {sequence}")
+        log = logger(write=log, print=verbose, file=f'{dir}/simulate.log')
+        log.message(f"SIMULATION '{dir}' ")
+        log.message(f"Sequence: {sequence}")
 
     # Getting conditions and residue data
     if verbose:
-        print(f"[{dt.now()}] Preparing simulation with '{cond}' conditions")
+        log.message(f"[{dt.now()}] Preparing simulation with '{cond}' conditions")
     condition = conditions.loc[cond]
 
     # Formating terminal residues as special residue types
@@ -141,7 +145,7 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
     check_point = f'{dir}/restart.chk'
     if os.path.isfile(check_point):
         if verbose:
-            print(f"[{dt.now()}] Reading from check point file '{check_point}'")
+            log.message(f"[{dt.now()}] Reading from check point file '{check_point}'")
         simulation.loadCheckpoint(check_point)
         simulation.reporters.append(app.dcdreporter.DCDReporter(f'{dir}/pretraj.dcd', stride, append=True))
         eqsteps = 0
@@ -149,7 +153,7 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
     # Else start from scratch
     else:
         if verbose:
-            print(f"[{dt.now()}] Starting from scratch")
+            log.messagelog.message(f"[{dt.now()}] Starting from scratch")
         simulation.context.setPositions(top.positions)
         simulation.minimizeEnergy()
         simulation.reporters.append(app.dcdreporter.DCDReporter(f'{dir}/pretraj.dcd', stride))
@@ -167,17 +171,17 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
 
     # Running simulation
     if verbose:
-        print(f"[{dt.now()}] Running simulation of {steps * stepsize * 1000} ns")
+        log.message(f"[{dt.now()}] Running simulation of {steps * stepsize * 1000} ns")
     simulation.step(steps)
 
     # Saving final checkpoint
     if verbose:
-        print(f"[{dt.now()}] Saving check point in '{check_point}'")
+        log.message(f"[{dt.now()}] Saving check point in '{check_point}'")
     simulation.saveCheckpoint(check_point)
 
     # Generating trajectory without equilibration
     if verbose:
-        print(f"[{dt.now()}] Saving formatted trajectory in '{dir}/traj.dcd'", "\n")
+        log.message(f"[{dt.now()}] Saving formatted trajectory in '{dir}/traj.dcd'", "\n")
     save_dcd(traj_path=f'{dir}/pretraj.dcd', top_path=f'{dir}/top.pdb', file_path=f'{dir}/traj.dcd', eqsteps=eqsteps)
 
 

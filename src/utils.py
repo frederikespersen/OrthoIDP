@@ -9,34 +9,72 @@
 
 
 #························································································#
-def log(message: str, logfile='log.log', header=False) -> None:
+class log():
     """
-    
-    Takes a message, writes it to a log file.
-
-    --------------------------------------------------------------------------------
-
-    Parameters
-    ----------
-
-        `message`: `str`
-            A string to output to a log file
-
-        `logfile`: `str`
-            The path to the log file to output to
-
-        `header`: `bool``
-            Whether the logged message is a header, which will add a line beneath it
-    
+    A simple class for logging.
     """
 
-    # Writing to log file
-    with open(logfile, 'a+') as file:
-        file.write(message + '\n')
+    def __init__(self, write: bool, print: bool, file: str='log.log') -> None:
+        """
 
-        # Creating line for header
-        if header:
-            file.write('\n' + '-'*len(message) + '\n')
+        Takes arguments for whether to write outputs to file and/or print to stdout, as well as a filepath to write log to.
+
+        --------------------------------------------------------------------------------
+
+        Parameters
+        ----------
+
+            `write`: `bool`
+                Wether to write log messages to a file (`file`)
+
+            `print`: `bool`
+                Wether to print log messages to stdout
+
+            `file`: `str`
+                Which file to write log messages to (if `write = True`)
+
+        """
+
+        # Sets attributes
+        self.write = write
+        self.print = print
+        self.logfile = file
+    
+    def message(self, message: str, header: bool=False) -> None:
+        """
+
+        Takes a message, logs it according to object settings.
+
+        --------------------------------------------------------------------------------
+
+        Parameters
+        ----------
+
+            `message`: `str`
+                Message to log.
+
+            `header`: `bool`
+                Whether to treat the message like a header (new paragraph, underlined)
+
+        """
+
+        # Printing
+        if self.print:
+            print(message)
+        
+        # Writing
+        if self.write:
+
+            # Writing to log file
+            with open(self.logfile, 'a+') as file:
+
+                if header:
+                    print('\n')
+
+                file.write(message + '\n')
+
+                if header:
+                    file.write('-'*len(message) + '\n')
 
 
 #························································································#
