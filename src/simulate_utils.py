@@ -506,7 +506,7 @@ def dh_parameters(T: float, c: float) -> tuple[float]:
             Absolute temperature [°K]
 
         `c`: `float`
-            Ionic strength of the solution [mM]
+            Ionic strength of the solution [M]
 
     Returns
     -------
@@ -540,7 +540,8 @@ def dh_parameters(T: float, c: float) -> tuple[float]:
     yukawa_kappa = 1 / D
 
     # Calculating the coefficient of the Debye–Hückel equation
-    yukawa_epsilon = (e**2) / (4*np.pi*eps_0*eps_r)
+    yukawa_epsilon = N_A * (e**2) / (4*np.pi*eps_0*eps_r) # m·J/mol
+    yukawa_epsilon *= 10**6 # nm·kJ/mol
 
     return yukawa_kappa, yukawa_epsilon
 

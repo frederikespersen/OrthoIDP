@@ -53,7 +53,7 @@ Fields
         The solvent pH []
     
     `ionic`: `float`
-        The ionic strength of the solution [mM]
+        The ionic strength of the solution [M]
 
 """
 
