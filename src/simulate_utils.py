@@ -79,14 +79,12 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
 
     """
     
-    if verbose:
-        log = logger(write=log, print=verbose, file=f'{dir}/simulate.log')
-        log.message(f"SIMULATION '{dir}' ")
-        log.message(f"Sequence: {sequence}")
+    log = logger(write=log, print=verbose, file=f'{dir}/simulate.log')
+    log.message(f"SIMULATION '{dir}' ")
+    log.message(f"Sequence: {sequence}")
 
     # Getting conditions and residue data
-    if verbose:
-        log.message(f"[{dt.now()}] Preparing simulation with '{cond}' conditions")
+    log.message(f"[{dt.now()}] Preparing simulation with '{cond}' conditions")
     condition = conditions.loc[cond]
 
     # Formating terminal residues as special residue types
@@ -144,16 +142,14 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
     # Checking for checkpoint to start from
     check_point = f'{dir}/restart.chk'
     if os.path.isfile(check_point):
-        if verbose:
-            log.message(f"[{dt.now()}] Reading from check point file '{check_point}'")
+        log.message(f"[{dt.now()}] Reading from check point file '{check_point}'")
         simulation.loadCheckpoint(check_point)
         simulation.reporters.append(app.dcdreporter.DCDReporter(f'{dir}/pretraj.dcd', stride, append=True))
         eqsteps = 0
     
     # Else start from scratch
     else:
-        if verbose:
-            log.messagelog.message(f"[{dt.now()}] Starting from scratch")
+        log.messagelog.message(f"[{dt.now()}] Starting from scratch")
         simulation.context.setPositions(top.positions)
         simulation.minimizeEnergy()
         simulation.reporters.append(app.dcdreporter.DCDReporter(f'{dir}/pretraj.dcd', stride))
@@ -170,18 +166,15 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
         separator='\t'))
 
     # Running simulation
-    if verbose:
-        log.message(f"[{dt.now()}] Running simulation of {steps * stepsize * 1000} ns")
+    log.message(f"[{dt.now()}] Running simulation of {steps * stepsize * 1000} ns")
     simulation.step(steps)
 
     # Saving final checkpoint
-    if verbose:
-        log.message(f"[{dt.now()}] Saving check point in '{check_point}'")
+    log.message(f"[{dt.now()}] Saving check point in '{check_point}'")
     simulation.saveCheckpoint(check_point)
 
     # Generating trajectory without equilibration
-    if verbose:
-        log.message(f"[{dt.now()}] Saving formatted trajectory in '{dir}/traj.dcd'", "\n")
+    log.message(f"[{dt.now()}] Saving formatted trajectory in '{dir}/traj.dcd'", "\n")
     save_dcd(traj_path=f'{dir}/pretraj.dcd', top_path=f'{dir}/top.pdb', file_path=f'{dir}/traj.dcd', eqsteps=eqsteps)
 
 
