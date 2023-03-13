@@ -5,6 +5,7 @@ This directory contains utility scripts for both data orchestration, analysis, a
 
 ## Contents
 This directory contains:
+- `utils.py`: Script with general utils
 - `data_utils.py`: Script for generating input data
 - `analyse_utils.py`: Script for analysis
 - `simulate.py`: Script for submitting a simulation
