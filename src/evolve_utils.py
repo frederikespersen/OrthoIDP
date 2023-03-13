@@ -8,5 +8,5 @@
 """
 
 
-from utils import *
+from utils import log
 from residues import residues

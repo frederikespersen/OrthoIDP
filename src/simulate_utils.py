@@ -13,7 +13,7 @@ from datetime import datetime as dt
 import pandas as pd
 import numpy as np
 
-from utils import *
+from utils import log
 from residues import residues
 from conditions import conditions
 
