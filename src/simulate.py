@@ -25,10 +25,6 @@ parser.add_argument('-f', '--fasta',
                     type=str,
                     required=True,
                     help="path to FASTA file with sequence to simulate")
-parser.add_argument('-p', '--platform',
-                    type=str,
-                    required=True,
-                    help="computional platform to use (i.e. CUDA)")
 parser.add_argument('-b', '--boxlength',
                     type=float,
                     required=False,
@@ -48,6 +44,11 @@ parser.add_argument('-n', '--steps',
                     required=False,
                     default=202000000,
                     help="the number of timesteps [10 fs] to run the simulation for (default: 202000000)")
+parser.add_argument('-p', '--platform',
+                    type=str,
+                    required=False,
+                    default='CUDA',
+                    help="computional platform to use (default: CUDA)")
 parser.add_argument('-s', '--source',
                     type=str,
                     required=False,
