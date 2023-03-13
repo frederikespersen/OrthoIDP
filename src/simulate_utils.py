@@ -65,7 +65,7 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
 
         `platform`: `str`
             Platform name to use for `openmm.Platform.getPlatformByName()`; 
-            TODO Specifies use of CPU (`?`) or GPU (`CUDA`)
+            Specifies use of CPU or GPU (`CUDA`)
 
         `stride`: `int`
             The frame sampling frequency; 
@@ -484,7 +484,7 @@ def ah_parameters(epsilon_factor: float) -> float:
             The Lennard-Jones epsilon parameter [kJ/mol]
 
     """
-    # TODO Where does this value come from?
+    # TODO Where does this value 4.184 come from?
     lj_epsilon = 4.184 * epsilon_factor
 
     return lj_epsilon
@@ -506,13 +506,13 @@ def dh_parameters(T: float, c: float) -> tuple[float]:
             Absolute temperature [°K]
 
         `c`: `float`
-            Ionic strength of the solution [M]
+            Ionic strength of the solution [M]/[mol/L]
 
     Returns
     -------
 
         `kappa`: `float`
-            TODO The inverse Debye-Hückel length [?]; 
+            The inverse Debye-Hückel length [1/nm]; 
             used for the scaling of the exponential term in the Debye-Hückel equation
 
         `epsilon`: `float`
@@ -522,7 +522,7 @@ def dh_parameters(T: float, c: float) -> tuple[float]:
 
     # Setting constants
     e = 1.6021766e-19       # C             | Elementary charge
-    R = 8.3145e-3           # kJ/(mol·°K)   | Ideal gas constant
+    R = 8.3145              # J/(mol·°K)    | Ideal gas constant
     N_A = 6.0221408e+23     # 1/mol         | Avogadro's constant
     eps_0 = 8.854188e-12    # F/m           | Vacuum permittivity
     pi = np.pi
@@ -530,14 +530,14 @@ def dh_parameters(T: float, c: float) -> tuple[float]:
 
     # Calculating Bjerrum length
     B = N_A * (e**2) / (4*pi*eps_0*eps_r*R*T) # m
-    B *= 1e9 # nm
+    B *= 1e9 # nm (from m)
 
     # Calculating Debye-Hückel length
-    D = 1 / np.sqrt(8*pi*B*c) # 
+    c *= 10**-24 # mol/nm^3 (from mol/dm^3)
+    D = 1 / np.sqrt(8*pi*B*N_A*c) # nm 
 
     # Calculating inverse Debye-Hückel length
-    # //FIXME Follow up on descrepancy from source code (yukawa_kappa = np.sqrt(8*np.pi*lB*params.ionic*6.022/10))
-    yukawa_kappa = 1 / D
+    yukawa_kappa = 1 / D # 1/nm
 
     # Calculating the coefficient of the Debye–Hückel equation
     yukawa_epsilon = N_A * (e**2) / (4*np.pi*eps_0*eps_r) # m·J/mol
