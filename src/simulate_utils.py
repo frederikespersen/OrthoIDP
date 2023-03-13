@@ -17,10 +17,8 @@ from residues import residues
 from conditions import conditions
 
 import mdtraj as md
-from openmm import openmm
-from openmm import unit
-from openmm import app
-from openmm import XmlSerializer
+from simtk import openmm, unit
+from simtk.openmm import app, XmlSerializer
 
 
 #························································································#
