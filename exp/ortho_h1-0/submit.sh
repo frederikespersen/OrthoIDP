@@ -15,13 +15,8 @@
 input_files=($(ls data/*.fasta))
 input_file=${input_files[$SLURM_ARRAY_TASK_ID]}
 
-echo ""
-echo "========= Started job $SLURM_ARRAY_TASK_ID  at `date` =========="
-echo ""
-
 # Displaying job info
-echo "[`date`] Job Array ID / Job ID / Input: $SLURM_ARRAY_TASK_ID / $SLURM_JOB_ID / $input_file"
-
+echo "[`date`] STARTED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file"
 
 # DeiC env settings
 source /groups/sbinlab/fpesce/.bashrc
@@ -30,6 +25,4 @@ conda activate openmm
 # Submitting simulation
 python ../../src/simulate.py -f $input_file
 
-echo ""
-echo "========= Finished job $SLURM_ARRAY_TASK_ID at `date` =========="
-echo ""
+echo "[`date`] FINISHED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file"
