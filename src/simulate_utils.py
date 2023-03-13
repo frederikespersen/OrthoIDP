@@ -15,13 +15,72 @@ import numpy as np
 
 from residues import residues
 from conditions import conditions
-from data_utils import format_terminal_res
 
 import mdtraj as md
 from openmm import openmm
 from openmm import unit
 from openmm import app
 from openmm import XmlSerializer
+
+
+#························································································#
+#··································· G E N E R A L  ·····································#
+#························································································#
+
+def read_fasta(path: str, just_seq: bool=False) -> dict|str|list:
+    """
+    
+    Takes a path to a FASTA file, returns the sequence(s) contained herein.
+    
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `path`: `str`
+            A path to a readable FASTA file
+
+        `just_seq`: `bool`
+            Whether to return a dict of ID(s) and sequence(s) (default, `False`) or just the sequence(s) (`True`)
+
+    Returns
+    -------
+
+        `seqs`: `dict|str|list`
+            The sequences of the FASTA file, either in a dict with ID(s) as key(s) or as s string (one sequence) / list (several sequences)
+        
+    """
+
+    # Reading file
+    with open(path, 'r') as fasta:
+        lines = [line.strip() for line in fasta.readlines()]
+    
+    # Looping over file lines
+    seqs = {}
+    id = ''
+    for line in lines:
+
+        # Finding IDs
+        if line[0] == '>':
+            # Setting ID for subsequent sequence
+            id = line[1:].split(' ')[0]
+            seqs[id] = ''
+
+        # Finding sequences
+        else:
+            # Appending to last ID
+            seqs[id] += line
+    
+    # Formatting results:
+    if just_seq:
+
+        # As list
+        seqs = list(seqs.values())
+        if len(seqs) == 1:
+            # As string
+            seqs = seqs[0]
+
+    return seqs
 
 
 #························································································#
@@ -187,6 +246,56 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
 #····························· P R E P A R A T I O N ····································#
 #························································································#
 
+def format_terminal_res(seq: str|list, res: pd.DataFrame=residues.copy()):
+    """
+    
+    Takes a sequence and a `residues` DataFrame, modifies the sequence with special terminal residue types 'X' and 'Z'
+    for the N- and C-terminal respectively.
+    Returns the modified sequence and the modified `residues` DataFrame.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `seq`: `str|list`
+            An amino acid sequence
+
+        `res`: `pandas.DataFrame`
+            A `residues` DataFrame
+
+    Returns
+    -------
+
+        `seq`: `str`
+            The modified sequence with terminal 'X'/'Z' residues
+
+        `res`: `pandas.DataFrame`
+            A modified `residues` DataFrame with 'X'/'Z' residue types
+
+    """
+
+    # Gettning standard residue data
+    res = res.set_index('one')
+
+    # Adding new residue types, and using original terminal residues as templates
+    res.loc['X'] = res.loc[seq[0]].copy()
+    res.loc['Z'] = res.loc[seq[-1]].copy()
+    res.loc['X','MW'] += 2
+    res.loc['Z','MW'] += 16
+    res.loc['X','q'] += 1
+    res.loc['Z','q'] -= 1
+
+    # Modfiying sequence
+    seq = list(seq)
+    seq[0] = 'X'
+    seq[-1] = 'Z'
+    seq = ''.join(seq)
+
+    return seq, res
+
+
+#························································································#
 def generate_save_topology(seq: str, boxlength: float, file_path: str) -> None:
     """
     
