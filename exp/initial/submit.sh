@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=initial
-#SBATCH --partition=qgpu
+#SBATCH --partition=sbinlab_gpu
 #SBATCH --array=0-5%6
 #SBATCH --nodes=6
 #SBATCH --cpus-per-task=1
-#SBATCH --gres=gpu:v100:1
+#SBATCH --gres=gpu:1
 #SBATCH -t 24:00:00
 #SBATCH -o results/out
 #SBATCH -e results/err
