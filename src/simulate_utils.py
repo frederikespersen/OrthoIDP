@@ -34,7 +34,7 @@ residues['AH_lambda'] = residues[f'M2']
 #························································································#
 #······························ S I M U L A T I O N ·····································#
 #························································································#
-def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int=1000, cond: str='default', platform=None, stride: int=3000, verbose=True, log=False) -> None:
+def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int=1000,cond: str='default', platform=None, stride: int=3000, verbose=True, log=False, savechk=False) -> None:
     """
     
     Takes a sequence and simulation specifications,
@@ -80,6 +80,9 @@ def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqste
 
         `log`: `bool`
             Whether to write log messages to `<dir>/simulate.log`
+
+        `savechk`: `bool`
+            Whether to save a checkpoint after the simulation ends
 
     """
     
@@ -170,8 +173,9 @@ def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqste
     simulation.step(steps)
 
     # Saving final checkpoint
-    log.message(f"[{dt.now()}] Saving check point in '{check_point}'")
-    simulation.saveCheckpoint(check_point)
+    if savechk:
+        log.message(f"[{dt.now()}] Saving check point in '{check_point}'")
+        simulation.saveCheckpoint(check_point)
 
     # Generating trajectory without equilibration
     log.message(f"[{dt.now()}] Saving formatted trajectory in '{dir}/traj.dcd'", "\n")
