@@ -78,7 +78,7 @@ class log():
 
 
 #························································································#
-def read_fasta(path: str, just_seq: bool=False) -> dict|str|list:
+def read_fasta(path: str, just_seq: bool=False):
     """
     
     Takes a path to a FASTA file, returns the sequence(s) contained herein.
