@@ -1,6 +1,8 @@
 name: orthoidp
 channels:
+  - conda-forge
   - defaults
+channel_priority: strict
 dependencies:
   - pandas
   - matplotlib
