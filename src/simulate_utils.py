@@ -23,10 +23,18 @@ from simtk.openmm import app, XmlSerializer
 
 
 #························································································#
-#······························ S I M U L A T I O N ·····································#
+#································ C A L V A D O S ·······································#
 #························································································#
 
-def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int=1000, cond: str='default', vmodel: int=1, platform=None, stride: int=1000, verbose=True, log=False) -> None:
+# CALVADOS 2 model is default
+r_cutoff = 2.4 # nm
+residues['AH_lambda'] = residues[f'M2']
+
+
+#························································································#
+#······························ S I M U L A T I O N ·····································#
+#························································································#
+def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int=1000, cond: str='default', platform=None, stride: int=1000, verbose=True, log=False) -> None:
     """
     
     Takes a sequence and simulation specifications,
@@ -59,10 +67,6 @@ def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqste
         `cond`: `str`
             The standard conditions to run the simulation with; see `conditions` for choices.
 
-        `vmodel`: `int`
-            The version of the CALVADOS "stickyness" parameter set to use for Ashbaugh-Hatch model lambda parameter;
-            Available versions: (1, 2, 3)
-
         `platform`: `str`
             Platform name to use for `openmm.Platform.getPlatformByName()`; 
             Specifies use of CPU or GPU (`CUDA`)
@@ -80,8 +84,8 @@ def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqste
     """
     
     log = logger(write=log, print=verbose, file=f'{dir}/simulate.log')
-    log.message(f"SIMULATION '{dir}' ")
-    log.message(f"Sequence: {sequence}")
+    log.message(f"[{dt.now()}] SIMULATION '{dir}' ")
+    log.message(f"[{dt.now()}] Sequence: {sequence}")
 
     # Getting conditions and residue data
     log.message(f"[{dt.now()}] Preparing simulation with '{cond}' conditions")
@@ -89,10 +93,6 @@ def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqste
 
     # Formating terminal residues as special residue types
     sequence, residues = format_terminal_res(sequence)
-
-    # Setting CALVADOS model
-    assert vmodel in [1, 2, 3], "Must between CALVADOS model 1, 2, or 3!"
-    residues['AH_lambda'] = residues[f'M{vmodel}']
 
     # Calculating histidine charge based on Henderson-Hasselbalch equation
     H_pKa = 6
@@ -166,7 +166,7 @@ def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqste
         separator='\t'))
 
     # Running simulation
-    log.message(f"[{dt.now()}] Running simulation of {steps * stepsize * 1000} ns")
+    log.message(f"[{dt.now()}] Running simulation of {steps * stepsize * 1000} ns ({steps} steps)")
     simulation.step(steps)
 
     # Saving final checkpoint
@@ -176,6 +176,7 @@ def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqste
     # Generating trajectory without equilibration
     log.message(f"[{dt.now()}] Saving formatted trajectory in '{dir}/traj.dcd'", "\n")
     save_dcd(traj_path=f'{dir}/pretraj.dcd', top_path=f'{dir}/top.pdb', file_path=f'{dir}/traj.dcd', eqsteps=eqsteps)
+    os.remove(f'{dir}/pretraj.dcd')
 
 
 #························································································#
@@ -325,7 +326,7 @@ def openmm_harmonic_bond(seq, r_0=0.38, k=8033) -> openmm.HarmonicBondForce:
 
 
 #························································································#
-def openmm_ashbaugh_hatch(seq, res: pd.DataFrame, epsilon_factor: float, r_cutoff=4.) -> openmm.CustomNonbondedForce:
+def openmm_ashbaugh_hatch(seq, res: pd.DataFrame, epsilon_factor: float, r_cutoff=r_cutoff) -> openmm.CustomNonbondedForce:
     """
     
     Sets up a Ashbaugh-Hatch energy term,
@@ -390,7 +391,7 @@ def openmm_ashbaugh_hatch(seq, res: pd.DataFrame, epsilon_factor: float, r_cutof
 
 
 #························································································#
-def openmm_debye_huckel(seq, res: pd.DataFrame, T: float, c: float, r_cutoff=4.) -> openmm.CustomNonbondedForce:
+def openmm_debye_huckel(seq, res: pd.DataFrame, T: float, c: float, r_cutoff=r_cutoff) -> openmm.CustomNonbondedForce:
     """
     
     Sets up a Debye-Hückel energy term,
