@@ -2,7 +2,7 @@
 #SBATCH --job-name=initial
 #SBATCH --partition=sbinlab_gpu
 #SBATCH --array=0-5%6
-#SBATCH --nodes=6
+#SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:1
 #SBATCH -t 24:00:00
