@@ -1,5 +1,5 @@
 """
-    OpenMM_Simulate
+    Simulate_OpenMM
     --------------------------------------------------------------------------------
 
     Script for running an OpenMM simulation.
