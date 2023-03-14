@@ -42,8 +42,8 @@ parser.add_argument('-d', '--dir',
 parser.add_argument('-n', '--steps',
                     type=int,
                     required=False,
-                    default=202000000,
-                    help="the number of timesteps [10 fs] to run the simulation for (default: 202000000)")
+                    default=100000000,
+                    help="the number of timesteps [10 fs] to run the simulation for (default: 100,000,000; 1 µs)")
 parser.add_argument('-p', '--platform',
                     type=str,
                     required=False,
