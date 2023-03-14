@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --job-name=ortho_h1-0
 #SBATCH --partition=qgpu
-#SBATCH --array=0-190%10
-#SBATCH --nodes=10
+#SBATCH --array=50-99%50
+#SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:v100:1
-#SBATCH -t 24:00:00
+#SBATCH -t 08:00:00
 #SBATCH -o results/out
 #SBATCH -e results/err
 
