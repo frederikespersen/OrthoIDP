@@ -20,9 +20,9 @@ import numpy as np
 import mdtraj as md
 
 import evolve_utils
-from process_data import read_fasta
+import analyse_utils
+from data_utils import read_fasta
 from simulate_utils import simulate
-from analyse_results import compute_rg
 
 
 #························································································#
@@ -70,21 +70,22 @@ store_filename = 'evolution.pkl'
 boxlength = 200
 steps = 51000000
 cond = 'default'
-compute_observable = compute_rg
+compute_observable = analyse_utils.compute_rg
+max_generations = 50000
 
 #························································································#
 
-# Starting from scratch
+# Starting from scratch (Generation 0)
 if restart is None:
-    g = 0
     evolve_utils.log(f'INITIALIZING INPUT SEQUENCE AND SIMULATE', header=True)
-
+    g = 0
+    
     # Calculating initial Monte Carlo control parameter
     c = -1 * args.L_at_half_acceptance / np.log(0.5)
 
     # Initialising DataFrame for storing results
-    store = pd.DataFrame(columns=['sequence','observable','simulate','mc','mc_cp'])
-    store.iloc[0] = dict(fasta=init_sequence, obs=None, simulate=True, mc=True, mc_cp=c)
+    store = pd.DataFrame(columns=['sequence','observable','simulate','mc','c','distances','mask'])
+    store.iloc[g] = dict(fasta=init_sequence, obs=None, simulate=True, mc=True, c=c, distances=None, mask=None)
 
     # Running intial simulation
     if os.path.isdir('g0'):
@@ -94,16 +95,15 @@ if restart is None:
 
     # Calculating mean observable
     init_traj = md.load_dcd('g0/traj.dcd', 'g0/top.pdb')
-    store.obs[0] = compute_observable(init_sequence, init_traj).mean()
+    store.obs[g] = compute_observable(init_sequence, init_traj).mean()
 
-    # Calculating total energy for reweighting
-    
-    pool_d = [d]
-    pool_mask = [mask]
-    pool_ndx = [0]
-    emat = calcEtot(residues,d,parameters.loc[ID],store.fasta[0], mask)
-    len_pool_i = len(emat)
-    store.to_pickle('./evolution.pkl')
+    # Calculating distances
+    distances, mask = analyse_utils.compute_distances('g0')
+    store.distances[g] = distances
+    store.mask[g] = mask
+
+    # Pickling initial generation
+    store.to_pickle(store_filename)
 
 # Restarting
 else: 
@@ -119,9 +119,17 @@ else:
                 shutil.rmtree('g'+str(g))
             store = store.drop(g)
 
-    # Start from last control parameter value
-    c = store.mc_cp.iloc[-1]
-
-
 #························································································#
 
+# Starting after restart, else after generation 0
+if restart is None:
+    start = 0 + 1
+else:
+    start = restart + 1
+
+# Looping over generations
+for g in range(start, max_generations):
+    evolve_utils.log(f"\nINITIALIZE GENERATION {g}")
+
+    # Initialising pool
+    
