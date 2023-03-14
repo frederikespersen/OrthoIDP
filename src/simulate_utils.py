@@ -134,7 +134,7 @@ def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqste
     friction = 0.01
     stepsize = 0.010 # 10 fs timestep
     integrator = openmm.LangevinIntegrator(condition.temp*unit.kelvin, friction/unit.picosecond, stepsize*unit.picosecond) 
-    #platform = openmm.Platform.getPlatformByName(platform)
+    platform = openmm.Platform.getPlatformByName(platform)
 
     # Initiating simulation object
     simulation = app.simulation.Simulation(top.topology, system, integrator)#, platform) #, dict(CudaPrecision='mixed')) 
@@ -492,7 +492,7 @@ def ah_parameters(epsilon_factor: float) -> float:
 
 
 #························································································#
-def dh_parameters(T: float, c: float) -> tuple[float]:
+def dh_parameters(T: float, c: float) -> tuple:
     """
     
     Calculates the Yukawa epsilon and kappa parameters.
@@ -535,7 +535,7 @@ def dh_parameters(T: float, c: float) -> tuple[float]:
 
     # Calculating inverse Debye-Hückel length
     c *= 1e-24 # mol/nm^3 (from mol/dm^3)
-    yukawa_kappa = np.sqrt(8*pi*B*N_A*c) # nm 
+    yukawa_kappa = float(np.sqrt(8*pi*B*N_A*c)) # nm 
 
     # Calculating the coefficient of the Debye–Hückel equation
     yukawa_epsilon = N_A * (e**2) / (4*np.pi*eps_0*eps_r) # m·J/mol
