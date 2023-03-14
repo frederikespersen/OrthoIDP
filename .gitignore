@@ -7,7 +7,6 @@ exp/*/results/
 # Secrets
 auth/
 cleanup/
-Remote.ipynb
 
 # Other
 .todo.md
