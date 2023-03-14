@@ -4,68 +4,68 @@ channels:
   - defaults
 channel_priority: strict
 dependencies:
-  - pandas
-  - matplotlib
-  - seaborn
-  - tqdm
-  - biopython
-  - scikit-learn
-  - tzdata
-  - ncurses
-  - libsqlite
-  - python=3.10
-  - traitlets
-  - backports
-  - pygments
-  - ptyprocess
-  - appnope
-  - matplotlib-inline
   - tk
-  - parso
-  - zeromq
-  - comm
-  - prompt-toolkit
-  - python_abi
-  - bzip2
-  - ipython
-  - python-dateutil
-  - pure_eval
-  - setuptools
+  - jupyter_client
+  - appnope
+  - backports
+  - decorator
   - importlib-metadata
-  - ca-certificates
+  - packaging
+  - typing-extensions
   - zipp
-  - openssl
-  - libzlib
-  - wheel
+  - ipykernel
+  - ca-certificates
+  - parso
+  - psutil
+  - debugpy
   - stack_data
+  - wcwidth
+  - pytest
+  - executing
+  - python=3.10
+  - pandas
+  - matplotlib-inline
+  - platformdirs
+  - ptyprocess
+  - pure_eval
+  - backports.functools_lru_cache
+  - libzlib
+  - bzip2
+  - pexpect
+  - wheel
+  - libsqlite
+  - pygments
+  - libsodium
   - pickleshare
+  - ncurses
+  - nest-asyncio
+  - zeromq
+  - ipython
+  - jedi
+  - prompt-toolkit
+  - seaborn
+  - importlib_metadata
+  - pyzmq
+  - libffi
+  - backcall
+  - openssl
+  - openmm
+  - readline
+  - setuptools
+  - matplotlib
+  - jupyter_core
   - asttokens
   - six
-  - libsodium
-  - packaging
-  - jedi
-  - wcwidth
-  - executing
-  - typing-extensions
-  - importlib_metadata
-  - platformdirs
-  - tornado
-  - libffi
-  - pip
-  - pexpect
-  - nest-asyncio
-  - jupyter_core
-  - debugpy
+  - traitlets
   - typing_extensions
-  - libcxx
-  - jupyter_client
-  - backports.functools_lru_cache
-  - readline
-  - pyzmq
   - xz
-  - backcall
-  - psutil
-  - decorator
-  - ipykernel
-  - openmm
-  - pytest
+  - tqdm
+  - comm
+  - libcxx
+  - tornado
+  - python-dateutil
+  - python_abi
+  - tzdata
+  - biopython
+  - pip
+  - scikit-learn
