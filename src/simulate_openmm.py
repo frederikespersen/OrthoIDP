@@ -85,6 +85,7 @@ sequence = read_fasta(fasta_path, just_seq=True)
 # Using fasta file name as simulation directory if nothing else is specified
 if dir is None:
     dir = fasta_path.split('/')[-1].replace('.fasta', '')
+dir = f'results/{dir}'
 
 # Creating directory for simulation
 os.makedirs(dir, exist_ok=True)
