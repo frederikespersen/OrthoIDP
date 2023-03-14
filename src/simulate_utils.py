@@ -149,7 +149,7 @@ def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqste
     
     # Else start from scratch
     else:
-        log.messagelog.message(f"[{dt.now()}] Starting from scratch")
+        log.message(f"[{dt.now()}] Starting from scratch")
         simulation.context.setPositions(top.positions)
         simulation.minimizeEnergy()
         simulation.reporters.append(app.dcdreporter.DCDReporter(f'{dir}/pretraj.dcd', stride))
