@@ -92,6 +92,6 @@ os.makedirs(dir, exist_ok=True)
 #························································································#
 
 # Starting simulation
-simulate(sequence, boxlength=boxlength, dir=dir, steps=steps, eqsteps=1000, cond=cond, platform=platform)
+simulate(sequence, boxlength=boxlength, dir=dir, steps=steps, eqsteps=1000, cond=cond, platform=platform, verbose=False, log=True)
 
 #························································································#
