@@ -33,6 +33,12 @@ class log():
             `file`: `str`
                 Which file to write log messages to (if `write = True`)
 
+        Methods
+        -------
+
+            `message`
+                Method for writing messages to log
+
         """
 
         # Sets attributes
