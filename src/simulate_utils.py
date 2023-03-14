@@ -182,7 +182,7 @@ def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int
 #····························· P R E P A R A T I O N ····································#
 #························································································#
 
-def format_terminal_res(seq: str|list, res: pd.DataFrame=residues.copy()):
+def format_terminal_res(seq, res: pd.DataFrame=residues.copy()):
     """
     
     Takes a sequence and a `residues` DataFrame, modifies the sequence with special terminal residue types 'X' and 'Z'
@@ -232,7 +232,7 @@ def format_terminal_res(seq: str|list, res: pd.DataFrame=residues.copy()):
 
 
 #························································································#
-def generate_save_topology(seq: str, boxlength: float, file_path: str) -> None:
+def generate_save_topology(seq, boxlength: float, file_path: str) -> None:
     """
     
     Takes a sequence, generates a MDTraj topology of the sequence as a chain and saves it to a .pfb-file.
@@ -280,7 +280,7 @@ def generate_save_topology(seq: str, boxlength: float, file_path: str) -> None:
 #·································· M O D E L S ·········································#
 #························································································#
 
-def openmm_harmonic_bond(seq: str|list, r_0=0.38, k=8033) -> openmm.HarmonicBondForce:
+def openmm_harmonic_bond(seq, r_0=0.38, k=8033) -> openmm.HarmonicBondForce:
     """
     
     Sets up a harmonic bond restraint energy term,
@@ -325,7 +325,7 @@ def openmm_harmonic_bond(seq: str|list, r_0=0.38, k=8033) -> openmm.HarmonicBond
 
 
 #························································································#
-def openmm_ashbaugh_hatch(seq: str|list, res: pd.DataFrame, epsilon_factor: float, r_cutoff=4.) -> openmm.CustomNonbondedForce:
+def openmm_ashbaugh_hatch(seq, res: pd.DataFrame, epsilon_factor: float, r_cutoff=4.) -> openmm.CustomNonbondedForce:
     """
     
     Sets up a Ashbaugh-Hatch energy term,
@@ -390,7 +390,7 @@ def openmm_ashbaugh_hatch(seq: str|list, res: pd.DataFrame, epsilon_factor: floa
 
 
 #························································································#
-def openmm_debye_huckel(seq: str|list, res: pd.DataFrame, T: float, c: float, r_cutoff=4.) -> openmm.CustomNonbondedForce:
+def openmm_debye_huckel(seq, res: pd.DataFrame, T: float, c: float, r_cutoff=4.) -> openmm.CustomNonbondedForce:
     """
     
     Sets up a Debye-Hückel energy term,
@@ -523,7 +523,7 @@ def dh_parameters(T: float, c: float) -> tuple[float]:
     # Setting constants
     e = 1.6021766e-19       # C             | Elementary charge
     R = 8.3145              # J/(mol·°K)    | Ideal gas constant
-    N_A = 6.0221408e+23     # 1/mol         | Avogadro's constant
+    N_A = 6.022e+23         # 1/mol         | Avogadro's constant
     eps_0 = 8.854188e-12    # F/m           | Vacuum permittivity
     pi = np.pi
     eps_r = 5321*(T**-1) + 233.76 - 0.9297*(T) + 0.1417*1e-2*(T**2) - 0.8292*1e-6*(T**3) # [unitless] | Emperical scalar
@@ -532,12 +532,9 @@ def dh_parameters(T: float, c: float) -> tuple[float]:
     B = N_A * (e**2) / (4*pi*eps_0*eps_r*R*T) # m
     B *= 1e9 # nm (from m)
 
-    # Calculating Debye-Hückel length
-    c *= 10**-24 # mol/nm^3 (from mol/dm^3)
-    D = 1 / np.sqrt(8*pi*B*N_A*c) # nm 
-
     # Calculating inverse Debye-Hückel length
-    yukawa_kappa = 1 / D # 1/nm
+    c *= 1e-24 # mol/nm^3 (from mol/dm^3)
+    yukawa_kappa = np.sqrt(8*pi*B*N_A*c) # nm 
 
     # Calculating the coefficient of the Debye–Hückel equation
     yukawa_epsilon = N_A * (e**2) / (4*np.pi*eps_0*eps_r) # m·J/mol

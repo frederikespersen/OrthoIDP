@@ -156,7 +156,7 @@ Schema
 
 
 #························································································#
-def amino_acid_content(seqs: str|list|pd.Series) -> pd.DataFrame:
+def amino_acid_content(seqs) -> pd.DataFrame:
     """
 
     Takes one or more sequences, returns a DataFrame of the frequencies of amino acids.
@@ -195,7 +195,7 @@ def amino_acid_content(seqs: str|list|pd.Series) -> pd.DataFrame:
 
 
 #························································································#
-def average_sequence(seqs: list|pd.Series) -> str:
+def average_sequence(seqs) -> str:
     """
     
     Takes a list or Series of sequences, returns an average sequence.
@@ -246,7 +246,7 @@ def average_sequence(seqs: list|pd.Series) -> str:
 #··································· C I D E R ··········································#
 #························································································#
 
-def cider_parameters(seqs: str|list|pd.Series) -> pd.DataFrame:
+def cider_parameters(seqs) -> pd.DataFrame:
     """
 
     Takes one or more sequences, returns a DataFrame of CIDER parameters.
@@ -299,7 +299,7 @@ def cider_parameters(seqs: str|list|pd.Series) -> pd.DataFrame:
 #······························ T R A J E C T O R Y ·····································#
 #························································································#
 
-def compute_rg(seq: str|list, traj: md.Trajectory) -> np.ndarray:
+def compute_rg(seq, traj: md.Trajectory) -> np.ndarray:
     """
     
     Takes a trajectory and the original sequence for a simulation,
