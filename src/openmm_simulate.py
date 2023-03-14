@@ -1,13 +1,13 @@
 """
-    Simulate
+    OpenMM_Simulate
     --------------------------------------------------------------------------------
 
-    Script for running a simulation.
+    Script for running an OpenMM simulation.
     Takes shell arguments, orchestrates preparations, and initiates simulation.
 
     --------------------------------------------------------------------------------
 
-    Run `python simulate.py -h` for documentation on arguments.
+    Run `python openmm_simulate.py -h` for documentation on arguments.
 
 """
 
@@ -72,7 +72,7 @@ if source_path is None:
 sys.path.append(source_path)
 
 # Importing source code
-from simulate_utils import simulate
+from simulate_utils import openmm_simulate as simulate
 from utils import read_fasta
 
 #························································································#
@@ -92,9 +92,6 @@ os.makedirs(dir, exist_ok=True)
 #························································································#
 
 # Starting simulation
-print(args)
-print(dir)
-print(sequence)
-#simulate(sequence, boxlength=boxlength, dir=dir, steps=steps, eqsteps=1000, cond=cond, platform=platform)
+simulate(sequence, boxlength=boxlength, dir=dir, steps=steps, eqsteps=1000, cond=cond, platform=platform)
 
 #························································································#

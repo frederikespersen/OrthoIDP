@@ -26,7 +26,7 @@ from simtk.openmm import app, XmlSerializer
 #······························ S I M U L A T I O N ·····································#
 #························································································#
 
-def simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int=1000, cond: str='default', vmodel: int=1, platform=None, stride: int=1000, verbose=True, log=False) -> None:
+def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int=1000, cond: str='default', vmodel: int=1, platform=None, stride: int=1000, verbose=True, log=False) -> None:
     """
     
     Takes a sequence and simulation specifications,
