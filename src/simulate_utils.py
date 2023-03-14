@@ -178,7 +178,7 @@ def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqste
         simulation.saveCheckpoint(check_point)
 
     # Generating trajectory without equilibration
-    log.message(f"[{dt.now()}] Saving formatted trajectory in '{dir}/traj.dcd'", "\n")
+    log.message(f"[{dt.now()}] Saving formatted trajectory in '{dir}/traj.dcd'")
     save_dcd(traj_path=f'{dir}/pretraj.dcd', top_path=f'{dir}/top.pdb', file_path=f'{dir}/traj.dcd', eqsteps=eqsteps)
     os.remove(f'{dir}/pretraj.dcd')
 
