@@ -166,7 +166,7 @@ def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqste
         separator='\t'))
 
     # Running simulation
-    log.message(f"[{dt.now()}] Running simulation of {steps * stepsize * 1000} ns ({steps} steps)")
+    log.message(f"[{dt.now()}] Running simulation of {steps * stepsize / 1000} ns ({steps} steps)")
     simulation.step(steps)
 
     # Saving final checkpoint
