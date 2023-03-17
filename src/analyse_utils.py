@@ -330,11 +330,8 @@ def compute_rg(seq, traj: md.Trajectory) -> np.ndarray:
     # Getting molecular weights for sequence
     mass = np.array([res.loc[aa, 'MW'] for aa in seq])
 
-    # Creating mass-frame matrix (I.e. sequence molecular weights for each frame)
-    framemass = np.tile(mass, (traj.n_frames, 1))
-
     # Calculate and return a Rg Series
-    rg = md.compute_rg(traj, framemass)
+    rg = md.compute_rg(traj, mass)
 
     return rg
 
