@@ -1,10 +1,10 @@
 {
     "templates": {
-        "0_9TELE": {
+        "0_AUSLI": {
             "uniprot_id": "A0A2I4B7C3",
-            "name": "A0A2I4B7C3_9TELE",
+            "name": "A0A2I4B7C3_AUSLI",
             "description": "histone H1.0-B",
-            "species": "Austrofundulus limnaeus",
+            "species": "Austrofundulus limnaeus (Annual killifish)",
             "sequence": "MAETSSAPSKAKRAAKPKKPASHPKYSDMIKAAIVHDASRSGASRQSIQKYVRKNYKVGDNADVQIKMALKRLVASGMLRHTKGIGASGSFRLTKPEDSSKKPAKAAAAVAAKPKKVAKAKPKKAAKPKKVTKTPEKPKKAAAKKVKKVAKKATPAKAKKAPAKKPKAAKPKAKPVKKAAKPKAKTPKKAAKSSKKK"
         },
         "1_CYPVA": {
@@ -829,7 +829,7 @@
         "120_VICPA": {
             "uniprot_id": "A0A6J0AKQ7",
             "name": "A0A6J0AKQ7_VICPA",
-            "description": "histone H1.0",
+            "description": "Histone H1.0",
             "species": "Vicugna pacos (Alpaca)",
             "sequence": "MTENSTSTPAAKPKRAKASKKSTDHPKYSDMIVAAIQAEKNRAGSSRQSIQKYIKSHYKVGENADSQIKLSIKRLVTTGVLKQTKGVGASGSFRLAKSDEPKRSVAFKKTKKEVKKVATPKKAAKPKKAASKAPSKKPKATPVKKAKKKPAATPKKTKKPKTVKAKPVKASKPKKAKPVKPKAKSSAKRAGKKK"
         },
@@ -1113,238 +1113,231 @@
             "species": "Carlito syrichta (Philippine tarsier)",
             "sequence": "YSDMIVAAIQAEKNRAGSSRQSIQKYIKSHYKVGENADSQIKLSIKRLVTTGVLKQTKGVGASGSFRLAKSDEPKKSVAFKKTKKEVKKVATPKKAAKPKKAASKAPSKKPKATPVKKAKKKPAATPKKTKKTKTVKAKPVKASKPKKAKPVKPKAKSSAKRTGKKK"
         },
-        "161_CHRAS": {
-            "uniprot_id": "A0A6I9JUI2",
-            "name": "A0A6I9JUI2_CHRAS",
-            "description": "histone H1.0-like",
-            "species": "Chrysochloris asiatica (Cape golden mole)",
-            "sequence": "MTENSTSAPAAKPKRAKASKKSTDHPKYSDMIVAAIQAEKNRSGSSRQSIQKYIKSHYKVGENADSQIKLSIKRLVTTGVLKQTKGVGASGSFRLAKSDEPKRSVAFKKTKKEVKKVATPKKAAKPKKAASKAPSKKPKATPAKKAKKKPVATPKKAKKPKTVKAKPVKASKPKKAKSVKPKPKPSAKKSGKKK"
-        },
-        "162_GEOSA": {
+        "161_GEOSA": {
             "uniprot_id": "A0A6P8QEU3",
             "name": "A0A6P8QEU3_GEOSA",
             "description": "histone H1.0-B-like",
             "species": "Geotrypetes seraphini (Gaboon caecilian)",
             "sequence": "MVEKLSAKSKRAKATKKSVDHPKYSDMIVAAVQAEKSRSGSSRQSIQKYIKNYYNVGENADSQIKLAIKRLVNSGILKHTKGVGASGSFRLAKADESEKRTKKVVKKTSTPKKAAKPKKAAKPAATSKKPKVTKKKVKTVEKKTATPKTSKTVKVKSMKATKLKKAKSSKPKTKSTPKKVAKKK"
         },
-        "163_GEOSA": {
+        "162_GEOSA": {
             "uniprot_id": "A0A6P8P9E7",
             "name": "A0A6P8P9E7_GEOSA",
             "description": "histone H1.0",
             "species": "Geotrypetes seraphini (Gaboon caecilian)",
             "sequence": "MAENAAAPPAAKPKRAKASKKATDHPKYSDMIVAAVQAEKSRSGSSRQSIQKYIKSHYKVGENADSQIKLAIKRLVTTGTLKQTKGVGASGSFRLAKGDEPKRPVKKAKKEAKKAVAAPKKAAKPKKAAKSPAKAKKPKVAEKKVKKAAEKKKKAPTPKKAKKPKAVKAKPVKASKAKKGKTSKPKAKSTPKKAAKKK"
         },
-        "164_LOXAF": {
+        "163_LOXAF": {
             "uniprot_id": "G3SNP9",
             "name": "G3SNP9_LOXAF",
             "description": "H1.0 linker histone",
             "species": "Loxodonta africana (African elephant)",
             "sequence": "MTENSTSAPAAKPKRAKASKKSTDHPKYSDMIVAAIQAEKNRAGSSRQSIQKYIKSHYKVGENADSQIKLSIKRLVTTGVLKQTKGVGASGSFRLAKSDEPKRSVAFKKTKKEVKKVATPKKATKPKKAASKAPGKKPKATPAKKAKKKPVATPKKAKKPKTVKAKPVKASKPKKAKSVKPKAKSSAKRSGKKK"
         },
-        "165_9AMPH": {
+        "164_9AMPH": {
             "uniprot_id": "A0A6P7YLH9",
             "name": "A0A6P7YLH9_9AMPH",
             "description": "histone H1.0-B-like",
             "species": "Microcaecilia unicolor",
             "sequence": "MVEKLSAKSKRVKVTKKSVDHPKYSDMIVAAVQAEKSRSGSSRQSIQKYIKSHYRVGENADSQIKLAIKRLVTSGVLKHTKGVGASGSFRLAKADDAEKHTKKVVKKTSTPKKAAKPKKAAKSAATSKKPKVTKKKVKPAEKKVATPKTTKTVKAKPVKATKPKKAKPSKPKAKATPKKVAKKK"
         },
-        "166_9AMPH": {
+        "165_9AMPH": {
             "uniprot_id": "A0A6P7YFQ2",
             "name": "A0A6P7YFQ2_9AMPH",
             "description": "histone H1.0-B",
             "species": "Microcaecilia unicolor",
             "sequence": "MAENAAAPPASKPKRAKAAKKATDHPKYSDMIVSAVQAEKSRSGSSRQSIQKYIKSHYKVGENADSQIKLAIKRLVTSGTLKQTKGVGASGSFRLAKGDEPKRPVKKAKREVKKVAAPKKAAKPKKAAKSPAKAKKPKVAEKKVKKVAEKKKKAPTPKKAKKPKAVKAKPVKASKPKKGKTSKPKAKSAPKKAAKKK"
         },
-        "167_ORNAN": {
+        "166_ORNAN": {
             "uniprot_id": "A0A6I8N1M9",
             "name": "A0A6I8N1M9_ORNAN",
             "description": "H1.0 linker histone",
             "species": "Ornithorhynchus anatinus (Duckbill platypus)",
             "sequence": "MTENSASAPAAKPKRAKAAKKATDHPKYSDMIVAAIRAEKNRAGSSRQSIQKYVKGHYKVGENADSQIKLAIKRLVTAGVLKQTKGVGASGSFRLAKGDEPRKPAVKKAKREVKKAAAPRKAAKPKKAPAKAPAKKPKAVAKKAKKKPAAAPKKTKKPKTVKAKPVKASKPKKAKPSKPKAKSSAKKPAKKK"
         },
-        "168_OTOGA": {
+        "167_OTOGA": {
             "uniprot_id": "H0WGR5",
             "name": "H0WGR5_OTOGA",
             "description": "H15 domain-containing protein",
             "species": "Otolemur garnettii (Small-eared galago)",
             "sequence": "MTENSTSTPAAKPKRSKASKKSTDHPKYSDMIVAAIQAEKNRAGSSRQSIQKYIKSHYKVGENADSQIKLSIKRLVTTGVLKQTKGVGASGSFRLAKSDEPKKSVAFKKTKKEVKKVATPKKAAKPKKAAASKAPSKKPKATPVKKAKKKPAATPKKAKKPKTVKAKPVKVSKPKKAKSVKPKAKSSAKRAGKKK"
         },
-        "169_SAIBB": {
+        "168_SAIBB": {
             "uniprot_id": "A0A2K6S5A7",
             "name": "A0A2K6S5A7_SAIBB",
             "description": "H1.0 linker histone",
             "species": "Saimiri boliviensis boliviensis (Bolivian squirrel monkey)",
             "sequence": "MTENSTSAPAAKPKRAKASKKSTDHPKYSDMIVAAIQAEKNRAGSSRQSIQKYIKSHYKVGENADSQIKLSIKRLVTTGVLKQTKGVGASGSFRLAKSDEPKKSVAFKKTKKEVKKVATPKKASKPKKAASKAPGKKPKATPVKKAKKKLAATPKKAKKPKTVKAKPVKASKPKKAKPVKPKAKSSAKRAGKKK"
         },
-        "170_TRIMA": {
+        "169_TRIMA": {
             "uniprot_id": "A0A2Y9DGU9",
             "name": "A0A2Y9DGU9_TRIMA",
             "description": "histone H1.0",
             "species": "Trichechus manatus latirostris (Florida manatee)",
             "sequence": "MTENSTSAPAAKPKRAKASKKSTDHPKYSDMIVAAIQAEKNRAGSSRQSIQKYIKSHYKVGENADSQIKLSIKRLVTTGVLKQTKGVGASGSFRLAKGDEPKRPVAFKKAKKEIKKVATPKKAAKPKKAASKASSKKPKATPTKKAKKKPVATLKKAKKPKTVKAKPVKASKPKKAKSVKPKAKSSAKRAGKKK"
         },
-        "171_TUPCH": {
+        "170_TUPCH": {
             "uniprot_id": "L8Y616",
             "name": "L8Y616_TUPCH",
             "description": "Histone H1.0",
             "species": "Tupaia chinensis (Chinese tree shrew)",
             "sequence": "MTENSTSAPAAKPKRAKASKKSTDHPKYSDMIVAAIQAEKNRAGSSRQSIQKYIKSHYKVGENADSQIKLSIKRLVTTGVLKQTKGVGASGSFRLAKSDEPKRSVAFKKTKKEVKKVATPKKAAKPKKAASKAPSKKPKAAPVKKAKKKPAATPRKAKKPKTVKAKPVKTSKPKKAKPVKPKAKSSAKRAGKKK"
         },
-        "172_XENLA": {
+        "171_XENLA": {
             "uniprot_id": "A0A1L8GH50",
             "name": "A0A1L8GH50_XENLA",
             "description": "histone H1.0-B",
             "species": "Xenopus laevis (African clawed frog)",
             "sequence": "MAENSAATPAAKPKRSKAIKKSTDHPKYSDMILAAVQAEKSRSGSSRQSIQKYIKNHYKVGENADSQIKLSIKRLVTSGALKQTKGVGASGSFRLAKADEGKKPAKKPKKEIKKAVSPKKVAKPKKAAKSPAKAKKPKVAEKKVKKVAKKKPAPSPKKAKKTKTVKAKPVRASKVKKAKPSKPKAKASPKKSGRKK"
         },
-        "173_XENTR": {
+        "172_XENTR": {
             "uniprot_id": "Q6NVM0",
             "name": "H10_XENTR",
             "description": "Histone H1.0",
             "species": "Xenopus tropicalis (Western clawed frog)",
             "sequence": "MTENSAAAPAGKPKRSKASKKATDHPKYSDMILAAVQAEKSRSGSSRQSIQKYIKNHYKVGENADSQIKLSIKRLVTSGTLKQTKGVGASGSFRLAKADEGKKPAKKPKKEIKKAASPKKAAKPKKAAKSPAKAKKPKVAEKKVKKPAKKKPAPSPKKAKKTKTVKAKPVRASRVKKAKPSKPKAKASPKKSGRKK"
         },
-        "174_ORCCI": {
+        "173_ORCCI": {
             "uniprot_id": "A0A1D2M3Q5",
             "name": "A0A1D2M3Q5_ORCCI",
             "description": "Histone H1-beta, late embryonic",
             "species": "Orchesella cincta (Springtail)",
             "sequence": "GKAAKPKAAAKPKGEKKASAHPSSNAMVIEAITKLSEKGGSSLQAIKKYIADVHKVDVEKQGTFIKKALKKAVESGKLTQPKGKGAAGSFKLAVKPKAEKKPAGEKKPKATKPKAAGSPKKAAKKPAAKKAAAPKAAASPKPKKAKAPKAAAKPKAPKSPKKAAAPKPAPAAPKPAAAKKAPAKPKTPKKAKAPKTMKAKSPAKPKTPAPKRAAPKARK"
         },
-        "175_ECTSI": {
+        "174_ECTSI": {
             "uniprot_id": "D7FWJ4",
             "name": "D7FWJ4_ECTSI",
             "description": "Histone H1",
             "species": "Ectocarpus siliculosus (Brown alga)",
             "sequence": "MSTAKPTYNVMVFDAIKTLKERNGSSIQAIKKSITATYPALNFTPHQMRSALKKGVESGKFVKMKASYKLSAEAKKPAPKKKVVKKVVKKVVKKKVPKKKVAKKPAVKKTTTKKPAAKKATTTKKTVTKKKPASKKTTAKKKPSTPKKKAAPKKA"
         },
-        "176_OCTBM": {
+        "175_OCTBM": {
             "uniprot_id": "A0A0L8GXX4",
             "name": "A0A0L8GXX4_OCTBM",
             "description": "H15 domain-containing protein",
             "species": "Octopus bimaculoides (California two-spotted octopus)",
             "sequence": "MTETAAPAPATPKAKKPAKAKKPSTHPGYSEMVKQAITSLSEKNGSSRQAIVKYILKNFKLSTNEKAVTVQTKMALRRDVASGVLKQSKGTGASGSFKIGAKKEEKKAKAKKSTKSKVKPKAAKKSPKKPTNKSKKVKKPRAPKPQKSKSPKKAAKRVAKPKKVTKPKKAKATKKAAKK"
         },
-        "177_POMCA": {
+        "176_POMCA": {
             "uniprot_id": "A0A2T7NMY6",
             "name": "A0A2T7NMY6_POMCA",
             "description": "H15 domain-containing protein",
             "species": "Pomacea canaliculata (Golden apple snail)",
             "sequence": "MADTATDVSAAASASTSSKKAAKTKKPAKPSEHPKYNVMIAAAINALKERGGSSRQAILKYIQANYKVGNEMAKINARLKTALKAGVKVGTLKQSKGTGASGSFRLGEKKVVAAVKPKKAKKPKAAVKKPKASPKKSAAKKPKASPKKVAVKKAKAAAGTKKPKSPKKAAASKPKTAKPTAVKKPKAAKPSAKKAKSPAKKAAKPKASKA"
         },
-        "178_POMCA": {
+        "177_POMCA": {
             "uniprot_id": "A0A2T7NB44",
             "name": "A0A2T7NB44_POMCA",
             "description": "H15 domain-containing protein",
             "species": "Pomacea canaliculata (Golden apple snail)",
             "sequence": "MADTAADSPAASSAPAASKKAAAKTKKPAKPSEHPKYNVMIAAAIDTLKERGGSSRQAILKYIQANYKVGDEVAKINARLKTALKAGVKVGTLKQSKGTGASGSFRLGEKKVVAAPKPKKAKKPKAAAIKKPKASPKKAAAKKPKASPKKVAVKKPKAAAAAATKKAKSPKKAAAKPKTAKPAAAKKPKATKPAAKKAAKSPAKKAAKPKATKA"
         },
-        "179_POMCA": {
+        "178_POMCA": {
             "uniprot_id": "A0A2T7NB02",
             "name": "A0A2T7NB02_POMCA",
             "description": "H15 domain-containing protein",
             "species": "Pomacea canaliculata (Golden apple snail)",
             "sequence": "MADTATDSPAASSAPAASKKAAAKTKKPAKPSEHPKYNVMIAAAIDTLKERGGSSRQAILKYIQANYKVGDEVAKINARLKTALKAGVKVGTLKQSKGTGASGSFRLGEKKVVVAAPKPKKAKKPKAAAIKKPKASPKKAAAKKPKASPKKVAVKKPKAAAAAKKAKSPKKAAAKPKTAKPAAAKKPKAAKPAAKKAAKSPAKKAAKGKAKA"
         },
-        "180_POMCA": {
+        "179_POMCA": {
             "uniprot_id": "A0A2T7NB35",
             "name": "A0A2T7NB35_POMCA",
             "description": "H15 domain-containing protein",
             "species": "Pomacea canaliculata (Golden apple snail)",
             "sequence": "MADTAADTPAASSAPAASKKAAAKTKKPAKPSEHPKYNVMIAAAIDTLKERGGSSRQAILKYIQTNYKVGDEVAKINARLKTALKAGVKVGTLKQSKGTGASGSFRLGEKKVVVAAPKPKKAKKPKAAAVKKPKASPKKAAAKKPKASPKKVAVKKPKAAAAAATKKAKSPKKAAAKPKTAKPAAAKKPKAAKPAAKKAAKSPAKKAAKPKATKA"
         },
-        "181_LINUN": {
+        "180_LINUN": {
             "uniprot_id": "A0A2R2MRR7",
             "name": "A0A2R2MRR7_LINUN",
             "description": "late histone H1-like",
             "species": "Lingula unguis",
             "sequence": "MADTATPQKKAKAAKPKAPAAHPKVAEMVVAAIAALKERGGSSGQAIKKYIAANYKVDIVKIAPFIKRYLKSGVTAGTLVQTKGKGASGSFKLSAAAKKPAAKPKKVKKPKAEAKKVKKVAKSPKKAKKSAGEKKAKKAKSPKKAKSPKKVKAAKPKTAKKAKSPKKPAKKAAKPKVKKSPKKTAKKGECQGGNDRIQPXKSPKKAKKPAGEKKAKKAKSPKKAKSPKKVKAAKPKAAKKAKSPKKPAKKAAKPKVKKSPKKTAKNXTAGTLVQTKGKGASGSFKLSAAAKKPAAKPKKVKKPKAEAKKVKKVAKSPKKAKKSAGEKKAKKAKSPKKAKSPKKVKAAKPKAAKKAKSPKKPAKKAAKPKVKKSPKKTAKK"
         },
-        "182_ACTTE": {
+        "181_ACTTE": {
             "uniprot_id": "A0A6P8HP23",
             "name": "A0A6P8HP23_ACTTE",
             "description": "late histone H1-like",
             "species": "Actinia tenebrosa (Australian red waratah sea anemone)",
             "sequence": "MSASPKKARSRSRSRSRSRSRSRSKSRSPSPGARKAARPKSARPKAKRAAKSAKPSAHPTYQDMIKAAIVALKERGGSSRQAIQKYIKANYRGVGDPGPHLRMALKRGVAAGLLVQSKGKGASGSFKLGPKALARTEKKKKKKKAAKPKKKTTPKKKKKAKKTAAKKSTPKKKKAAKKAKSPKKTKKPKSKARSKSPKEVKRATKKKSPAKRRPAKKAAKKKA"
         },
-        "183_ACTTE": {
+        "182_ACTTE": {
             "uniprot_id": "A0A6P8J339",
             "name": "A0A6P8J339_ACTTE",
             "description": "histone H1-delta-like",
             "species": "Actinia tenebrosa (Australian red waratah sea anemone)",
             "sequence": "MAVMAQMSANVASIKASKPAHPKYSSMVEEALKVLNERSGSSRQAVVKYIVANFPVGDLAESHVKLALRKGVLSERLVQTKGKGASGSFKLSQAVKKEEEKAKKLKLKAEKMKLKQKKSNEGKENEDPSSSDAEKVSKPKKAKKTVPKADSGKSEKNKKAKSSKEGSKKTDSKKSTKAKTTKSKKESSKETSKSPKKTTKKSIKKVGSSAEKAKKTVKKTASGKTVKTPKSKPKKTAEPKPAKTKKTTTKKSQKSS"
         },
-        "184_POCDA": {
+        "183_POCDA": {
             "uniprot_id": "A0A3M6TVA1",
             "name": "A0A3M6TVA1_POCDA",
             "description": "H15 domain-containing protein",
             "species": "Pocillopora damicornis (Cauliflower coral)",
             "sequence": "MSEEDSIPQVVIAKPKHPKYTEMVEEAVKYFNEKGGSSRQAITKYIKGKYLVGETANNQIKLALVKSVGKGRLVQTKGAGASGSFKLSKEVKEEEKREEKRRLKKEKKALKEKENAERDIDNNKKKANKVKKTSKKQPKDVDGEDKENEEKGRPKKKSSNKTKESTSKKKREGSKDTALEKKSKPKAKKSTVAESSEGIKKAKKTKKPAAKPSASKISSTGKKTSEKGKDKKKVLKSKNTTKAKPKSKKQIGKEDLE"
         },
-        "185_POCDA": {
+        "184_POCDA": {
             "uniprot_id": "A0A3M6UXP4",
             "name": "A0A3M6UXP4_POCDA",
             "description": "H15 domain-containing protein",
             "species": "Pocillopora damicornis (Cauliflower coral)",
             "sequence": "MGDAPAAAAKAPKKKAPKKPAEHPKYEEMIIAAIKELKERTGSSRQKITKYISEHYKVGGNVAVQVKLNLKRLVAAGKLIQAKGVGASGSFKVNKAAEPKPKPKPKKKPAAKKPAAKPKKKPAAKKPAAKKAAAKKKPAAKKKTAKKPAAKKPAAKKSPKKPAAKKPAAKKAAKKAKTPTKKTPKKKAAKK"
         },
-        "186_BRUMA": {
+        "185_BRUMA": {
             "uniprot_id": "A0A5K1US30",
             "name": "A0A5K1US30_BRUMA",
             "description": "Linker histone H1 and H5 family protein",
             "species": "Brugia malayi (Filarial nematode worm)",
             "sequence": "MEAAAVELPSPPRISGPTGKSPKKRSAVQGTSKARSKRQGAKVMKNHPSYSQMIKEAIVALKDRKGSSRVAIFKYISGHYQLGDNGKRVHSQLRLAIKKGIASGKLTLAKGAGVNGSFRLGTTTETKTKRGPHKQKEITSKKEKKN"
         },
-        "188_LOALO": {
+        "187_LOALO": {
             "uniprot_id": "A0A1I7VUI9",
             "name": "A0A1I7VUI9_LOALO",
             "description": "Linker histone H1 and H5 family protein",
             "species": "Loa loa (Eye worm)",
             "sequence": "MEASAVELPSPPRLSSAARSPKNQSRAQGTPKARSKRQGTKTTKSHPSYSQMVKEAITVLKDRKGSSRVAILKYISTHYQLGGNGKRVHFQLRQAIKKGIASGKFTLAKGAGVNGSFRLGTKVEIAVKKRSDKQKRMKSKQEKESKVASASSKKPQMTKVAAAKKSLKRKLKTDKPKPKVSRPKKTS"
         },
-        "189_NECAM": {
+        "188_NECAM": {
             "uniprot_id": "W2TLS3",
             "name": "W2TLS3_NECAM",
             "description": "Linker histone H1 and H5 family protein",
             "species": "Necator americanus (Human hookworm)",
             "sequence": "MSAVAASPKVAKAPKAKAPKVAKKAPSHPTYSAMIRKAVAELKEKSGSSKAAILKYMLQHYKLGENVTKINAQLRLAIKRGVIKGDLKQVKGSGASGSFKLGEKKAAAPKAKKPVAKKPAGEKKAKTVKKAIAKKPKAEKKTKSPKKAKAPKAKSAKKPAAAKTTKKTTKPKVSKPKAVKKAPVKA"
         },
-        "190_NECAM": {
+        "189_NECAM": {
             "uniprot_id": "W2TL48",
             "name": "W2TL48_NECAM",
             "description": "Linker histone H1 and H5 family protein",
             "species": "Necator americanus (Human hookworm)",
             "sequence": "MSVAAISASSPDAPKARAPRKPRTAPEHPTYAIMINEAITQLKGKSGSSGPTILKYITQHYKLGDNVTMINGNLKRALTRGVAKGELKQLGGTGGTPSFKVVSDRAQKKTATPRVKKPVAKNATDEPKVGKKAVATKPNAEEKAKSPAIETVPKVKGKRTVKSKAVKSVKSVAKPTVTKT"
         },
-        "191_NECAM": {
+        "190_NECAM": {
             "uniprot_id": "W2TEX0",
             "name": "W2TEX0_NECAM",
             "description": "Linker histone H1 and H5 family protein",
             "species": "Necator americanus (Human hookworm)",
             "sequence": "MMSVAAVSSSKRPPKATALRVPKSMPEHPTYAVMVKDAITQLKERSGSSKSAILKYITQHYKLGDNVTMINVHLKRALARGVAKGELKQVSGIGATGSFKVDADYKKLKKTAAPTVKKPVAKKATSEPIAPKKAPAPKPKIEKKLKTPKKEVVKKKVVKKEVVRKEVVRKEVVRKEAAQKAKPTRNTTGSSSRKTVKSVKKSTASRV"
         },
-        "192_STRRB": {
+        "191_STRRB": {
             "uniprot_id": "A0A090KXU4",
             "name": "A0A090KXU4_STRRB",
             "description": "Histone H1.0",
             "species": "Strongyloides ratti (Parasitic roundworm)",
             "sequence": "MTTDVTVQPAAAGTSTKKASTSAPKSVKKSSHPVYADMVKKAIIELKEKKGSSKPAILKYIKAHYNLGDKNINSVNLHIKQALKKGLTSGILKQTSGNGASGSFTVITKVDKKPKVVKKVKKTEKPSAEKKVVKKAVVKKSSEAKKVTDSKKSTDVKKTPETKKAVKAPKAKATEKKVLKKAIVKKTKAATPLKKAATKVVKKAADTKKKSSSKKVTDKKN"
         },
-        "193_CAPO3": {
+        "192_CAPO3": {
             "uniprot_id": "A0A0D2VKG3",
             "name": "A0A0D2VKG3_CAPO3",
             "description": "H15 domain-containing protein",
             "species": "Capsaspora owczarzaki (strain ATCC 30864)",
             "sequence": "MSTTAAAAAPPAPKANKPKKVPIHPPYNVMVLEAIKELGDRSGSSRQAISKFISDKYPSTADTINHQLPAALTRLADAATISRVSGIGATGSFRASKTAAGAAKAVKAAKAAKAAGAKTAKAPKAPKAPKAPKAPKDAAAAKVAKAPKASKAADAAKLPKAPKAPKTDKPAKAPKKEGKAAAKTSNAAIAAKKKAVKAVTPANPAVAAAALAAAAALPKAAKAPKAAKAPKAEKPAKAAKAPKADKPAKAAKAPKAAKAEKPAKAPKAPKAEKPAKAPKAAKAEKPAKAPKAEKPAKAPKADKPAKAAKAPKADKPAKIAKAPKADKPKPAAKEVKPKAATAKPKAAAAPKPKAK"
         },
-        "194_STRPU": {
+        "193_STRPU": {
             "uniprot_id": "P15870",
             "name": "H1D_STRPU",
             "description": "Histone H1-delta",
             "species": "Strongylocentrotus purpuratus (Purple sea urchin)",
             "sequence": "MADTDAAPAAPAPSTPKKAAKKKASKPKTPASHPKYSDMIASALESLKEKKGSSRQAILKYVKANFTVGDNANVHIKQALKRGVTSGQLRHVKGSGASGSFLLAEKTKTPKKAAAKKATPKKKPAAKKTKKPAAKKATKKPAKKPAAKKKVAKPAAKKAAKPVAKKATPKKKVVKKAAKGKGKKK"
         },
-        "195_TRIAD": {
+        "194_TRIAD": {
             "uniprot_id": "B3RQA0",
             "name": "B3RQA0_TRIAD",
             "description": "H15 domain-containing protein",
@@ -1353,8 +1346,8 @@
         }
     },
     "data": {
-        "0_9TELE": {
-            "template": "0_9TELE",
+        "0_AUSLI": {
+            "template": "0_AUSLI",
             "sequence": "HTKGIGASGSFRLTKPEDSSKKPAKAAAAVAAKPKKVAKAKPKKAAKPKKVTKTPEKPKKAAAKKVKKVAKKATPAKAKKAPAKKPKAAKPKAKPVKKAAKPKAKTPKKAAKSSKKK",
             "location": "80:197",
             "region": "CTD",
@@ -2466,218 +2459,211 @@
             "region": "CTD",
             "variant": "Wild type"
         },
-        "161_CHRAS": {
-            "template": "161_CHRAS",
-            "sequence": "QTKGVGASGSFRLAKSDEPKRSVAFKKTKKEVKKVATPKKAAKPKKAASKAPSKKPKATPAKKAKKKPVATPKKAKKPKTVKAKPVKASKPKKAKSVKPKPKPSAKKSGKKK",
-            "location": "82:194",
-            "region": "CTD",
-            "variant": "Wild type"
-        },
-        "162_GEOSA": {
-            "template": "162_GEOSA",
+        "161_GEOSA": {
+            "template": "161_GEOSA",
             "sequence": "KADESEKRTKKVVKKTSTPKKAAKPKKAAKPAATSKKPKVTKKKVKTVEKKTATPKTSKTVKVKSMKATKLKKAKSSKPKTKSTPKKVAKKK",
             "location": "92:184",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "163_GEOSA": {
-            "template": "163_GEOSA",
+        "162_GEOSA": {
+            "template": "162_GEOSA",
             "sequence": "LKQTKGVGASGSFRLAKGDEPKRPVKKAKKEAKKAVAAPKKAAKPKKAAKSPAKAKKPKVAEKKVKKAAEKKKKAPTPKKAKKPKAVKAKPVKASKAKKGKTSKPKAKSTPKKAAKKK",
             "location": "80:198",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "164_LOXAF": {
-            "template": "164_LOXAF",
+        "163_LOXAF": {
+            "template": "163_LOXAF",
             "sequence": "QTKGVGASGSFRLAKSDEPKRSVAFKKTKKEVKKVATPKKATKPKKAASKAPGKKPKATPAKKAKKKPVATPKKAKKPKTVKAKPVKASKPKKAKSVKPKAKSSAKRSGKKK",
             "location": "82:194",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "165_9AMPH": {
-            "template": "165_9AMPH",
+        "164_9AMPH": {
+            "template": "164_9AMPH",
             "sequence": "ADDAEKHTKKVVKKTSTPKKAAKPKKAAKSAATSKKPKVTKKKVKPAEKKVATPKTTKTVKAKPVKATKPKKAKPSKPKAKATPKKVAKKK",
             "location": "93:184",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "166_9AMPH": {
-            "template": "166_9AMPH",
+        "165_9AMPH": {
+            "template": "165_9AMPH",
             "sequence": "GTLKQTKGVGASGSFRLAKGDEPKRPVKKAKREVKKVAAPKKAAKPKKAAKSPAKAKKPKVAEKKVKKVAEKKKKAPTPKKAKKPKAVKAKPVKASKPKKGKTSKPKAKSAPKKAAKKK",
             "location": "78:197",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "167_ORNAN": {
-            "template": "167_ORNAN",
+        "166_ORNAN": {
+            "template": "166_ORNAN",
             "sequence": "TKGVGASGSFRLAKGDEPRKPAVKKAKREVKKAAAPRKAAKPKKAPAKAPAKKPKAVAKKAKKKPAAAPKKTKKPKTVKAKPVKASKPKKAKPSKPKAKSSAKKPAKKK",
             "location": "83:192",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "168_OTOGA": {
-            "template": "168_OTOGA",
+        "167_OTOGA": {
+            "template": "167_OTOGA",
             "sequence": "QTKGVGASGSFRLAKSDEPKKSVAFKKTKKEVKKVATPKKAAKPKKAAASKAPSKKPKATPVKKAKKKPAATPKKAKKPKTVKAKPVKVSKPKKAKSVKPKAKSSAKRAGKKK",
             "location": "82:195",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "169_SAIBB": {
-            "template": "169_SAIBB",
+        "168_SAIBB": {
+            "template": "168_SAIBB",
             "sequence": "TKGVGASGSFRLAKSDEPKKSVAFKKTKKEVKKVATPKKASKPKKAASKAPGKKPKATPVKKAKKKLAATPKKAKKPKTVKAKPVKASKPKKAKPVKPKAKSSAKRAGKKK",
             "location": "83:194",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "170_TRIMA": {
-            "template": "170_TRIMA",
+        "169_TRIMA": {
+            "template": "169_TRIMA",
             "sequence": "GVGASGSFRLAKGDEPKRPVAFKKAKKEIKKVATPKKAAKPKKAASKASSKKPKATPTKKAKKKPVATLKKAKKPKTVKAKPVKASKPKKAKSVKPKAKSSAKRAGKKK",
             "location": "85:194",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "171_TUPCH": {
-            "template": "171_TUPCH",
+        "170_TUPCH": {
+            "template": "170_TUPCH",
             "sequence": "TKGVGASGSFRLAKSDEPKRSVAFKKTKKEVKKVATPKKAAKPKKAASKAPSKKPKAAPVKKAKKKPAATPRKAKKPKTVKAKPVKTSKPKKAKPVKPKAKSSAKRAGKKK",
             "location": "83:194",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "173_XENTR": {
-            "template": "173_XENTR",
+        "172_XENTR": {
+            "template": "172_XENTR",
             "sequence": "SGTLKQTKGVGASGSFRLAKADEGKKPAKKPKKEIKKAASPKKAAKPKKAAKSPAKAKKPKVAEKKVKKPAKKKPAPSPKKAKKTKTVKAKPVRASRVKKAKPSKPKAKASPKKSGRKK",
             "location": "77:196",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "174_ORCCI": {
-            "template": "174_ORCCI",
+        "173_ORCCI": {
+            "template": "173_ORCCI",
             "sequence": "VESGKLTQPKGKGAAGSFKLAVKPKAEKKPAGEKKPKATKPKAAGSPKKAAKKPAAKKAAAPKAAASPKPKKAKAPKAAAKPKAPKSPKKAAAPKPAPAAPKPAAAKKAPAKPKTPKKAKAPKTMKAKSPAKPKTPAPKRAAPKARK",
             "location": "72:219",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "175_ECTSI": {
-            "template": "175_ECTSI",
+        "174_ECTSI": {
+            "template": "174_ECTSI",
             "sequence": "EAKKPAPKKKVVKKVVKKVVKKKVPKKKVAKKPAVKKTTTKKPAAKKATTTKKTVTKKKPASKKTTAKKKPSTPKKKAAPKKA",
             "location": "72:155",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "176_OCTBM": {
-            "template": "176_OCTBM",
+        "175_OCTBM": {
+            "template": "175_OCTBM",
             "sequence": "SGVLKQSKGTGASGSFKIGAKKEEKKAKAKKSTKSKVKPKAAKKSPKKPTNKSKKVKKPRAPKPQKSKSPKKAAKRVAKPKKVTKPKKAKATKKAAKK",
             "location": "81:179",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "177_POMCA": {
-            "template": "177_POMCA",
+        "176_POMCA": {
+            "template": "176_POMCA",
             "sequence": "KQSKGTGASGSFRLGEKKVVAAVKPKKAKKPKAAVKKPKASPKKSAAKKPKASPKKVAVKKAKAAAGTKKPKSPKKAAASKPKTAKPTAVKKPKAAKPSAKKAKSPAKKAAKPKASKA",
             "location": "92:210",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "178_POMCA": {
-            "template": "178_POMCA",
+        "177_POMCA": {
+            "template": "177_POMCA",
             "sequence": "KQSKGTGASGSFRLGEKKVVAAPKPKKAKKPKAAAIKKPKASPKKAAAKKPKASPKKVAVKKPKAAAAAATKKAKSPKKAAAKPKTAKPAAAKKPKATKPAAKKAAKSPAKKAAKPKATKA",
             "location": "93:214",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "179_POMCA": {
-            "template": "179_POMCA",
+        "178_POMCA": {
+            "template": "178_POMCA",
             "sequence": "AAPKPKKAKKPKAAAIKKPKASPKKAAAKKPKASPKKVAVKKPKAAAAAKKAKSPKKAAAKPKTAKPAAAKKPKAAKPAAKKAAKSPAKKAAKGKAKA",
             "location": "114:212",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "180_POMCA": {
-            "template": "180_POMCA",
+        "179_POMCA": {
+            "template": "179_POMCA",
             "sequence": "VVAAPKPKKAKKPKAAAVKKPKASPKKAAAKKPKASPKKVAVKKPKAAAAAATKKAKSPKKAAAKPKTAKPAAAKKPKAAKPAAKKAAKSPAKKAAKPKATKA",
             "location": "112:215",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "182_ACTTE": {
-            "template": "182_ACTTE",
+        "181_ACTTE": {
+            "template": "181_ACTTE",
             "sequence": "QSKGKGASGSFKLGPKALARTEKKKKKKKAAKPKKKTTPKKKKKAKKTAAKKSTPKKKKAAKKAKSPKKTKKPKSKARSKSPKEVKRATKKKSPAKRRPAKKAAKKKA",
             "location": "115:223",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "183_ACTTE": {
-            "template": "183_ACTTE",
+        "182_ACTTE": {
+            "template": "182_ACTTE",
             "sequence": "KGKGASGSFKLSQAVKKEEEKAKKLKLKAEKMKLKQKKSNEGKENEDPSSSDAEKVSKPKKAKKTVPKADSGKSEKNKKAKSSKEGSKKTDSKKSTKAKTTKSKKESSKETSKSPKKTTKKSIKKVGSSAEKAKKTVKKTASGKTVKTPKSKPKKTAEPKPAKTKKTTTKKSQKSS",
             "location": "80:256",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "184_POCDA": {
-            "template": "184_POCDA",
+        "183_POCDA": {
+            "template": "183_POCDA",
             "sequence": "VQTKGAGASGSFKLSKEVKEEEKREEKRRLKKEKKALKEKENAERDIDNNKKKANKVKKTSKKQPKDVDGEDKENEEKGRPKKKSSNKTKESTSKKKREGSKDTALEKKSKPKAKKSTVAESSEGIKKAKKTKKPAAKPSASKISSTGKKTSEKGKDKKKVLKSKNTTKAKPKSKKQIGKEDLE",
             "location": "73:257",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "185_POCDA": {
-            "template": "185_POCDA",
+        "184_POCDA": {
+            "template": "184_POCDA",
             "sequence": "GVGASGSFKVNKAAEPKPKPKPKKKPAAKKPAAKPKKKPAAKKPAAKKAAAKKKPAAKKKTAKKPAAKKPAAKKSPKKPAAKKPAAKKAAKKAKTPTKKTPKKKAAKK",
             "location": "83:191",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "186_BRUMA": {
-            "template": "186_BRUMA",
+        "185_BRUMA": {
+            "template": "185_BRUMA",
             "sequence": "SFRLGTTTETKTKRGPHKQKEITSKKEKKN",
             "location": "116:146",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "188_LOALO": {
-            "template": "188_LOALO",
+        "187_LOALO": {
+            "template": "187_LOALO",
             "sequence": "KRSDKQKRMKSKQEKESKVASASSKKPQMTKVAAAKKSLKRKLKTDKPKPKVSRPKKTS",
             "location": "128:187",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "189_NECAM": {
-            "template": "189_NECAM",
+        "188_NECAM": {
+            "template": "188_NECAM",
             "sequence": "QVKGSGASGSFKLGEKKAAAPKAKKPVAKKPAGEKKAKTVKKAIAKKPKAEKKTKSPKKAKAPKAKSAKKPAAAKTTKKTTKPKVSKPKAVKKAPVKA",
             "location": "88:186",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "191_NECAM": {
-            "template": "191_NECAM",
+        "190_NECAM": {
+            "template": "190_NECAM",
             "sequence": "RKEVVRKEAAQKAKPTRNTTGSSSRKTVKSVKKSTASRV",
             "location": "168:207",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "192_STRRB": {
-            "template": "192_STRRB",
+        "191_STRRB": {
+            "template": "191_STRRB",
             "sequence": "KKSSEAKKVTDSKKSTDVKKTPETKKAVKAPKAKATEKKVLKKAIVKKTKAATPLKKAATKVVKKAADTKKKSSSKKVTDKKN",
             "location": "138:221",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "193_CAPO3": {
-            "template": "193_CAPO3",
+        "192_CAPO3": {
+            "template": "192_CAPO3",
             "sequence": "AAALPKAAKAPKAAKAPKAEKPAKAAKAPKADKPAKAAKAPKAAKAEKPAKAPKAPKAEKPAKAPKAAKAEKPAKAPKAEKPAKAPKADKPAKAAKAPKADKPAKIAKAPKADKPKPAAKEVKPKAATAKPKAAAAPKPKAK",
             "location": "213:355",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "194_STRPU": {
-            "template": "194_STRPU",
+        "193_STRPU": {
+            "template": "193_STRPU",
             "sequence": "RHVKGSGASGSFLLAEKTKTPKKAAAKKATPKKKPAAKKTKKPAAKKATKKPAKKPAAKKKVAKPAAKKAAKPVAKKATPKKKVVKKAAKGKGKKK",
             "location": "89:185",
             "region": "CTD",
             "variant": "Wild type"
         },
-        "195_TRIAD": {
-            "template": "195_TRIAD",
+        "194_TRIAD": {
+            "template": "194_TRIAD",
             "sequence": "KVEKPKKKKVVKKKPAAKKPAKKTKPKTKKAASPKKAAKKPAAKKDKKPAKKAAKKPTTKKSTPKKTTTKKDKAKKSKAKPAKKVVKPKKTAKK",
             "location": "96:190",
             "region": "CTD",

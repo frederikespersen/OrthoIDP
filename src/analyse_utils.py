@@ -22,7 +22,7 @@ import data_utils
 #································· G E N E R A L ········································#
 #························································································#
 
-def load_fasta_seq(fasta_path: str) -> tuple[str]:
+def load_fasta_seq(fasta_path: str) -> tuple:
     """
 
     Takes a FASTA file path, returns the sequence, id, and description.
@@ -339,7 +339,7 @@ def compute_rg(seq, traj: md.Trajectory) -> np.ndarray:
     return rg
 
 #························································································#
-def compute_distances(traj: md.Trajectory) -> tuple[np.ndarray]:
+def compute_distances(traj: md.Trajectory) -> tuple:
     """
     
     Takes a trajectory for a simulation,
