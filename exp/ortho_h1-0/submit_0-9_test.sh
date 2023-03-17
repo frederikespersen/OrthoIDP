@@ -21,7 +21,7 @@ source /groups/sbinlab/fpesce/.bashrc
 conda activate openmm
 
 # Submitting simulation
-# python ../../src/simulate.py -f $input_file
+# python ../../src/simulate_openmm.py -f $input_file -n 1000000
 echp "Testing"
 
 echo "[`date`] FINISHED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file"
