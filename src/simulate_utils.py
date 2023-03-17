@@ -34,7 +34,7 @@ residues['AH_lambda'] = residues[f'M2']
 #························································································#
 #······························ S I M U L A T I O N ·····································#
 #························································································#
-def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int=1000,cond: str='default', platform=None, stride: int=3000, verbose=True, log=False, savechk=False) -> None:
+def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int=1000,cond: str='default', platform=None, stride: int=3000, verbose=True, log=False, savechk=True) -> None:
     """
     
     Takes a sequence and simulation specifications,
