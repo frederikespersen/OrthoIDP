@@ -141,7 +141,7 @@ def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqste
     platform = openmm.Platform.getPlatformByName(platform)
 
     # Initiating simulation object
-    simulation = app.simulation.Simulation(top.topology, system, integrator)#, platform) #, dict(CudaPrecision='mixed')) 
+    simulation = app.simulation.Simulation(top.topology, system, integrator, platform) #, dict(CudaPrecision='mixed')) 
 
     # Checking for checkpoint to start from
     check_point = f'{dir}/restart.chk'
