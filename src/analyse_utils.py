@@ -263,7 +263,7 @@ def cider_parameters(seqs) -> pd.DataFrame:
     ----------
     
         `seqs`: `str | list | pandas.Series`
-            Sequence(s) to calculate parameters for
+            Sequence(s) to calculate parameters for (`str`, `list` interpreted single sequence)
 
     Returns
     -------
@@ -277,7 +277,7 @@ def cider_parameters(seqs) -> pd.DataFrame:
     if type(seqs) == str:
         seqs = pd.Series([seqs])
     elif type(seqs) == list:
-        seqs = pd.Series(seqs)
+        seqs = pd.Series([''.join(seqs)])
     
     # Mapping sequence(s) to a SequenceParameteres object
     seqs = seqs.map(SequenceParameters)
