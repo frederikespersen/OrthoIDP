@@ -17,7 +17,7 @@ conditions = pd.DataFrame(
 [
     {
         "name":"default",
-        "eps_factor":0.15,
+        "eps_factor":0.2,
         "temp":298,
         "pH":7.0,
         "ionic":0.15
