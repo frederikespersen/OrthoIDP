@@ -389,6 +389,7 @@ def openmm_ashbaugh_hatch(seq, res: pd.DataFrame, epsilon_factor: float, r_cutof
         ah.addExclusion(i, i+1)
     
     # Set periodic boundary conditions with specified r_cutoff
+    ah.setForceGroup(0)
     ah.setNonbondedMethod(openmm.CustomNonbondedForce.CutoffPeriodic)
     ah.setCutoffDistance(r_cutoff*unit.nanometer)
 
@@ -459,6 +460,7 @@ def openmm_debye_huckel(seq, res: pd.DataFrame, T: float, c: float, r_cutoff=DH_
         dh.addExclusion(i, i+1)
     
     # Set periodic boundary conditions with specified r_cutoff
+    dh.setForceGroup(1)
     dh.setNonbondedMethod(openmm.CustomNonbondedForce.CutoffPeriodic)
     dh.setCutoffDistance(r_cutoff*unit.nanometer)
 
