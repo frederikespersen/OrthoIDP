@@ -18,9 +18,9 @@ conditions = pd.DataFrame(
     {
         "name":"default",
         "eps_factor":0.15,
-        "temp":293,
+        "temp":298,
         "pH":7.0,
-        "ionic":0.2
+        "ionic":0.15
     }
 ]
 ).set_index('name')

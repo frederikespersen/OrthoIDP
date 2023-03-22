@@ -27,8 +27,9 @@ from simtk.openmm import app, XmlSerializer
 #························································································#
 
 # CALVADOS 2 model is default
-r_cutoff = 2.4 # nm
-residues['AH_lambda'] = residues[f'M2']
+AH_cutoff = 2 # nm
+DH_cutoff = 4 # nm
+residues['AH_lambda'] = residues[f'CALVADOS2']
 
 
 #························································································#
@@ -330,7 +331,7 @@ def openmm_harmonic_bond(seq, r_0=0.38, k=8033) -> openmm.HarmonicBondForce:
 
 
 #························································································#
-def openmm_ashbaugh_hatch(seq, res: pd.DataFrame, epsilon_factor: float, r_cutoff=r_cutoff) -> openmm.CustomNonbondedForce:
+def openmm_ashbaugh_hatch(seq, res: pd.DataFrame, epsilon_factor: float, r_cutoff=AH_cutoff) -> openmm.CustomNonbondedForce:
     """
     
     Sets up a Ashbaugh-Hatch energy term,
@@ -395,7 +396,7 @@ def openmm_ashbaugh_hatch(seq, res: pd.DataFrame, epsilon_factor: float, r_cutof
 
 
 #························································································#
-def openmm_debye_huckel(seq, res: pd.DataFrame, T: float, c: float, r_cutoff=r_cutoff) -> openmm.CustomNonbondedForce:
+def openmm_debye_huckel(seq, res: pd.DataFrame, T: float, c: float, r_cutoff=DH_cutoff) -> openmm.CustomNonbondedForce:
     """
     
     Sets up a Debye-Hückel energy term,

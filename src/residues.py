@@ -19,281 +19,201 @@ residues = pd.DataFrame(
         "one": "R",
         "three": "ARG",
         "MW": 156.19,
-        "AH_lambda": 0.8139478491,
-        "AH_sigma": 0.656,
+        "lambdas": 0.7307624767517166,
+        "sigmas": 0.6559999999999999,
         "q": 1,
-        "HPS": 0.0,
-        "HPSUrry": 0.478824,
-        "AVG": 0.1582837898,
-        "M1": 0.7249915948,
-        "M2": 0.8139478491,
-        "M3": 0.7233336788
+        "CALVADOS1": 0.7249915947715212,
+        "CALVADOS2": 0.7307624767517166
     },
     {
         "one": "D",
         "three": "ASP",
         "MW": 115.09,
-        "AH_lambda": 0.0731916654,
-        "AH_sigma": 0.558,
+        "lambdas": 0.0416040480605567,
+        "sigmas": 0.5579999999999999,
         "q": -1,
-        "HPS": 0.378378,
-        "HPSUrry": 0.214119,
-        "AVG": 0.2074558136,
-        "M1": 0.0291821238,
-        "M2": 0.0731916654,
-        "M3": 0.0017064814
+        "CALVADOS1": 0.0291821237763497,
+        "CALVADOS2": 0.0416040480605567
     },
     {
         "one": "N",
         "three": "ASN",
         "MW": 114.1,
-        "AH_lambda": 0.0581789695,
-        "AH_sigma": 0.568,
+        "lambdas": 0.4255859009787713,
+        "sigmas": 0.568,
         "q": 0,
-        "HPS": 0.432432,
-        "HPSUrry": 0.508236,
-        "AVG": 0.2648094726,
-        "M1": 0.4383272997,
-        "M2": 0.0581789695,
-        "M3": 0.1596122196
+        "CALVADOS1": 0.4383272997027284,
+        "CALVADOS2": 0.4255859009787713
     },
     {
         "one": "E",
         "three": "GLU",
         "MW": 129.11,
-        "AH_lambda": 0.0042107191,
-        "AH_sigma": 0.592,
+        "lambdas": 0.0006935460962935,
+        "sigmas": 0.5920000000000001,
         "q": -1,
-        "HPS": 0.459459,
-        "HPSUrry": -0.08,
-        "AVG": 0.2217395834,
-        "M1": 0.0061002816,
-        "M2": 0.0042107191,
-        "M3": 0.0224500142
+        "CALVADOS1": 0.0061002816086497,
+        "CALVADOS2": 0.0006935460962935
     },
     {
         "one": "K",
         "three": "LYS",
         "MW": 128.17,
-        "AH_lambda": 0.1804654043,
-        "AH_sigma": 0.636,
+        "lambdas": 0.1790211738990582,
+        "sigmas": 0.636,
         "q": 1,
-        "HPS": 0.513514,
-        "HPSUrry": 0.302354,
-        "AVG": 0.1851426522,
-        "M1": 0.0586171732,
-        "M2": 0.1804654043,
-        "M3": 0.0948078101
+        "CALVADOS1": 0.0586171731586979,
+        "CALVADOS2": 0.1790211738990582
     },
     {
         "one": "H",
         "three": "HIS",
         "MW": 137.14,
-        "AH_lambda": 0.5112064894,
-        "AH_sigma": 0.608,
+        "lambdas": 0.4663667290557992,
+        "sigmas": 0.608,
         "q": 0,
-        "HPS": 0.513514,
-        "HPSUrry": 0.684707,
-        "AVG": 0.4091773174,
-        "M1": 0.4651948082,
-        "M2": 0.5112064894,
-        "M3": 0.4869673179
+        "CALVADOS1": 0.4651948082346978,
+        "CALVADOS2": 0.4663667290557992
     },
     {
         "one": "Q",
         "three": "GLN",
         "MW": 128.13,
-        "AH_lambda": 0.4346511118,
-        "AH_sigma": 0.602,
+        "lambdas": 0.3934318551056041,
+        "sigmas": 0.602,
         "q": 0,
-        "HPS": 0.513514,
-        "HPSUrry": 0.478824,
-        "AVG": 0.2546409647,
-        "M1": 0.3268188051,
-        "M2": 0.4346511118,
-        "M3": 0.4678384204
+        "CALVADOS1": 0.3268188050525212,
+        "CALVADOS2": 0.3934318551056041
     },
     {
         "one": "S",
         "three": "SER",
         "MW": 87.08,
-        "AH_lambda": 0.4771931962,
-        "AH_sigma": 0.518,
+        "lambdas": 0.4625416811611541,
+        "sigmas": 0.518,
         "q": 0,
-        "HPS": 0.594595,
-        "HPSUrry": 0.508236,
-        "AVG": 0.3724420532,
-        "M1": 0.464857013,
-        "M2": 0.4771931962,
-        "M3": 0.4872252949
+        "CALVADOS1": 0.4648570130065605,
+        "CALVADOS2": 0.4625416811611541
     },
     {
         "one": "C",
         "three": "CYS",
         "MW": 103.14,
-        "AH_lambda": 0.8476010023,
-        "AH_sigma": 0.548,
+        "lambdas": 0.5615435099141777,
+        "sigmas": 0.5479999999999999,
         "q": 0,
-        "HPS": 0.594595,
-        "HPSUrry": 0.56706,
-        "AVG": 0.7691022569,
-        "M1": 0.6103623543,
-        "M2": 0.8476010023,
-        "M3": 0.3998242232
+        "CALVADOS1": 0.610362354303913,
+        "CALVADOS2": 0.5615435099141777
     },
     {
         "one": "G",
         "three": "GLY",
         "MW": 57.05,
-        "AH_lambda": 0.7898753832,
-        "AH_sigma": 0.45,
+        "lambdas": 0.7058843733666401,
+        "sigmas": 0.45,
         "q": 0,
-        "HPS": 0.648649,
-        "HPSUrry": 0.49353,
-        "AVG": 0.4573157523,
-        "M1": 0.7012713678,
-        "M2": 0.7898753832,
-        "M3": 0.7841272883
+        "CALVADOS1": 0.7012713677972457,
+        "CALVADOS2": 0.7058843733666401
     },
     {
         "one": "T",
         "three": "THR",
         "MW": 101.11,
-        "AH_lambda": 0.2311010548,
-        "AH_sigma": 0.562,
+        "lambdas": 0.3713162976273964,
+        "sigmas": 0.562,
         "q": 0,
-        "HPS": 0.675676,
-        "HPSUrry": 0.508236,
-        "AVG": 0.4254603148,
-        "M1": 0.5379777613,
-        "M2": 0.2311010548,
-        "M3": 0.2737417379
+        "CALVADOS1": 0.5379777613307019,
+        "CALVADOS2": 0.3713162976273964
     },
     {
         "one": "A",
         "three": "ALA",
         "MW": 71.07,
-        "AH_lambda": 0.0054961934,
-        "AH_sigma": 0.504,
+        "lambdas": 0.2743297969040348,
+        "sigmas": 0.504,
         "q": 0,
-        "HPS": 0.72973,
-        "HPSUrry": 0.522942,
-        "AVG": 0.5331954368,
-        "M1": 0.0011162644,
-        "M2": 0.0054961934,
-        "M3": 0.0030752979
+        "CALVADOS1": 0.0011162643859539,
+        "CALVADOS2": 0.2743297969040348
     },
     {
         "one": "M",
         "three": "MET",
         "MW": 131.2,
-        "AH_lambda": 0.7584982013,
-        "AH_sigma": 0.618,
+        "lambdas": 0.5308481134337497,
+        "sigmas": 0.618,
         "q": 0,
-        "HPS": 0.837838,
-        "HPSUrry": 0.596471,
-        "AVG": 0.7255656169,
-        "M1": 0.7458993421,
-        "M2": 0.7584982013,
-        "M3": 0.9928888134
+        "CALVADOS1": 0.7458993420826714,
+        "CALVADOS2": 0.5308481134337497
     },
     {
         "one": "Y",
         "three": "TYR",
         "MW": 163.18,
-        "AH_lambda": 0.99682662,
-        "AH_sigma": 0.646,
+        "lambdas": 0.9774611449343455,
+        "sigmas": 0.6459999999999999,
         "q": 0,
-        "HPS": 0.864865,
-        "HPSUrry": 0.817059,
-        "AVG": 0.6030785548,
-        "M1": 0.995010823,
-        "M2": 0.99682662,
-        "M3": 0.9844421087
+        "CALVADOS1": 0.9950108229594324,
+        "CALVADOS2": 0.9774611449343455
     },
     {
         "one": "V",
         "three": "VAL",
         "MW": 99.13,
-        "AH_lambda": 0.4049719035,
-        "AH_sigma": 0.586,
+        "lambdas": 0.2083769608174481,
+        "sigmas": 0.5860000000000001,
         "q": 0,
-        "HPS": 0.891892,
-        "HPSUrry": 0.584707,
-        "AVG": 0.7797027423,
-        "M1": 0.4185006853,
-        "M2": 0.4049719035,
-        "M3": 0.4277711496
+        "CALVADOS1": 0.4185006852559869,
+        "CALVADOS2": 0.2083769608174481
     },
     {
         "one": "W",
         "three": "TRP",
         "MW": 186.22,
-        "AH_lambda": 0.9108322527,
-        "AH_sigma": 0.678,
+        "lambdas": 0.9893764740371644,
+        "sigmas": 0.6779999999999999,
         "q": 0,
-        "HPS": 0.945946,
-        "HPSUrry": 0.92,
-        "AVG": 0.76512858,
-        "M1": 0.9844235478,
-        "M2": 0.9108322527,
-        "M3": 0.7527633945
+        "CALVADOS1": 0.9844235478393932,
+        "CALVADOS2": 0.9893764740371644
     },
     {
         "one": "L",
         "three": "LEU",
         "MW": 113.16,
-        "AH_lambda": 0.5599323165,
-        "AH_sigma": 0.618,
+        "lambdas": 0.6440005007782226,
+        "sigmas": 0.618,
         "q": 0,
-        "HPS": 0.972973,
-        "HPSUrry": 0.640589,
-        "AVG": 0.8027772272,
-        "M1": 0.5563020306,
-        "M2": 0.5599323165,
-        "M3": 0.3351707808
+        "CALVADOS1": 0.5563020305733198,
+        "CALVADOS2": 0.6440005007782226
     },
     {
         "one": "I",
         "three": "ILE",
         "MW": 113.16,
-        "AH_lambda": 0.4009209849,
-        "AH_sigma": 0.618,
+        "lambdas": 0.5423623610671892,
+        "sigmas": 0.618,
         "q": 0,
-        "HPS": 0.972973,
-        "HPSUrry": 0.625883,
-        "AVG": 0.8626948823,
-        "M1": 0.6075268331,
-        "M2": 0.4009209849,
-        "M3": 0.6867378047
+        "CALVADOS1": 0.6075268330845265,
+        "CALVADOS2": 0.5423623610671892
     },
     {
         "one": "P",
         "three": "PRO",
         "MW": 97.12,
-        "AH_lambda": 0.3724021223,
-        "AH_sigma": 0.556,
+        "lambdas": 0.3593126576364644,
+        "sigmas": 0.5559999999999999,
         "q": 0,
-        "HPS": 1.0,
-        "HPSUrry": 0.678824,
-        "AVG": 0.4372146457,
-        "M1": 0.3729641854,
-        "M2": 0.3724021223,
-        "M3": 0.4706966794
+        "CALVADOS1": 0.3729641853599348,
+        "CALVADOS2": 0.3593126576364644
     },
     {
         "one": "F",
         "three": "PHE",
         "MW": 147.18,
-        "AH_lambda": 0.9028267586,
+        "AH_lambda": 0.8672358982062975,
         "AH_sigma": 0.636,
         "q": 0,
-        "HPS": 1.0,
-        "HPSUrry": 0.74353,
-        "AVG": 0.8206231056,
-        "M1": 0.9216959832,
-        "M2": 0.9028267586,
-        "M3": 0.8709039993
+        "CALVADOS1": 0.9216959832175944,
+        "CALVADOS2": 0.8672358982062975
     }
 ]
 )
@@ -317,7 +237,7 @@ Fields
 
     `AH_lambda`: `float`
         Lambda parameter in Ashbaugh-Hatch potential interactions quantifying residue hydrophobicity [];
-        Default set to M2 Calvados parameters
+        Default set to CALVADOS2 parameters
 
     `AH_sigma`: `float`
         Sigma parameter in Ashbaugh-Hatch potential interactions quantifying residue size [nm]
@@ -325,23 +245,11 @@ Fields
     `q`: `int`
         Residue unit charge [e]
 
-    `HPS`: `float`
-        Lambda parameter in HPS model []
-
-    `HPSUrry`: `float`
-        Lambda parameter in HPS-Urry model []
-
-    `AVG`: `float`
-        Average lambda parameter from 81 sets []
-
-    `M1`: `float`
+    `CALVADOS1`: `float`
         CALVADOS "stickyness" parameter for Ashbaugh-Hatch potential lambda value (Version 1) []
 
-    `M2`: `float`
+    `CALVADOS1`: `float`
         CALVADOS "stickyness" parameter for Ashbaugh-Hatch potential lambda value (Version 2) []
-
-    `M3`: `float`
-        CALVADOS "stickyness" parameter for Ashbaugh-Hatch potential lambda value (Version 3) []
 
 """
 
