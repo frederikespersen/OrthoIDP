@@ -12,5 +12,6 @@ cleanup/
 .todo.md
 .DS_Store
 test/
+old.zip
 out
 err
