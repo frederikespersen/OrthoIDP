@@ -88,7 +88,7 @@ def get_protein_txt_record(uniprot_id: str) -> Record:
 
 
 #························································································#
-def get_protein_metadata(uniprot_id: str) -> tuple[str]:
+def get_protein_metadata(uniprot_id: str) -> tuple:
     """
     
     Takes a protein UniProt ID,
@@ -132,7 +132,7 @@ def get_protein_metadata(uniprot_id: str) -> tuple[str]:
 
 
 #························································································#
-def get_protein_idr(uniprot_id: str, i_idr: int=0, length_order=False, region_threshold: int=0) -> tuple[str]:
+def get_protein_idr(uniprot_id: str, i_idr: int=0, length_order=False, region_threshold: int=0) -> str:
     """
 
     Takes an intrinsically disordered protein (IDP) UniProt ID,
@@ -329,7 +329,7 @@ def shuffle_seq(seq: str, seed=None) -> str:
 
 
 #························································································#
-def cluster_seq(seq: str, ngroup: list[str], cgroup: list[str], seed=None, mc_threshold=1.) -> str:
+def cluster_seq(seq: str, ngroup: list, cgroup: list, seed=None, mc_threshold=1.) -> str:
     """
 
     Takes a sequence, clusters two groups of distinct amino acids in oppposite 
