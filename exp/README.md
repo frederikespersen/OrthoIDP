@@ -10,6 +10,7 @@ Most of the input processes of this directory is orchestrated either on remote s
 This directory contains:
 - **`initial/`**: Initial test run of 3 variants of 2 human histones (H2B, H1-0) to verify histones as a model system
 - **`ortho_h1-0/`**: Single-chain simulations of orthologs of histone H1-0
+- **`para_h1`**: Single-chain simulations of human histone H1 paralogs
 - **`idp-evo_h1-0/`**: Using a $R_g$ evolution algorithm on an average histone H1-0-sequence
 
 
