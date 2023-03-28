@@ -1,5 +1,5 @@
 # OrthoIDP
-A bachelor's project on the effect of amino acid content and arrangement on the structure of IDP orthologs.
+A bachelor's project on amino acid content and structure of histone IDRs.
 
 ## Contents
 This directory contains:
