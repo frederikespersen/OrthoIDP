@@ -248,7 +248,7 @@ Fields
     `CALVADOS1`: `float`
         CALVADOS "stickyness" parameter for Ashbaugh-Hatch potential lambda value (Version 1) []
 
-    `CALVADOS1`: `float`
+    `CALVADOS2`: `float`
         CALVADOS "stickyness" parameter for Ashbaugh-Hatch potential lambda value (Version 2) []
 
 """
