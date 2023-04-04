@@ -10,6 +10,8 @@
 
 import json
 import pandas as pd
+from matplotlib import pyplot as plt
+from scipy.optimize import curve_fit
 from localcider.sequenceParameters import SequenceParameters
 import mdtraj as md
 import numpy as np
@@ -98,7 +100,7 @@ def load_metadata(metadata_path: str) -> pd.DataFrame:
 
     # Joining templates on to data (unique fields only)
     unique_fields = list(set(templates) - set(data))
-    metadata = data.join(templates[unique_fields])
+    metadata = data.join(templates[unique_fields], on='template')
 
     return metadata
 
@@ -379,3 +381,80 @@ def compute_distances(traj: md.Trajectory) -> tuple:
     return distances, mask
 
 #························································································#
+
+def compute_scaling_exponent(traj: md.Trajectory, r0_fix: float=0.68, ij_cutoff=10, plot=False) -> tuple:
+    """
+    
+    Takes a trajectory for a simulation,
+    returns the fitted scaling exponent,
+    which describes the power-law relationsship between residue pair sequence distance and cartesian distance.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `traj`: `md.Trajectory`
+            An OpenMM Trajectory object
+        
+        `r0_fix`: `float`
+            A fixed r0 parameter for fitting scaling exponent; If set to `None`, the parameter will be fitted instead.
+
+        `ij_cutoff`: `int`
+            The minimum interresidue sequence distance |i j| for data to have to use for fitting model.
+
+        `plot`: `bool`
+            Whether to plot the fit.
+
+    Returns
+    -------
+
+        `v`: `float`
+            The fitted scaling exponent []
+
+        `v_err`: `float`
+            The error on the fitted scaling exponent []
+
+        `r0`: `float``
+            The (optionally) fitted r0 [nm]
+
+        `r0_err`: `float`
+            The error on the fitted r0 [nm]
+
+    """
+
+    # Finding pairs and calculating interresidue sequence distances
+    pairs = traj.top.select_pairs('all','all')
+    ij = pairs[:,1] - pairs[:,0]
+
+    # Calculating interresidue cartesian distances
+    d = md.compute_distances(traj, pairs)
+    d_mean = d.mean(axis=0)
+    d_mean_err = d.std(axis=0, ddof=0)/np.sqrt(d.shape[0])
+
+    # Defining model (dependent on fixed r0 or not)
+    if r0_fix:
+        model = lambda x, v: r0_fix * np.power(x,v)
+        p0 = [0.5]
+    else:
+        model = lambda x, v, r0: r0 * np.power(x,v)
+        p0 = [0.5, 0.68]
+    
+    # Fitting model
+    mask = ij>ij_cutoff
+    popt, pcov = curve_fit(model, ij[mask], d_mean[mask], p0=p0, sigma=d_mean_err[mask])
+
+    # Extracting fitted value(s)
+    if r0_fix:
+        v, r0 = popt[0], r0_fix
+        v_err, r0_err = np.sqrt(np.diag(pcov))[0], None
+    else:
+        v, r0 = popt
+        v_err, r0_err = np.sqrt(np.diag(pcov))
+    
+    # Plotting
+    if plot:
+        plt.scatter(ij, d_mean, alpha=0.01)
+        plt.plot(np.unique(ij), model(np.unique(ij), *popt), c='r')
+    
+    return v, v_err, r0, r0_err
