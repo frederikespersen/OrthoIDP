@@ -67,7 +67,7 @@ def load_fasta_seq(fasta_path: str) -> tuple:
 
 
 #························································································#
-def load_metadata(metadata_path: str) -> pd.DataFrame:
+def load_metadata(metadata_path: str, join=True) -> pd.DataFrame:
     """
     
     Takes the path to a meta data .json-file, returns the meta data loaded into a DataFrame.
@@ -82,11 +82,16 @@ def load_metadata(metadata_path: str) -> pd.DataFrame:
         `metadata_path`: `str`
             The path to the meta deta .json file to load in
 
+        `join`: `bool`
+            Whether to join template metadata to data metadata;
+            Only viable if N:1 cardinality for data:template
+
     Returns
     -------
 
         `metadata`: `pandas.DataFrame`
             A DataFrame containing the meta data fields
+            (If `join=True`, a tuple of two dataframes (data; templates) are returned instead)
 
     """
 
@@ -99,8 +104,11 @@ def load_metadata(metadata_path: str) -> pd.DataFrame:
     templates = pd.DataFrame(metadata['templates']).transpose()
 
     # Joining templates on to data (unique fields only)
-    unique_fields = list(set(templates) - set(data))
-    metadata = data.join(templates[unique_fields], on='template')
+    if join:
+        unique_fields = list(set(templates) - set(data))
+        metadata = data.join(templates[unique_fields], on='template')
+    else:
+        metadata = (data, templates)
 
     return metadata
 
