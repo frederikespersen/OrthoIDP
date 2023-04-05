@@ -33,10 +33,15 @@ parser.add_argument('-r', '--restart',
                     required=False,
                     default=None,
                     help="which generation of a previous run to restart from (default: 'None') ['None': start new evolution; '-1' from the last]")
-parser.add_argument('-L', '--L_at_half_acceptance',
-                    type=float,
+parser.add_argument('-d', '--dir',
+                    type=int,
+                    required=False,
+                    default='evolution',
+                    help="the name of the directory to put simulation results in within results/")
+parser.add_argument('-f', '--fasta',
+                    type=str,
                     required=True,
-                    help="???")
+                    help="path to FASTA file with sequence to simulate")
 parser.add_argument('-m', '--measure',
                     type=str,
                     required=False,
@@ -46,19 +51,20 @@ parser.add_argument('-t', '--target_value',
                     type=float,
                     required=True,
                     help="the target value of the structural observable indicated in --measure")
-parser.add_argument('-s', '--source',
-                    type=str,
-                    required=False,
-                    help="path source code for simulate utils (default: Same dir as evolve.py)")
+parser.add_argument('-L', '--L_at_half_acceptance',
+                    type=float,
+                    required=True,
+                    help="???")
 parser.add_argument('-a', '--simulated_annealing',
                     action='store_true',
                     required=False,
                     help="Whether to simulate annealing by progressively lowering the Monte Carlo control parameter")
-# Simulation parameters
-parser.add_argument('-f', '--fasta',
+parser.add_argument('-s', '--source',
                     type=str,
-                    required=True,
-                    help="path to FASTA file with sequence to simulate")
+                    required=False,
+                    default=None,
+                    help="path source code for simulate utils (default: Same dir as evolve.py)")
+# Simulation parameters
 parser.add_argument('-b', '--boxlength',
                     type=float,
                     required=False,
@@ -84,8 +90,9 @@ parser.add_argument('-p', '--platform',
 args = parser.parse_args()
 
 restart = args.restart
-L_at_half_acceptance =args.L_at_half_acceptance
+dir = args.dir
 measure = args.measure
+L_at_half_acceptance =args.L_at_half_acceptance
 target = args.target_value
 source_path = args.source_path
 cond = args.conditions
@@ -117,8 +124,6 @@ seq = read_fasta(args.fasta, just_seq=True)
 #························································································#
 
 # Setting results directory
-if dir is None:
-    dir = f'evolution'
 dir = f'results/{dir}'
 
 # Creating directory for evolution
