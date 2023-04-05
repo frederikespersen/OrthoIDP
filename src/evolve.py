@@ -207,6 +207,7 @@ else:
     # Using latest control parameter value
     c = store.c.iloc[-1]
 
+log.message(f"Targeting a '{measure}' of {target}")
 log.message(f"Starting evolution with Monte Carlo control parameter of {c}")
 
 #························································································#
