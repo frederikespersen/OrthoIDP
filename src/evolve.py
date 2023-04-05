@@ -34,7 +34,7 @@ parser.add_argument('-r', '--restart',
                     default=None,
                     help="which generation of a previous run to restart from (default: 'None') ['None': start new evolution; '-1' from the last]")
 parser.add_argument('-d', '--dir',
-                    type=int,
+                    type=str,
                     required=False,
                     default='evolution',
                     help="the name of the directory to put simulation results in within results/")
@@ -94,7 +94,7 @@ dir = args.dir
 measure = args.measure
 L_at_half_acceptance =args.L_at_half_acceptance
 target = args.target_value
-source_path = args.source_path
+source_path = args.source
 cond = args.conditions
 
 
@@ -158,7 +158,8 @@ if restart is None:
 
     # Running intial simulation
     log.message(f"Simulating input sequence")
-    openmm_simulate(sequence=seq, dir=f"g{g}", boxlength=args.boxlength, cond=args.conditions, steps=args.steps, platform=args.platform)
+    os.makedirs(f'g{g}')
+    openmm_simulate(sequence=seq, dir=f'g{g}', boxlength=args.boxlength, cond=args.conditions, steps=args.steps, platform=args.platform)
 
     # Calculating observable
     traj = md.load_dcd(f'g{g}/traj.dcd', f'g{g}/top.pdb')
@@ -308,7 +309,8 @@ for g in range(start, 100000):
         else:
             log.message(f"Not enough frames for reweighting (Effective frames: {eff_frames})")
             log.message("Simulating sequence")
-            openmm_simulate(sequence=seq, dir=f"g{g}", boxlength=args.boxlength, cond=args.conditions, steps=args.steps, platform=args.platform)
+            os.makedirs(f'g{g}')
+            openmm_simulate(sequence=seq, dir=f'g{g}', boxlength=args.boxlength, cond=args.conditions, steps=args.steps, platform=args.platform)
 
             # Calculating observable
             traj = md.load_dcd(f'g{g}/traj.dcd', f'g{g}/top.pdb')
