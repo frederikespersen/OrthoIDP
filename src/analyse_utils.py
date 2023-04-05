@@ -16,8 +16,8 @@ from localcider.sequenceParameters import SequenceParameters
 import mdtraj as md
 import numpy as np
 
-from residues import residues
 import data_utils
+import simulate_utils
 
 
 #························································································#
@@ -320,10 +320,10 @@ def compute_rg(seq, traj: md.Trajectory) -> np.ndarray:
     Parameters
     ----------
     
-        `seq`: `str|list``
+        `seq`: `str|list`
             The sequence for the trajectory
 
-        `traj`: `md.Trajectory``
+        `traj`: `md.Trajectory`
             An OpenMM Trajectory object
 
     Returns
@@ -335,7 +335,7 @@ def compute_rg(seq, traj: md.Trajectory) -> np.ndarray:
     """
 
     # Recreating sequence and residue-type data
-    seq, res = data_utils.format_terminal_res(seq)
+    seq, res = simulate_utils.format_terminal_res(seq)
 
     # Getting molecular weights for sequence
     mass = np.array([res.loc[aa, 'MW'] for aa in seq])
@@ -466,3 +466,38 @@ def compute_scaling_exponent(traj: md.Trajectory, r0_fix: float=0.68, ij_cutoff=
         plt.plot(np.unique(ij), model(np.unique(ij), *popt), c='r')
     
     return v, v_err, r0, r0_err
+
+#························································································#
+
+def log_duration(log_path: str) -> float:
+    """
+    
+    Takes the path to a simulation log file,
+    returns the wall (real) time duration of the simulation.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `log_path`: `str`
+            The path to the traj.log file of the simulation
+
+    Returns
+    ----------
+
+        `duration`: `float`
+            The duration of the simulation in wall time [h]
+    
+    """
+
+    # Reading log file
+    log = pd.read_csv(log_path, delimiter='\t')
+    
+    # Finding the time stamp of the last step
+    duration = log["Elapsed Time (s)"].iloc[-1]
+
+    # Converting to hours
+    duration /= 3600
+
+    return duration

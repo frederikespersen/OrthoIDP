@@ -13,13 +13,13 @@ from datetime import datetime as dt
 import pandas as pd
 import numpy as np
 
-from utils import log as logger
-from residues import residues
-from conditions import conditions
-
 import mdtraj as md
 from simtk import openmm, unit
 from simtk.openmm import app, XmlSerializer
+
+from utils import log as logger
+from residues import residues
+from conditions import conditions
 
 
 #························································································#
