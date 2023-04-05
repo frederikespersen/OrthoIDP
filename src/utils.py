@@ -8,13 +8,16 @@
 """
 
 
+from datetime import datetime as dt
+
+
 #························································································#
 class log():
     """
     A simple class for logging.
     """
 
-    def __init__(self, write: bool, print: bool, file: str='log.log') -> None:
+    def __init__(self, write: bool, print: bool, file: str='log.log', timestamp=False) -> None:
         """
 
         Takes arguments for whether to write outputs to file and/or print to stdout, as well as a filepath to write log to.
@@ -33,6 +36,9 @@ class log():
             `file`: `str`
                 Which file to write log messages to (if `write = True`)
 
+            `time`: `bool`
+                Whether two print a timestamp in front of each message
+
         Methods
         -------
 
@@ -45,8 +51,9 @@ class log():
         self.write = write
         self.print = print
         self.logfile = file
+        self.timestamp = timestamp
     
-    def message(self, message: str, header: bool=False) -> None:
+    def message(self, message: str) -> None:
         """
 
         Takes a message, logs it according to object settings.
@@ -59,28 +66,19 @@ class log():
             `message`: `str`
                 Message to log.
 
-            `header`: `bool`
-                Whether to treat the message like a header (new paragraph, underlined)
-
         """
+        # Adding timestamp
+        if self.timestamp:
+            message =  f'[{dt.now()}] ' + message
 
         # Printing
         if self.print:
             print(message)
         
-        # Writing
+        # Writing to log file
         if self.write:
-
-            # Writing to log file
             with open(self.logfile, 'a+') as file:
-
-                if header:
-                    print('\n')
-
                 file.write(message + '\n')
-
-                if header:
-                    file.write('-'*len(message) + '\n')
 
 
 #························································································#

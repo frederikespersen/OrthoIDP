@@ -16,8 +16,8 @@ from localcider.sequenceParameters import SequenceParameters
 import mdtraj as md
 import numpy as np
 
-from residues import residues
 import data_utils
+import simulate_utils
 
 
 #························································································#
@@ -67,7 +67,7 @@ def load_fasta_seq(fasta_path: str) -> tuple:
 
 
 #························································································#
-def load_metadata(metadata_path: str) -> pd.DataFrame:
+def load_metadata(metadata_path: str, join=True) -> pd.DataFrame:
     """
     
     Takes the path to a meta data .json-file, returns the meta data loaded into a DataFrame.
@@ -82,11 +82,16 @@ def load_metadata(metadata_path: str) -> pd.DataFrame:
         `metadata_path`: `str`
             The path to the meta deta .json file to load in
 
+        `join`: `bool`
+            Whether to join template metadata to data metadata;
+            Only viable if N:1 cardinality for data:template
+
     Returns
     -------
 
         `metadata`: `pandas.DataFrame`
             A DataFrame containing the meta data fields
+            (If `join=True`, a tuple of two dataframes (data; templates) are returned instead)
 
     """
 
@@ -99,8 +104,11 @@ def load_metadata(metadata_path: str) -> pd.DataFrame:
     templates = pd.DataFrame(metadata['templates']).transpose()
 
     # Joining templates on to data (unique fields only)
-    unique_fields = list(set(templates) - set(data))
-    metadata = data.join(templates[unique_fields], on='template')
+    if join:
+        unique_fields = list(set(templates) - set(data))
+        metadata = data.join(templates[unique_fields], on='template')
+    else:
+        metadata = (data, templates)
 
     return metadata
 
@@ -312,10 +320,10 @@ def compute_rg(seq, traj: md.Trajectory) -> np.ndarray:
     Parameters
     ----------
     
-        `seq`: `str|list``
+        `seq`: `str|list`
             The sequence for the trajectory
 
-        `traj`: `md.Trajectory``
+        `traj`: `md.Trajectory`
             An OpenMM Trajectory object
 
     Returns
@@ -327,7 +335,7 @@ def compute_rg(seq, traj: md.Trajectory) -> np.ndarray:
     """
 
     # Recreating sequence and residue-type data
-    seq, res = data_utils.format_terminal_res(seq)
+    seq, res = simulate_utils.format_terminal_res(seq)
 
     # Getting molecular weights for sequence
     mass = np.array([res.loc[aa, 'MW'] for aa in seq])
@@ -458,3 +466,38 @@ def compute_scaling_exponent(traj: md.Trajectory, r0_fix: float=0.68, ij_cutoff=
         plt.plot(np.unique(ij), model(np.unique(ij), *popt), c='r')
     
     return v, v_err, r0, r0_err
+
+#························································································#
+
+def log_duration(log_path: str) -> float:
+    """
+    
+    Takes the path to a simulation log file,
+    returns the wall (real) time duration of the simulation.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `log_path`: `str`
+            The path to the traj.log file of the simulation
+
+    Returns
+    ----------
+
+        `duration`: `float`
+            The duration of the simulation in wall time [h]
+    
+    """
+
+    # Reading log file
+    log = pd.read_csv(log_path, delimiter='\t')
+    
+    # Finding the time stamp of the last step
+    duration = log["Elapsed Time (s)"].iloc[-1]
+
+    # Converting to hours
+    duration /= 3600
+
+    return duration
