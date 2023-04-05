@@ -324,8 +324,9 @@ for g in range(start, 100000):
                             'c': c}
 
             # Updating pool with new simulation
-            earlist_g = pool.index[0]
-            pool.drop(index=earlist_g, columns=str(earlist_g), inplace=True)
+            if len(pool) == max_pool_size:
+                earlist_g = pool.index[0]
+                pool.drop(index=earlist_g, columns=str(earlist_g), inplace=True)
             pool.loc[g] = [traj] + [evolve_utils.compute_total_energy(seq, t, cond) for t in pool.traj]
             pool[f'{g}'] = [evolve_utils.compute_total_energy(s, traj, cond) for s in store.sequence[pool.index]]
 
