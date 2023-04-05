@@ -18,6 +18,7 @@ from Bio.SwissProt import Record
 
 from residues import residues
 from simulate_utils import format_terminal_res
+import analyse_utils
 
 
 #························································································#
@@ -428,3 +429,49 @@ def cluster_seq(seq: str, ngroup: list, cgroup: list, seed=None, mc_threshold=1.
 
     return seq
 
+#························································································#
+def average_sequence(seqs) -> str:
+    """
+    
+    Takes a list or Series of sequences, returns an average sequence.
+    
+    Averaging occurs by first generating the average amino acid counts and then 
+    assembling a random sequence from that.
+    The average amino acid counts are found by multiplying the average amino acid
+    frequency of each amino acid by the average sequence length.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `seqs`: `list|pandas.Series`
+            Sequences to average
+
+    Returns
+    -------
+
+        `avg`: `str`
+            The generated average series
+    
+    """
+
+    # Setting datatype to Series
+    seqs = pd.Series(seqs)
+
+    # Finding average amino acid frequencies
+    freqs = analyse_utils.amino_acid_content(seqs).mean()
+
+    # Finding average length
+    N = seqs.str.len().mean()
+
+    # Finding average amino acid counts
+    counts = freqs * N
+
+    # Assembling random sequence using counts
+    avg = ''
+    for aa, c in counts.items():
+        avg += aa * round(c)
+    avg = shuffle_seq(avg, seed=1)
+
+    return avg

@@ -16,7 +16,6 @@ from localcider.sequenceParameters import SequenceParameters
 import mdtraj as md
 import numpy as np
 
-import data_utils
 import simulate_utils
 
 
@@ -202,54 +201,6 @@ def amino_acid_content(seqs) -> pd.DataFrame:
         freqs[aa] = seqs.apply(lambda seq: len(list(filter(lambda s: s == aa, seq))) / len(seq))
 
     return freqs
-
-
-#························································································#
-def average_sequence(seqs) -> str:
-    """
-    
-    Takes a list or Series of sequences, returns an average sequence.
-    
-    Averaging occurs by first generating the average amino acid counts and then 
-    assembling a random sequence from that.
-    The average amino acid counts are found by multiplying the average amino acid
-    frequency of each amino acid by the average sequence length.
-
-    --------------------------------------------------------------------------------
-
-    Parameters
-    ----------
-
-        `seqs`: `list|pandas.Series`
-            Sequences to average
-
-    Returns
-    -------
-
-        `avg`: `str`
-            The generated average series
-    
-    """
-
-    # Setting datatype to Series
-    seqs = pd.Series(seqs)
-
-    # Finding average amino acid frequencies
-    freqs = amino_acid_content(seqs).mean()
-
-    # Finding average length
-    N = seqs.str.len().mean()
-
-    # Finding average amino acid counts
-    counts = freqs * N
-
-    # Assembling random sequence using counts
-    avg = ''
-    for aa, c in counts.items():
-        avg += aa * round(c)
-    avg = data_utils.shuffle_seq(avg, seed=1)
-
-    return avg
 
 
 #························································································#
