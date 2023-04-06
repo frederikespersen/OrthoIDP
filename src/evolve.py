@@ -92,7 +92,7 @@ args = parser.parse_args()
 restart = args.restart
 dir = args.dir
 measure = args.measure
-L_at_half_acceptance =args.L_at_half_acceptance
+L_at_half_acceptance = args.L_at_half_acceptance
 target = args.target_value
 source_path = args.source
 cond = args.conditions
@@ -146,8 +146,9 @@ compute_observable = evolve_utils.structural_measures[measure]
 
 #························································································#
 
-# Starting from scratch (Generation 0)
 log.message("")
+
+# Starting from scratch (Generation 0)
 if restart is None:
     log.message(f"STARTING FROM GENERATION 0")
     log.message(f"Input sequence: {seq}")
@@ -168,11 +169,11 @@ if restart is None:
     
     # Initialising DataFrame for storing results
     store = pd.DataFrame(columns=['sequence','observable','simulate','mc','c'])
-    store.iloc[g] = {'sequence': seq,
-                     'observable': obs,
-                     'simulate': True,
-                     'mc': None,
-                     'c': c}
+    store.loc[g] = {'sequence': seq,
+                    'observable': obs,
+                    'simulate': True,
+                    'mc': None,
+                    'c': c}
 
     # Pickling initial generation
     store.to_pickle(store_filename)
@@ -248,6 +249,7 @@ start += 1
 t = time() - t0
 log.message(f"Preparations finished in {t/60} minutes")
 
+
 #························································································#
 #·································· E V O L U T I O N ···································#
 #·································· A L G O R I T H M ···································#
@@ -299,7 +301,7 @@ for g in range(start, 100000):
             obs = np.average(obs_pool, weights=weights)
 
             # Filling out entry
-            store.iloc[g] = {'sequence': seq,
+            store.loc[g] = {'sequence': seq,
                             'observable': obs,
                             'simulate': False,
                             'mc': None,
@@ -317,7 +319,7 @@ for g in range(start, 100000):
             obs = compute_observable(seq, traj)
             
             # Filling out entry
-            store.iloc[g] = {'sequence': seq,
+            store.loc[g] = {'sequence': seq,
                             'observable': obs,
                             'simulate': True,
                             'mc': None,

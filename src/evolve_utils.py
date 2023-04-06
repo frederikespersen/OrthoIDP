@@ -113,9 +113,9 @@ def swap_sequence(seq: str) -> str:
     # Converting to list
     swap = list(seq)
 
-    # Choosing to random positions
-    pos1 = random.randint(0,len(seq))
-    pos2 = random.randint(0,len(seq))
+    # Choosing two random positions
+    pos1 = random.randint(0,len(seq)-1)
+    pos2 = random.randint(0,len(seq)-1)
 
     # Swapping sequences
     swap[pos1], swap[pos2] = seq[pos2], seq[pos1]
