@@ -10,7 +10,7 @@ This directory contains:
 - `analyse_utils.py`: Script for analysis
 - `simulate_utils.py`: Script for simulations
 - `simulate_openmm.py`: Submission script for submitting an OpenMM simulation
-- `evolve.py`: Script for submitting an evolution
+- `evolve.py`: Submission script for submitting an evolution
 - `evolve_utils.py`: Utilitary functions for `evolve.py`
 - `residues.py`: Residue-level data and parameters as a Python object
 - `conditions.py`: Standard condition sets foorsimulatin as a Python object
