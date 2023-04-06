@@ -105,7 +105,7 @@ cond = args.conditions
 # Timing
 t0 = time()
 
-# Setting source path as the dir of simulate.py (this file) if nothing else is specified
+# Setting source path as the dir of evolve.py (this file) if nothing else is specified
 if source_path is None:
     source_path = '/'.join(__file__.split('/')[:-1])
 sys.path.append(source_path)
