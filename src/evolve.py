@@ -199,18 +199,19 @@ else:
 
     log.message(f"RESTARTING FROM GENERATION {restart}")
     
-    # Removing generations after restart
-    log.message(f"Removing simulation data from generations {', '.join([g for g in store.index if g > restart])}")
-    for g in store.index:
-        if g > restart:
-            if store.simulate[g] == True:
-                shutil.rmtree('g'+str(g))
-            store = store.drop(g)
+    # Removing generations after restart if exists
+    if store[store.index > restart].simulate.sum() > 0:
+        log.message(f"Removing simulation data from generations {', '.join([g for g in store.index if g > restart])}")
+        for g in store.index:
+            if g > restart:
+                if store.simulate[g]:
+                    shutil.rmtree('g'+str(g))
+                store = store.drop(g)
 
     # Loading trajectories and saving them in temporary DataFrame pool
     log.message("Loading previous trajectories for reweighting")
-    pool = pd.DataFrame()
-    for g in store[store.simulate][-max_pool_size:]:
+    pool = pd.DataFrame(columns=['traj'])
+    for g in store[store.simulate].index[-max_pool_size:]:
         traj = md.load_dcd(f'g{g}/traj.dcd', f'g{g}/top.pdb')
         pool.loc[g] = {'traj': traj}
 
