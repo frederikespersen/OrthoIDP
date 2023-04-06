@@ -269,7 +269,8 @@ for g in range(start, 100000):
     # Generating new sequence and initialising new entry 
     log.message("")
     log.message(f"INITIALIZING GENERATION {g}")
-    seq = evolve_utils.swap_sequence(store.sequence)
+    last_seq = store[store.mc].sequence.iloc[-1]
+    seq = evolve_utils.swap_sequence(last_seq)
     log.message(f"Generated sequence: {seq}")
 
     # Checking whether the sequence has been previously generated
