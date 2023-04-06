@@ -158,9 +158,12 @@ if restart is None:
     c = -1 * args.L_at_half_acceptance / np.log(0.5)
 
     # Running intial simulation
-    log.message(f"Simulating input sequence")
-    os.makedirs(f'g{g}')
-    openmm_simulate(sequence=seq, dir=f'g{g}', boxlength=args.boxlength, cond=args.conditions, steps=args.steps, platform=args.platform)
+    if not os.path.isdir(f'g{g}'):
+        log.message(f"Simulating input sequence")
+        os.makedirs(f'g{g}')
+        openmm_simulate(sequence=seq, dir=f'g{g}', boxlength=args.boxlength, cond=args.conditions, steps=args.steps, platform=args.platform)
+    else:
+        log.message(f"Input simulation found")
 
     # Calculating observable
     traj = md.load_dcd(f'g{g}/traj.dcd', f'g{g}/top.pdb')
@@ -172,7 +175,7 @@ if restart is None:
     store.loc[g] = {'sequence': seq,
                     'observable': obs,
                     'simulate': True,
-                    'mc': None,
+                    'mc': True,
                     'c': c}
 
     # Pickling initial generation
@@ -215,7 +218,7 @@ else:
     c = store.c.iloc[-1]
 
 log.message(f"Targeting a '{measure}' of {target}")
-log.message(f"Starting evolution with Monte Carlo control parameter of {c}")
+log.message(f"Starting evolution with Monte Carlo control parameter of {c:.6f}")
 
 #························································································#
 
@@ -247,7 +250,7 @@ start += 1
 
 # Timing
 t = time() - t0
-log.message(f"Preparations finished in {t/60} minutes")
+log.message(f"Preparations finished in {t/60:.2f} minutes")
 
 
 #························································································#
@@ -283,7 +286,7 @@ for g in range(start, 100000):
         store.loc[g] = {'sequence': seq,
                         'observable': previous_entry.observable,
                         'simulate': False,
-                        'mc': None,
+                        'mc': False,
                         'c': c}
     
     # Else, attempting to calculate observable by reweighting / simulation
@@ -304,7 +307,7 @@ for g in range(start, 100000):
             store.loc[g] = {'sequence': seq,
                             'observable': obs,
                             'simulate': False,
-                            'mc': None,
+                            'mc': False,
                             'c': c}
 
         # Else simulate as last resort
@@ -322,7 +325,7 @@ for g in range(start, 100000):
             store.loc[g] = {'sequence': seq,
                             'observable': obs,
                             'simulate': True,
-                            'mc': None,
+                            'mc': False,
                             'c': c}
 
             # Updating pool with new simulation
@@ -365,9 +368,9 @@ for g in range(start, 100000):
     # Timing
     t = time() - t0
     if t < 3600:
-        log.message(f"Generation finished in {t/60} minutes")
+        log.message(f"Generation finished in {t/60:.2f} minutes")
     else:
-        log.message(f"Generation finished in {t/3600} hours")
+        log.message(f"Generation finished in {t/3600:.2f} hours")
         
     #······························· A N N E A L I N G ··································#
 
