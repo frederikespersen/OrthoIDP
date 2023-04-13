@@ -3,7 +3,7 @@
 #SBATCH --partition=sbinlab_ib2
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
-#SBATCH --array=0-188
+#SBATCH --array=0-26
 #SBATCH -t 168:00:00
 #SBATCH -o results/out
 #SBATCH -e results/err
