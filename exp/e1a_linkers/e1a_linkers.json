@@ -1,0 +1,85 @@
+{
+    "data": {
+        "CA_CAdV1_linker": {
+            "sequence": "ELENSRSPSPLLCDWCAEADSESTISTETDVGFTLNTPPVSPLPSYSTSPASIPED"
+        },
+        "HA_HAdV31_linker": {
+            "sequence": "DVESAGEDSNEQAVNDFFPESFILAAAEGVILPEPPVLSPICEPIGGECMPQLCSEDM"
+        },
+        "HC_SAdV34_linker": {
+            "sequence": "DVVGPSDPNEQAVSSFFPESMLLASQEGVELETPPPIVDSPDPPQLTRQPERCAGPETMPQLLPEVI"
+        },
+        "HE_SAdV22_linker": {
+            "sequence": "EVDVPENDPNEEAVNDLFSDAALLAAEQANTDSGSDSDSSLHTPRPGRGEKKIPELKGEEL"
+        },
+        "HG_HAdV52_linker": {
+            "sequence": "EVDPPQDPNEDAVNSMFPECLFEAAEEGSHSSEESKRGEEL"
+        },
+        "SA_SAdV20_linker": {
+            "sequence": "DPGTETETDPLATAVDEFFPESMLLEADMPPHLESPVQPGAGGAMPTLSPEDV"
+        },
+        "BA_BAdV1_linker": {
+            "sequence": "DDASDVVSLFFPELEVQQDLPTAEEVED"
+        },
+        "CA_CAdV2_linker": {
+            "sequence": "ELETSHSPFVGLCDSCAEADTDSSASTEADSGFSPLSTPPVSPIPPHPTSPASISDD"
+        },
+        "HB_HAdV11_linker": {
+            "sequence": "EVEGSEDSNEEAVNGFFTDSMLLAANEGLELDPPLDTFDTPGVIVESGTGVRKLPDLSSVDC"
+        },
+        "HC_SAdV43_linker": {
+            "sequence": "DVLVDVNDPNEEAVSTFFPESALLAAQEGFDLHTPPLPILESPLPEPSGIPYMPELLPEVV"
+        },
+        "HE_SAdV25_linker": {
+            "sequence": "EVDVPEDDPNEEAVNDFFSDAALLAAEEASSSSSDSDSSLHTPRPGRGEKKIPELKGEEM"
+        },
+        "HG_SAdV7_linker": {
+            "sequence": "DVTGQEDENEEAVDGVFSDAMLLAAEEGIEMPNLYSPGPLVGGGEMPELQPEEE"
+        },
+        "SA_SAdV3_linker": {
+            "sequence": "DPGVEGQADEWLESVDGFFPDAMLLEADLPPSHNSNTEPESAAIPQLSSGEL"
+        },
+        "BtA_BtAdV3_linker": {
+            "sequence": "SEADSPTPEDDDVVVVADSPASDTESCVCLSTPPVSPITVYSASPNVTED"
+        },
+        "EA_EAdV1_linker": {
+            "sequence": "QEEVLYSELENMESELQLTLNTPPVSPVSGGEETEEASAPPETGSAGAAAAAAPLAESDSDSEGMSEG"
+        },
+        "HB_SAdV27_linker": {
+            "sequence": "EVDGPEDPNEEAVNGFFSDSMLLAASEGVDLDPPSETLDTPGVVVESGGGGKKLPELGAAEM"
+        },
+        "HD_HAdV10_linker": {
+            "sequence": "EVDAHDDDPNEEAVNLIFPESMILQADIANESTPLHTPTLSPIPELEEEDEL"
+        },
+        "HF_HAdV40_linker": {
+            "sequence": "EVDGFEEDANQEAVDGMFPERLLSEAESAAESGSGDSGVGEELLPVDL"
+        },
+        "OA_BAdV2_linker": {
+            "sequence": "ESPNAVDYFFPDADIPQELPTDAAAEE"
+        },
+        "SB_SAdV49_linker": {
+            "sequence": "DVDAPADGDENEVPVNDFFPDSLLLAVDEGIEVDYPPPLDTPGEPSGSHFMPDLSAEEV"
+        },
+        "BtB_BtAdV2_linker": {
+            "sequence": "SPPLSPVLCSDCQSPFGDSDTDSAAEEFSDSSDVVLCTPSVSPLPACEAPSPTITAD"
+        },
+        "HA_HAdV18_linker": {
+            "sequence": "DVDVTDNDCDEQAVSAFFPESLLLATSEGLLLTEPPVISPVAASDGLLLTDPPILSPVCEPVGGEYMPRLQPEDM"
+        },
+        "HC_HAdV5_linker": {
+            "sequence": "DVTAPEDPNEEAVSQIFPDSVMLAVQEGIDLLTFPPAPGSPEPPHLSRQPEQPEQRALGPVSMPNLVPEVI"
+        },
+        "HD_HAdV19_linker": {
+            "sequence": "EVDAHDDDPNEEAVNLIFPESLILQADIASEAVPTPLHTPTLSPIPELEEEDEL"
+        },
+        "HF_HAdV41_linker": {
+            "sequence": "ELDESEGDPNEEAVDGMFPNWMLSEDHSADSGAASGDSGVGEDLVEVNL"
+        },
+        "PC_PAdV5_linker": {
+            "sequence": "DLSQSAVDFFFPDADLNEENNSQDVGPV"
+        },
+        "SC_SAdV18_linker": {
+            "sequence": "EVESPDGDPNEEAVDGMFPDWMISQSESAEGSADSGVSGVGNLVEVDL"
+        }
+    }
+}
