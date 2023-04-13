@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=e1a_linkerss
+#SBATCH --job-name=e1a_linkers
 #SBATCH --partition=sbinlab_ib2
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
