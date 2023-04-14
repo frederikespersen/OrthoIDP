@@ -17,19 +17,19 @@ from scipy.optimize import curve_fit
 import pandas as pd
 from datetime import datetime as dt
 
+import sys
+sys.path.append("../../src")
+from utils import log as logger
+
+
+#························································································#
+
+log = logger(write=True, print=False, file=f'results/r0_scan.log')
 
 #························································································#
 
 # Finding ortholog simulations and loading trajectories
 orthologs = [id for id in os.listdir('results') if os.path.isdir(f'results/{id}')]
-trajs = {}
-for id in orthologs:
-    trajs[id] = md.load_dcd(f'results/{id}/traj.dcd', f'results/{id}/top.pdb')
-
-#························································································#
-
-# Defining scan range
-scan = pd.DataFrame(index=np.linspace(0.5,0.6,101))
 
 #························································································#
 
@@ -62,17 +62,26 @@ def r0_chi2(r0, traj):
 
 #························································································#
 
-# Looping
-for id, traj in trajs.items():
-    print(f"[{dt.now()}] FITTING SCAN FOR TRAJEJCTORY OF {id}")
-    chi2s = []
-    for r0 in scan.index:
-        chi2 = r0_chi2(r0, traj)
-        print(f"[{dt.now()}] R0 = {r0} | Chi^2 = {chi2}")
-        chi2s.append(chi2)
-    scan[id] = chi2s
+r0_min = 0.5
+r0_max = 0.6
+scan_len = 101
+scan = np.linspace(r0_min, r0_max, scan_len)
 
 #························································································#
 
-# Saving results
-scan.to_pickle("results/r0_scan.pkl")
+results = np.empty((len(orthologs), scan_len))
+
+# Looping over trajectories
+for i, id in enumerate(orthologs):
+    traj = md.load_dcd(f'results/{id}/traj.dcd', f'results/{id}/top.pdb')
+    log.message(f"[{dt.now()}] FITTING SCAN FOR TRAJEJCTORY OF {id} [{i+1}/{len(orthologs)}]")
+
+    # Looping over R0
+    for j, r0 in enumerate(scan):
+        results[i, j] = r0_chi2(r0, traj)
+
+    # Saving results
+    np.savetxt("results/r0_scan.csv", results, delimiter=',')
+    log.message(f"[{dt.now()}] Saved to results/r0_scan.csv")
+
+#························································································#
