@@ -9,7 +9,6 @@
 
 
 import random
-import itertools
 import mdtraj as md
 import numpy as np
 import pandas as pd
@@ -130,90 +129,6 @@ def swap_sequence(seq: str) -> str:
 #································ R E W E I G H T I N G ·································#
 #························································································#
 
-def compute_total_energy(seq, traj: md.Trajectory, cond='default') -> np.ndarray:
-    """
-    
-    Takes a sequence and distance matrix,
-    returns the total energy of each frame calculated using the CALVADOS model.
-    This includes the Ashbaugh-Hatch and Debye-Hückel potentials, but ignores any energy from harmonic bonds.
-
-    --------------------------------------------------------------------------------
-
-    Parameters
-    ----------
-
-        `seq`: `str|list`
-            The sequence for the trajectory
-
-        `traj`: `md.Trajectory`
-            An OpenMM Trajectory object
-
-        `cond`: `str`
-            The standard conditions to run the simulation with; see `conditions` for choices.
-
-    Returns
-    ----------
-
-        `E`: `np.ndarray[float]`
-            The total energy of each frame of the trajectory evaluated using the CALVADOS model.
-
-    """
-
-    # Deriving sequence used for simulation
-    seq, residues = simulate_utils.format_terminal_res(seq)
-
-    # Defining pairs
-    pairs_ij = traj.top.select_pairs('all','all')
-    pairs_aa = np.array(list(itertools.combinations(seq,2)))
-
-    # Calculating pairwise distances
-    distances = md.compute_distances(traj, pairs_ij)
-
-    # Creating dataframe for calculating pair energies
-    pairs = pd.DataFrame({'i': pairs_ij[:,0],
-                          'j': pairs_ij[:,1],
-                          'aa_i': pairs_aa[:,0],
-                          'aa_j': pairs_aa[:,1],
-                          'r': [frame for frame in distances.T]})
-    
-    # Finding bonded pairs
-    pairs['bonded'] = (pairs.j - pairs.i == 1)
-
-    # Setting conditions
-    cond = conditions.loc[cond]
-
-    # Calculating pairwise energy in each frame
-    E = []
-    for index, row in pairs.iterrows():
-
-        # Passing bonded pairs
-        if row.bonded:
-            E.append(row.r * 0)
-
-        # Calculating total energy for non-bonded pairs
-        else:
-            # Defining Ashbaugh-Hatch potential for amino acid pair
-            e = simulate_utils.ah_parameters(cond.eps_factor)
-            s = (residues.loc[row.aa_i].AH_sigma + residues.loc[row.aa_j].AH_sigma)/2
-            l = (residues.loc[row.aa_i].AH_lambda + residues.loc[row.aa_j].AH_lambda)/2
-            lj = lambda r: 4*e*((s/r)**12-(s/r)**6)
-            ah = lambda r: np.where(r<=s*np.power(2,1/6), lj(r)+e*(1-l), l*lj(r))
-
-            # Defining Debye-Hückel potential
-            yukawa_kappa, yukawa_epsilon = simulate_utils.dh_parameters(cond.temp, cond.ionic)
-            q = (residues.loc[row.aa_i].q + residues.loc[row.aa_j].q)/2
-            dh = lambda r: q*yukawa_epsilon*(np.exp(-yukawa_kappa*r)/r - np.exp(-yukawa_kappa*4)/4)
-
-            # Calculating total energy for each frame
-            E.append(ah(row.r) + dh(row.r))
-
-    # Returning the total energy across all pairs for each frames
-    E = np.vstack(E).sum(axis=0)
-
-    return E
-
-#························································································#
-
 def compute_MBAR(seq, pool, cond='default'):
     """
     
@@ -254,7 +169,7 @@ def compute_MBAR(seq, pool, cond='default'):
     # Calculating the energy of the sequence using previous trajectories
     Etot = []
     for traj in pool.traj:
-        Etot.append(compute_total_energy(seq, traj, cond))
+        Etot.append(analyse_utils.compute_energy(seq, traj, cond).sum(axis=0))
     Etot = np.array(Etot).flatten()
     Etots = np.vstack([Etots, Etot])
 
