@@ -181,8 +181,8 @@ def get_protein_idr(uniprot_id: str, i_idr: int=0, length_order=False, region_th
     idrs = []
     for feature in record.features:
         if 'Disordered' in feature.qualifiers.values():
-            start = feature.location.start.position
-            end = feature.location.end.position
+            start = feature.location.start
+            end = feature.location.end
             idrs.append((start, end))
     if not idrs:
         raise ValueError(f"No disordered regions were found for UniProt ID {uniprot_id}!")
