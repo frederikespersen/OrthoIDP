@@ -8,20 +8,20 @@ Most of the input processes of this directory is orchestrated either on remote s
 
 ## Contents
 This directory contains:
-- **`initial/`**: Initial test run of 3 variants of 2 human histones (H2B, H1-0) to verify histones as a model system
+- **`initial/`**: Initial test run of 3 variants of 2 human histones (H2B, H1.0) to verify histones as a model system
 - **`ortho_h1-0/`**: Single-chain simulations of orthologs of histone H1-0
 - **`para_h1`**: Single-chain simulations of human histone H1 paralogs
-- **`idp-evo_h1-0/`**: Using a $R_g$ evolution algorithm on an average histone H1-0-sequence
-
+- **`idp-evo_h1-0/`**: Using a $R_g$ evolution algorithm on an average histone H1.0-sequence
+- **`e1a_linkers`**: Recreating the work of González-Foulet [Nature, 2022] using CALVADOS2
 
 Each experiment is structures as:
 - **`<experiment>/**`**: Files from a specific experiment
     - **`data/`**: Input data for simulations and analysis
     - **`results/`**: Output data from simulations (*.gitignored*)
         - **`<variant_id>/`**: Variant specific simulation (*.gitignored*)
-    - **`<analysis>/`**: Results and figures from specific experiment analysis
+    - `<experiment>.ipynb`: Notebook for orchestrating data and analysis
     - `<experiment>.json`: Metadata on experiment (See below)
-
+    - `submit*.sh`: SLURM submission script(s)
 
 ## Experiment metadata
 Metadata on the IDR sequences used for the experiment is stored in .json files named like the experiment (i.e. `~/exp/initial/initial.json`).
@@ -41,5 +41,3 @@ The file has the following schema:
         - `region`: The general location of the extracted IDR, like NTD, CTD, or INT (Internal)
         - `location`: The precise location of the IDR in the full length protein
         - `variant`: Which variant of the `<protein_id>` that is used
-
-**To first generate data for the experiment the file must have entries in `templates`.**
