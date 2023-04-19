@@ -40,18 +40,14 @@ parser.add_argument('-e', '--end',
                     required=True,
                     help="The maximum r0 value to check")
 parser.add_argument('-i', '--increment',
-                    type=int,
+                    type=float,
                     required=True,
                     help="The increment in the range of r0 values to check")
 parser.add_argument('-o', '--output',
-                    type=int,
+                    type=str,
                     required=True,
                     help="The .csv file to append the results to")
 args = parser.parse_args()
-
-#························································································#
-
-log = logger(write=True, print=False, file=f'results/r0_scan.log')
 
 #························································································#
 
@@ -96,7 +92,6 @@ scan = np.arange(args.start, args.end + args.increment, args.increment)
 #························································································#
 
 # Looping over R0
-log.message(f"[{dt.now()}] Fitting scan of trajectory {id}")
 results = [id]
 for r0 in scan:
     results.append(r0_chi2(r0, traj))
@@ -104,6 +99,5 @@ for r0 in scan:
 # Saving results
 with open(args.output, 'a') as file:
     writer(file).writerow(results)
-log.message(f"[{dt.now()}] Saved scan of trajectory {id} to {args.output} as line #{len(file.readlines())}")
 
 #························································································#
