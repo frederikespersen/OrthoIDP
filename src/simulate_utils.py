@@ -440,6 +440,9 @@ def openmm_debye_huckel(T: float, c: float, r_cutoff=DH_cutoff) -> openmm.Custom
     dh.addGlobalParameter('yukawa_kappa', yukawa_kappa/unit.nanometer)
     dh.addGlobalParameter('yukawa_epsilon', yukawa_epsilon*unit.nanometer*unit.kilojoules_per_mole)
     dh.addGlobalParameter('dh_cutoff', r_cutoff*unit.nanometer)
+
+    # Specifying position specific parameter q
+    dh.addPerParticleParameter('q')
     
     # Set periodic boundary conditions with specified r_cutoff
     dh.setForceGroup(1)
