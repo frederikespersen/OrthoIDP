@@ -9,6 +9,7 @@
 
 
 import os
+import shutil
 from datetime import datetime as dt
 import pandas as pd
 import numpy as np
@@ -36,175 +37,7 @@ residues['AH_lambda'] = residues[f'CALVADOS2']
 #······························ S I M U L A T I O N ·····································#
 #························································································#
 
-def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqsteps: int=1000, cond: str='default', platform=None, stride: int=3000, verbose=False, log=True, savechk=True) -> None:
-    """
-    
-    Takes a sequence and simulation specifications,
-    runs a single-chain CALVADOS coarse-grained simulation.
-
-    Results of simulations are saved in the specified directory.
-
-    Simulation can be run under different conditions, with options found in `conditions`
-
-    --------------------------------------------------------------------------------
-
-    Parameters
-    ----------
-
-        `sequence`: `str`
-            A sequence to submit for simulation
-
-        `boxlength`: `float`
-            The side length of the simulation (cubic) box [nm]
-
-        `dir`: `str`
-            Directory for simulation files
-
-        `steps`: `int`
-            Number of steps to run the simulation for (10 fs steps)
-
-        `eqsteps`: `int`
-            Number of steps to subtract from trajectory as 'equilibration steps'
-
-        `cond`: `str`
-            The standard conditions to run the simulation with; see `conditions` for choices.
-
-        `platform`: `str`
-            Platform name to use for `openmm.Platform.getPlatformByName()`; 
-            Specifies use of CPU or GPU (`CUDA`)
-
-        `stride`: `int`
-            The frame sampling frequency; 
-            Number of steps between snapshots
-
-        `verbose`: `bool`
-            Whether to print log messages to stdout
-
-        `log`: `bool`
-            Whether to write log messages to `<dir>/simulate.log`
-
-        `savechk`: `bool`
-            Whether to save a checkpoint after the simulation ends
-
-    """
-    
-    log = logger(write=log, print=verbose, file=f'{dir}/simulate.log')
-    log.message(f"[{dt.now()}] SIMULATION '{dir}' ")
-    log.message(f"[{dt.now()}] Sequence: {sequence}")
-
-    # Getting conditions and residue data
-    log.message(f"[{dt.now()}] Preparing simulation with '{cond}' conditions")
-    condition = conditions.loc[cond]
-
-    # Formating terminal residues as special residue types
-    sequence, residues = format_terminal_res(sequence)
-
-    # Calculating histidine charge based on Henderson-Hasselbalch equation
-    H_pKa = 6
-    residues.loc['H','q'] = 1. / (1 + 10**(condition.pH - H_pKa))
-
-
-    # Initiating OpenMM system
-    system = openmm.System()
-
-    # Defining simulation box 
-    a = unit.Quantity(np.zeros([3]), unit.nanometers)
-    a[0] = boxlength * unit.nanometers
-    b = unit.Quantity(np.zeros([3]), unit.nanometers)
-    b[1] = boxlength * unit.nanometers
-    c = unit.Quantity(np.zeros([3]), unit.nanometers)
-    c[2] = boxlength * unit.nanometers
-    system.setDefaultPeriodicBoxVectors(a, b, c)
-
-    # Generating and loading topology
-    top_path = f'{dir}/top.pdb'
-    generate_save_topology(sequence, boxlength, top_path)
-    top = app.pdbfile.PDBFile(top_path)
-
-    # Adding molecular weights
-    for mw in map(lambda aa: residues.MW[aa], sequence):
-        system.addParticle(mw*unit.amu)
-    
-    # Initialising energy objects
-    r_0=0.38
-    k=8033
-    hb = openmm_harmonic_bond(r_0, k)
-    ah = openmm_ashbaugh_hatch(epsilon_factor=condition.eps_factor)
-    dh = openmm_debye_huckel(T=condition.temp, c=condition.ionic)
-    
-    # Setting particle-specific parameters
-    for aa in sequence:
-        aa = residues.loc[aa]
-        ah.addParticle([aa.AH_sigma*unit.nanometer, aa.AH_lambda*unit.dimensionless])
-        dh.addParticle([aa.q])
-
-    # Setting residue interaction pairs
-    N = len(sequence)
-    for i in range(N-1):
-        hb.addBond(i, i+1, r_0*unit.nanometer, k*unit.kilojoules_per_mole/(unit.nanometer**2))
-        ah.addExclusion(i, i+1)
-        dh.addExclusion(i, i+1)
-        
-    # Adding energy objects
-    for energy_term in [hb, ah, dh]:
-        system.addForce(energy_term)
-
-    # Serialising system
-    serialized_system = XmlSerializer.serialize(system)
-    with open(f'{dir}/system.xml','w') as file:
-        file.write(serialized_system)
-    
-    # Setting integrator and CPU/GPU
-    friction = 0.01
-    stepsize = 0.010 # 10 fs timestep
-    integrator = openmm.LangevinIntegrator(condition.temp*unit.kelvin, friction/unit.picosecond, stepsize*unit.picosecond) 
-    platform = openmm.Platform.getPlatformByName(platform)
-
-    # Initiating simulation object
-    simulation = app.simulation.Simulation(top.topology, system, integrator, platform) #, dict(CudaPrecision='mixed')) 
-
-    # Checking for checkpoint to start from
-    check_point = f'{dir}/restart.chk'
-    if os.path.isfile(check_point):
-        log.message(f"[{dt.now()}] Reading from check point file '{check_point}'")
-        simulation.loadCheckpoint(check_point)
-        simulation.reporters.append(app.dcdreporter.DCDReporter(f'{dir}/pretraj.dcd', stride, append=True))
-        eqsteps = 0
-    
-    # Else start from scratch
-    else:
-        log.message(f"[{dt.now()}] Starting from scratch")
-        simulation.context.setPositions(top.positions)
-        simulation.minimizeEnergy()
-        simulation.reporters.append(app.dcdreporter.DCDReporter(f'{dir}/pretraj.dcd', stride))
-
-    # Setting up log
-    simulation.reporters.append(app.statedatareporter.StateDataReporter(
-        f'{dir}/traj.log',
-        int(stride),
-        potentialEnergy=True,
-        temperature=True,
-        step=True,
-        speed=True,
-        elapsedTime=True,
-        separator='\t'))
-
-    # Running simulation
-    log.message(f"[{dt.now()}] Running simulation of {steps * stepsize / 1000} ns ({steps} steps)")
-    simulation.step(steps)
-
-    # Saving final checkpoint
-    if savechk:
-        log.message(f"[{dt.now()}] Saving check point in '{check_point}'")
-        simulation.saveCheckpoint(check_point)
-
-    # Generating trajectory without equilibration
-    log.message(f"[{dt.now()}] Saving formatted trajectory in '{dir}/traj.dcd'")
-    save_dcd(traj_path=f'{dir}/pretraj.dcd', top_path=f'{dir}/top.pdb', file_path=f'{dir}/traj.dcd', eqsteps=eqsteps)
-    os.remove(f'{dir}/pretraj.dcd')
-
-#························································································#
-def openmm_simulate_multiple(dir: str, boxlength: float, steps: int, top_path: str=None, sequence: str=None, eqsteps: int=1000,cond: str='default', platform=None, stride: int=3000, verbose=False, log=True, savechk=True) -> None:
+def openmm_simulate(dir: str, boxlength: float, steps: int, top_path: str=None, sequence: str=None, eqsteps: int=1000,cond: str='default', platform=None, stride: int=3000, verbose=False, log=True, savechk=True) -> None:
     """
     
     Takes a sequence (single-chain) or a topology (n-chain) as well as simulation specifications,
@@ -276,19 +109,19 @@ def openmm_simulate_multiple(dir: str, boxlength: float, steps: int, top_path: s
 
     # Generating arbitrary topology from sequence if topology not provided
     if top_path:
-        pass
-    if sequence:
+        shutil.copyfile(top_path, f'{dir}/top.pdb')
+    elif sequence:
         top_path = f'{dir}/top.pdb'
         generate_save_topology(sequence, boxlength, top_path)
     else:
         # Throwing error if neither topology or sequence is provided
-        raise TypeError("Either `sequence` or `traj_path` must be provided to simulate_openmm_multiple()!")
+        raise TypeError("Either `sequence` or `top_path` must be provided to simulate_openmm_multiple()!")
 
     # Loading topology
     top = app.pdbfile.PDBFile(top_path)
 
     # Retrieving residue parameters for all chains in topology
-    seqs = extract_sequences(top)
+    seqs = extract_sequences(top_path)
 
     # Initiating OpenMM system
     system = openmm.System()
@@ -388,6 +221,8 @@ def openmm_simulate_multiple(dir: str, boxlength: float, steps: int, top_path: s
 def format_terminal_res(seq, res: pd.DataFrame=residues.copy()):
     """
     
+    DEPRECATED FOR SIMULATION; TODO REMOVE FOR ANALYSIS 
+
     Takes a sequence and a `residues` DataFrame, modifies the sequence with special terminal residue types 'X' and 'Z'
     for the N- and C-terminal respectively.
     Returns the modified sequence and the modified `residues` DataFrame.
@@ -434,18 +269,18 @@ def format_terminal_res(seq, res: pd.DataFrame=residues.copy()):
     return seq, res
 
 #························································································#
-def extract_sequences(top: app.topology.Topology) -> pd.DataFrame:
+def extract_sequences(top_path: str) -> pd.DataFrame:
     """
     
-    Takes an OpenMM topology, generates a DataFrame containing CALVADOS parameters for each residue in each chain of the topology.
+    Takes the path to a .pdb topology, generates a DataFrame containing CALVADOS parameters for each residue in each chain of the topology.
 
     --------------------------------------------------------------------------------
 
     Parameters
     ----------
 
-        `top`: `openmm.app.topology.Topology`
-            An OpenMM topology
+        `top_path`: `str`
+            The path to a .pdb topology
 
     Returns
     -------
@@ -477,16 +312,20 @@ def extract_sequences(top: app.topology.Topology) -> pd.DataFrame:
 
     """
 
+    # Loading topology
+    top = md.load(top_path).topology
+
     # Preparing dataframe for storing sequences
     seqs = pd.DataFrame(columns=['chain', 'res', 'aa', 'MW', 'AH_lambda', 'AH_sigma', 'q'])
 
     # Looping over chains
     n = 0
-    for chain in top.chains():
+    residues.set_index('one', inplace=True)
+    for chain in top.chains:
 
         # Looping over residues
-        for i, res in enumerate(chain.residues()):
-            seqs.loc[res.index] = {'chain': chain.index, 'res': res.index, 'aa': res.name} | residues.loc[res.name].to_dict()
+        for i, res in enumerate(chain.residues):
+            seqs.loc[n] = {'chain': chain.index, 'res': res.index, 'aa': res.name} | residues.loc[res.name].to_dict()
             n += 1
 
         # Modifying terminal residues of chain

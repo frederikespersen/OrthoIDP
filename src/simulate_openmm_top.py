@@ -20,11 +20,11 @@ import sys
 #························································································#
 
 # Setting up argument parser
-parser = argparse.ArgumentParser(prog="Simulate", description="Runs a single-chain CALVADOS simulation of an input sequence")
-parser.add_argument('-f', '--fasta',
+parser = argparse.ArgumentParser(prog="Simulate", description="Runs a CALVADOS simulation of an input topology")
+parser.add_argument('-t', '--top',
                     type=str,
                     required=True,
-                    help="path to FASTA file with sequence to simulate")
+                    help="path to .pdb topology file to simulate")
 parser.add_argument('-b', '--boxlength',
                     type=float,
                     required=False,
@@ -56,7 +56,7 @@ parser.add_argument('-s', '--source',
 
 # Parsing arguments
 args = parser.parse_args()
-fasta_path = args.fasta
+top_path = args.top
 source_path = args.source
 platform = args.platform
 boxlength = args.boxlength
@@ -77,14 +77,9 @@ from utils import read_fasta
 
 #························································································#
 
-# Extracting fasta file
-sequence = read_fasta(fasta_path, just_seq=True)
-
-#························································································#
-
-# Using fasta file name as simulation directory if nothing else is specified
+# Using input file name as simulation directory if nothing else is specified
 if dir is None:
-    dir = fasta_path.split('/')[-1].replace('.fasta', '')
+    dir = top_path.split('/')[-1].split('.')[0]
 dir = f'results/{dir}'
 
 # Creating directory for simulation
@@ -92,7 +87,7 @@ os.makedirs(dir, exist_ok=True)
 
 #························································································#
 
-# Starting simulation
-simulate(sequence, boxlength=boxlength, dir=dir, steps=steps, eqsteps=1000, cond=cond, platform=platform)
+# Starting simulation with topology
+simulate(top_path=top_path, boxlength=boxlength, dir=dir, steps=steps, eqsteps=1000, cond=cond, platform=platform)
 
 #························································································#
