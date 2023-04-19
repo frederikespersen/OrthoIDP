@@ -9,6 +9,7 @@
 
 
 import pandas as pd
+import argparse
 
 
 #························································································#
@@ -256,4 +257,17 @@ Fields
 #························································································#
 
 if __name__ == '__main__':
+    
+    # Setting up option for producing .csv file
+    parser = argparse.ArgumentParser(prog="Residues", description="Generates a .csv of the residue parameters")
+    parser.add_argument('--csv',
+                        action='store_true',
+                        required=False,
+                        help="whether to generate a .csv file of the residue parameters")
+    
+    # Producing .csv
+    if parser.parse_args().csv:
+        residues.to_csv("residues.csv")
+
+    # Printing
     print(residues)
