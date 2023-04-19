@@ -13,6 +13,7 @@ This directory contains:
 - **`para_h1`**: Single-chain simulations of human histone H1 paralogs
 - **`idp-evo_h1-0/`**: Using a $R_g$ evolution algorithm on an average histone H1.0-sequence
 - **`e1a_linkers`**: Recreating the work of González-Foulet [Nature, 2022] using CALVADOS2
+- **`prota_h1-0`**: Two-chain simulations of ProTα and histone H1.0
 
 Each experiment is structures as:
 - **`<experiment>/**`**: Files from a specific experiment
