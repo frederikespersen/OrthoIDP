@@ -3,9 +3,9 @@
 #SBATCH --partition=sbinlab_ib2
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
-#SBATCH -t 168:00:00
-#SBATCH -o results/out
-#SBATCH -e results/err
+#SBATCH -t 1:00:00
+#SBATCH -o results/r0_scan.out
+#SBATCH -e results/r0_scan.err
 
 # Setting scan parameters
 start=5

@@ -6,8 +6,8 @@
 #SBATCH --array=0-188
 #SBATCH --mem=10G
 #SBATCH -t 168:00:00
-#SBATCH -o results/out
-#SBATCH -e results/err
+#SBATCH -o results/r0_scan.out
+#SBATCH -e results/r0_scan.err
 
 
 # Getting job input directories
