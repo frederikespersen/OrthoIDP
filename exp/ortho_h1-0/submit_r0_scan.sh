@@ -8,9 +8,9 @@
 #SBATCH -e results/r0_scan.err
 
 # Setting scan parameters
-start=5
-end=6
-increment=0.01
+start=0.5
+end=0.6
+increment=0.001
 
 # Creating new .csv file for appending results with initial header line
 output="results/r0_scan.csv"
@@ -19,4 +19,4 @@ header="id,$scan"
 echo $header > $output
 
 # Submitting scans
-sbatch r0_scan.sh $start $end $increment $output "../ortho_h1-0/results/*/"
+sbatch r0_scan.sh $start $end $increment $output "results/*/"
