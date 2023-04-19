@@ -21,6 +21,13 @@ conditions = pd.DataFrame(
         "temp":298,
         "pH":7.0,
         "ionic":0.15
+    },
+        {
+        "name":"Borgia_in_silico",
+        "eps_factor":0.2,
+        "temp":300,
+        "pH":6.0,
+        "ionic":0.0
     }
 ]
 ).set_index('name')

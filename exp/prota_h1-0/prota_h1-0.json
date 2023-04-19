@@ -1,0 +1,18 @@
+{
+    "templates": {
+        "H1-0": {
+            "uniprot_id": "P07305",
+            "name": "H10_HUMAN",
+            "description": "Histone H1.0",
+            "species": "Homo sapiens (Human)",
+            "sequence": "MTENSTSAPAAKPKRAKASKKSTDHPKYSDMIVAAIQAEKNRAGSSRQSIQKYIKSHYKVGENADSQIKLSIKRLVTTGVLKQTKGVGASGSFRLAKSDEPKKSVAFKKTKKEIKKVATPKKASKPKKAASKAPTKKPKATPVKKAKKKLAATPKKAKKPKTVKAKPVKASKPKKAKPVKPKAKSSAKRAGKKK"
+        },
+        "ProTa": {
+            "uniprot_id": "P06454",
+            "name": "PTMA_HUMAN",
+            "description": "Prothymosin alpha",
+            "species": "Homo sapiens (Human)",
+            "sequence": "MSDAAVDTSSEITTKDLKEKKEVVEEAENGRDAPANGNAENEENGEQEADNEVDEEEEEGGEEEEEEEEGDGEEEDGDEDEEAESATGKRAAEDDEDDDVDTKKQKTDEDD"
+        }
+    }
+}
