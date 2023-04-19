@@ -366,15 +366,16 @@ def openmm_ashbaugh_hatch(seq, res: pd.DataFrame, epsilon_factor: float, r_cutof
     """
 
     # Initiating model object
-    energy_expression = 'select(step(r-2^(1/6)*s),4*epsilon*l*((s/r)^12-(s/r)^6),4*epsilon*((s/r)^12-(s/r)^6)+epsilon*(1-l))'
-    parameter_expression = 's=0.5*(s1+s2); l=0.5*(l1+l2)'
+    energy_expression = 'select(step(r-2^(1/6)*s),4*epsilon*l*((s/r)^12-(s/r)^6-shift),4*epsilon*((s/r)^12-(s/r)^6-l*shift)+epsilon*(1-l))'
+    parameter_expression = 's=0.5*(s1+s2); l=0.5*(l1+l2); shift=(0.5*(s1+s2)/ah_cutoff)^12-(0.5*(s1+s2)/ah_cutoff)^6'
     ah = openmm.CustomNonbondedForce(energy_expression+';'+parameter_expression)
 
     # Calculating Lennard-Jones epsilon parameter
     epsilon = ah_parameters(epsilon_factor)
 
     # Adding global parameters
-    ah.addGlobalParameter('epsilon',epsilon*unit.kilojoules_per_mole)
+    ah.addGlobalParameter('epsilon', epsilon*unit.kilojoules_per_mole)
+    ah.addGlobalParameter('ah_cutoff', r_cutoff*unit.nanometer)
 
     # Specifying position specific parameters sigma and lambda
     ah.addPerParticleParameter('s')
@@ -435,8 +436,8 @@ def openmm_debye_huckel(seq, res: pd.DataFrame, T: float, c: float, r_cutoff=DH_
     """
 
     # Initiating model object
-    energy_expression = 'q*yukawa_epsilon*(exp(-yukawa_kappa*r)/r - exp(-yukawa_kappa*4)/4)'
-    parameter_expression = 'q=q1*q2'
+    energy_expression = 'q*yukawa_epsilon*(exp(-yukawa_kappa*r)/r-shift)'
+    parameter_expression = 'q=q1*q2; shift=exp(-yukawa_kappa*dh_cutoff)/dh_cutoff'
     dh = openmm.CustomNonbondedForce(energy_expression+';'+parameter_expression)
 
     # Calculating the inverse Debye length kappa and
@@ -447,6 +448,7 @@ def openmm_debye_huckel(seq, res: pd.DataFrame, T: float, c: float, r_cutoff=DH_
     # Adding global parameters
     dh.addGlobalParameter('yukawa_kappa', yukawa_kappa/unit.nanometer)
     dh.addGlobalParameter('yukawa_epsilon', yukawa_epsilon*unit.nanometer*unit.kilojoules_per_mole)
+    dh.addGlobalParameter('dh_cutoff', r_cutoff*unit.nanometer)
     
     # Specifying position specific parameter q
     dh.addPerParticleParameter('q')
