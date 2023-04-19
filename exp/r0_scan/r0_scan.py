@@ -2,20 +2,21 @@
     R0_scan
     --------------------------------------------------------------------------------
 
-    Script for scanning for the best common R0 value for computing the scaling exponent
-    across all orthologs.
+    Script for computing the Chi squared value for a range of r0-values for a trajectory
 
     --------------------------------------------------------------------------------
 """
 
 
 # Imports
+import argparse
 import os
 import mdtraj as md
 import numpy as np
 from scipy.optimize import curve_fit
 import pandas as pd
 from datetime import datetime as dt
+from csv import writer
 
 import sys
 sys.path.append("../../src")
@@ -24,12 +25,39 @@ from utils import log as logger
 
 #························································································#
 
+# Setting up argument parser
+parser = argparse.ArgumentParser(prog="R0 Scan", description="Runs a scan of an R0 range for a trajectory")
+parser.add_argument('-d', '--dir',
+                    type=str,
+                    required=True,
+                    help="Directory containing trajectory (traj.dcd) and topology (top.pdb)")
+parser.add_argument('-s', '--start',
+                    type=float,
+                    required=True,
+                    help="The minimum r0 value to check")
+parser.add_argument('-e', '--end',
+                    type=float,
+                    required=True,
+                    help="The maximum r0 value to check")
+parser.add_argument('-i', '--increment',
+                    type=int,
+                    required=True,
+                    help="The increment in the range of r0 values to check")
+parser.add_argument('-o', '--output',
+                    type=int,
+                    required=True,
+                    help="The .csv file to append the results to")
+args = parser.parse_args()
+
+#························································································#
+
 log = logger(write=True, print=False, file=f'results/r0_scan.log')
 
 #························································································#
 
-# Finding ortholog simulations and loading trajectories
-orthologs = [id for id in os.listdir('results') if os.path.isdir(f'results/{id}')]
+# Loading trajectory
+traj = md.load_dcd(f'{args.dir}traj.dcd', f'{args.dir}top.pdb')
+id = args.dir.split('/')[-2]
 
 #························································································#
 
@@ -62,26 +90,20 @@ def r0_chi2(r0, traj):
 
 #························································································#
 
-r0_min = 0.5
-r0_max = 0.6
-scan_len = 101
-scan = np.linspace(r0_min, r0_max, scan_len)
+# Defining scanning range
+scan = np.arange(args.start, args.end + args.increment, args.increment)
 
 #························································································#
 
-results = np.empty((len(orthologs), scan_len))
+# Looping over R0
+log.message(f"[{dt.now()}] Fitting scan of trajectory {id}")
+results = [id]
+for r0 in scan:
+    results.append(r0_chi2(r0, traj))
 
-# Looping over trajectories
-for i, id in enumerate(orthologs):
-    traj = md.load_dcd(f'results/{id}/traj.dcd', f'results/{id}/top.pdb')
-    log.message(f"[{dt.now()}] FITTING SCAN FOR TRAJEJCTORY OF {id} [{i+1}/{len(orthologs)}]")
-
-    # Looping over R0
-    for j, r0 in enumerate(scan):
-        results[i, j] = r0_chi2(r0, traj)
-
-    # Saving results
-    np.savetxt("results/r0_scan.csv", results, delimiter=',')
-    log.message(f"[{dt.now()}] Saved to results/r0_scan.csv")
+# Saving results
+with open(args.output, 'a') as file:
+    writer(file).writerow(results)
+log.message(f"[{dt.now()}] Saved scan of trajectory {id} to {args.output} as line #{len(file.readlines())}")
 
 #························································································#
