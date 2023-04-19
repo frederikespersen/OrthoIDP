@@ -9,6 +9,7 @@
 
 
 import pandas as pd
+import argparse
 
 
 #························································································#
@@ -22,12 +23,12 @@ conditions = pd.DataFrame(
         "pH":7.0,
         "ionic":0.15
     },
-        {
+    {
         "name":"Borgia_in_silico",
         "eps_factor":0.2,
         "temp":300,
         "pH":6.0,
-        "ionic":0.0
+        "ionic":0.165
     }
 ]
 ).set_index('name')
@@ -67,4 +68,17 @@ Fields
 #························································································#
 
 if __name__ == '__main__':
+    
+    # Setting up option for producing .csv file
+    parser = argparse.ArgumentParser(prog="Conditions", description="Generates a .csv of the condition options")
+    parser.add_argument('--csv',
+                        action='store_true',
+                        required=False,
+                        help="whether to generate a .csv file of the conditions")
+    
+    # Producing .csv
+    if parser.parse_args().csv:
+        conditions.to_csv("conditions.csv")
+
+    # Printing
     print(conditions)

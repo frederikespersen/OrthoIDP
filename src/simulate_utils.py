@@ -129,7 +129,7 @@ def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqste
     k=8033
     hb = openmm_harmonic_bond(r_0, k)
     ah = openmm_ashbaugh_hatch(epsilon_factor=condition.eps_factor)
-    dh = openmm_debye_huckel(T=condition.temp, c=conditions.ionic)
+    dh = openmm_debye_huckel(T=condition.temp, c=condition.ionic)
     
     # Setting particle-specific parameters
     for aa in sequence:
