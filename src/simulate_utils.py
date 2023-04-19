@@ -124,10 +124,29 @@ def openmm_simulate(sequence: str, boxlength: float, dir: str, steps: int, eqste
     for mw in map(lambda aa: residues.MW[aa], sequence):
         system.addParticle(mw*unit.amu)
     
-    # Adding energy terms
-    system.addForce(openmm_harmonic_bond(sequence, r_0=0.38, k=8033))
-    system.addForce(openmm_ashbaugh_hatch(sequence, residues, epsilon_factor=condition.eps_factor))
-    system.addForce(openmm_debye_huckel(sequence, residues, T=condition.temp, c=conditions.ionic))
+    # Initialising energy objects
+    r_0=0.38
+    k=8033
+    hb = openmm_harmonic_bond(r_0, k)
+    ah = openmm_ashbaugh_hatch(epsilon_factor=condition.eps_factor)
+    dh = openmm_debye_huckel(T=condition.temp, c=conditions.ionic)
+    
+    # Setting particle-specific parameters
+    for aa in sequence:
+        aa = residues.loc[aa]
+        ah.addParticle([aa.AH_sigma*unit.nanometer, aa.AH_lambda*unit.dimensionless])
+        dh.addParticle([aa.q])
+
+    # Setting residue interaction pairs
+    N = len(sequence)
+    for i in range(N-1):
+        hb.addBond(i, i+1, r_0*unit.nanometer, k*unit.kilojoules_per_mole/(unit.nanometer**2))
+        ah.addExclusion(i, i+1)
+        dh.addExclusion(i, i+1)
+        
+    # Adding energy objects
+    for energy_term in [hb, ah, dh]:
+        system.addForce(energy_term)
 
     # Serialising system
     serialized_system = XmlSerializer.serialize(system)
@@ -286,11 +305,11 @@ def generate_save_topology(seq, boxlength: float, file_path: str) -> None:
 #·································· M O D E L S ·········································#
 #························································································#
 
-def openmm_harmonic_bond(seq, r_0=0.38, k=8033) -> openmm.HarmonicBondForce:
+def openmm_harmonic_bond(r_0=0.38, k=8033) -> openmm.HarmonicBondForce:
     """
     
     Sets up a harmonic bond restraint energy term,
-    returns the corresponding OpenMM HarmonicBondForce object.
+    returns the corresponding OpenMM HarmonicBondForce object (which needs particle-specific interactions set).
 
     The object has periodic boundary conditions enabled.
     
@@ -298,9 +317,6 @@ def openmm_harmonic_bond(seq, r_0=0.38, k=8033) -> openmm.HarmonicBondForce:
 
     Parameters
     ----------
-
-        `seq`: `str|list`
-            A sequence to model the harmonic bond over
 
         `r_0`: `float`
             The resting distance in the model [nm]
@@ -319,11 +335,6 @@ def openmm_harmonic_bond(seq, r_0=0.38, k=8033) -> openmm.HarmonicBondForce:
     # Initiating model object
     hb = openmm.HarmonicBondForce()
 
-    # Specifying topology indices
-    N = len(seq)
-    for i in range(N-1):
-        hb.addBond(i, i+1, r_0*unit.nanometer, k*unit.kilojoules_per_mole/(unit.nanometer**2))
-
     # Enable periodic boundary conditions
     hb.setUsesPeriodicBoundaryConditions(True)
 
@@ -331,11 +342,11 @@ def openmm_harmonic_bond(seq, r_0=0.38, k=8033) -> openmm.HarmonicBondForce:
 
 
 #························································································#
-def openmm_ashbaugh_hatch(seq, res: pd.DataFrame, epsilon_factor: float, r_cutoff=AH_cutoff) -> openmm.CustomNonbondedForce:
+def openmm_ashbaugh_hatch(epsilon_factor: float, r_cutoff=AH_cutoff) -> openmm.CustomNonbondedForce:
     """
     
     Sets up a Ashbaugh-Hatch energy term,
-    returns the corresponding OpenMM CustomNonbondedForce object.
+    returns the corresponding OpenMM CustomNonbondedForce object (which needs particle-specific parameters/interactions set).
 
     The object has periodic boundary conditions enabled.
     
@@ -343,12 +354,6 @@ def openmm_ashbaugh_hatch(seq, res: pd.DataFrame, epsilon_factor: float, r_cutof
 
     Parameters
     ----------
-
-        `seq`: `str|list`
-            A sequence to model the potential over
-
-        `res`: `pd.DataFrame`
-            A :py:dict:`residues.residues` DataFrame
 
         `epsilon_factor`: `float`
             For calculating Lennard-Jones epsilon parameter (see `ah_parameters`)
@@ -380,14 +385,6 @@ def openmm_ashbaugh_hatch(seq, res: pd.DataFrame, epsilon_factor: float, r_cutof
     # Specifying position specific parameters sigma and lambda
     ah.addPerParticleParameter('s')
     ah.addPerParticleParameter('l')
-    for aa in seq:
-        aa = res.loc[aa]
-        ah.addParticle([aa.AH_sigma*unit.nanometer, aa.AH_lambda*unit.dimensionless])
-
-    # Excluding neighbour interactions
-    N = len(seq)
-    for i in range(N-1):
-        ah.addExclusion(i, i+1)
     
     # Set periodic boundary conditions with specified r_cutoff
     ah.setForceGroup(0)
@@ -398,11 +395,11 @@ def openmm_ashbaugh_hatch(seq, res: pd.DataFrame, epsilon_factor: float, r_cutof
 
 
 #························································································#
-def openmm_debye_huckel(seq, res: pd.DataFrame, T: float, c: float, r_cutoff=DH_cutoff) -> openmm.CustomNonbondedForce:
+def openmm_debye_huckel(T: float, c: float, r_cutoff=DH_cutoff) -> openmm.CustomNonbondedForce:
     """
     
     Sets up a Debye-Hückel energy term,
-    returns the corresponding OpenMM CustomNonbondedForce object.
+    returns the corresponding OpenMM CustomNonbondedForce object (which needs particle-specific parameters/interactions set).
 
     The object has periodic boundary conditions enabled.
     
@@ -410,12 +407,6 @@ def openmm_debye_huckel(seq, res: pd.DataFrame, T: float, c: float, r_cutoff=DH_
 
     Parameters
     ----------
-
-        `seq`: `str|list`
-            A sequence to model the potential over
-
-        `res`: `pd.DataFrame`
-            A :py:dict:`residues.residues` DataFrame
 
         `T`: `float`
             The absolute temperature [°K]
@@ -449,17 +440,6 @@ def openmm_debye_huckel(seq, res: pd.DataFrame, T: float, c: float, r_cutoff=DH_
     dh.addGlobalParameter('yukawa_kappa', yukawa_kappa/unit.nanometer)
     dh.addGlobalParameter('yukawa_epsilon', yukawa_epsilon*unit.nanometer*unit.kilojoules_per_mole)
     dh.addGlobalParameter('dh_cutoff', r_cutoff*unit.nanometer)
-    
-    # Specifying position specific parameter q
-    dh.addPerParticleParameter('q')
-    for aa in seq:
-        aa = res.loc[aa]
-        dh.addParticle([aa.q])
-
-    # Excluding neighbour interactions
-    N = len(seq)
-    for i in range(N-1):
-        dh.addExclusion(i, i+1)
     
     # Set periodic boundary conditions with specified r_cutoff
     dh.setForceGroup(1)
