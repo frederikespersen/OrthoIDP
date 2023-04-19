@@ -4,6 +4,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
 #SBATCH --array=0-188
+#SBATCH --mem=10G
 #SBATCH -t 168:00:00
 #SBATCH -o results/out
 #SBATCH -e results/err
@@ -21,6 +22,6 @@ source /groups/sbinlab/fpesce/.bashrc
 conda activate openmm
 
 # Submitting r0 scan
-python r0_scanpy -d $input_dir -s $1 -e $2 -i $3 -o $4
+python r0_scan.py -d $input_dir -s $1 -e $2 -i $3 -o $4
 
 echo "[`date`] FINISHED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_dir"
