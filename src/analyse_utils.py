@@ -262,44 +262,6 @@ def cider_parameters(seqs) -> pd.DataFrame:
 #······························ T R A J E C T O R Y ·····································#
 #························································································#
 
-def compute_rg(seq, traj: md.Trajectory) -> np.ndarray:
-    """
-    
-    Takes a trajectory and the original sequence for a simulation,
-    returns the radius of gyration for each frame.
-
-    --------------------------------------------------------------------------------
-
-    Parameters
-    ----------
-    
-        `seq`: `str|list`
-            The sequence for the trajectory
-
-        `traj`: `md.Trajectory`
-            An OpenMM Trajectory object
-
-    Returns
-    -------
-
-        `rg`: `np.ndarray`
-            An array of radius of gyration value for each frame
-
-    """
-
-    # Recreating sequence and residue-type data
-    seq, res = simulate_utils.format_terminal_res(seq)
-
-    # Getting molecular weights for sequence
-    mass = np.array([res.loc[aa, 'MW'] for aa in seq])
-
-    # Calculate and return a Rg Series
-    rg = md.compute_rg(traj, mass)
-
-    return rg
-
-#························································································#
-
 def compute_scaling_exponent(traj: md.Trajectory, r0_fix: float=0.68, ij_cutoff=10, plot=False) -> tuple:
     """
     
@@ -551,3 +513,187 @@ def compute_energy(seq, traj: md.Trajectory, cond='default', potentials=['AH', '
     return E
 
 #························································································#
+
+def compute_end_to_end(traj: md.Trajectory):
+    """
+    
+    Takes a trajectory,
+    computes the end-to-end distance of each frame in the trajectory.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `traj`: `md.Trajectory`
+            An OpenMM Trajectory object
+
+    Returns
+    ----------
+
+        `Re`: `np.ndarray[float]`
+            The end-to-end distance for each frame in the trajectory
+
+    """
+
+    # Computing end-to-end distance for each frame
+    Re = md.compute_distances(traj, [[0, traj.n_atoms-1]])
+
+    return Re
+
+#························································································#
+
+def compute_gyration_tensor(seq, traj: md.Trajectory):
+    """
+    
+    Takes a sequence and trajectory,
+    computes the gyration tensor of each frame in the trajectory.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `seq`: `str|list`
+            The sequence for the trajectory
+
+        `traj`: `md.Trajectory`
+            An OpenMM Trajectory object
+
+    Returns
+    ----------
+
+        `q`: `np.ndarray[float]`
+            The gyration tensor for each frame in the trajectory
+
+    """
+
+    # Deriving sequence used for simulation
+    seq, residues = simulate_utils.format_terminal_res(seq)
+
+    # Computing center of mass for each frame
+    masses = residues.loc[list(seq)].MW.values
+    cm = np.sum(traj.xyz*masses[np.newaxis,:,np.newaxis],axis=1)/masses.sum()
+
+    # Computing gyration tensor for each frame
+    si = traj.xyz - cm[:,np.newaxis,:]
+    q = np.einsum('jim,jin->jmn', si*masses.reshape(1,-1,1),si)/masses.sum()
+
+    return q
+
+#························································································#
+
+def compute_rg(seq, traj: md.Trajectory):
+    """
+    
+    Takes a sequence and trajectory,
+    computes the radius of gyration for each frame in the trajectory.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `seq`: `str|list`
+            The sequence for the trajectory
+
+        `traj`: `md.Trajectory`
+            An OpenMM Trajectory object
+
+    Returns
+    ----------
+
+        `Rg`: `np.ndarray[float]`
+            The radius of gyration for each frame in the trajectory
+
+    """
+
+    # Computing gyration tensor for each frame
+    q = compute_gyration_tensor(seq, traj)
+
+    # Computing radius of gyration for each frame:
+    tr_q = np.trace(q, axis1=1, axis2=2)
+    Rg = np.sqrt(tr_q)
+
+    return Rg
+
+#························································································#
+
+def compute_asphericity(seq, traj: md.Trajectory):
+    """
+    
+    Takes a sequence and trajectory,
+    computes the asphericity (as defined in Aronovitz & Nelson 1986) for each frame in the trajectory.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `seq`: `str|list`
+            The sequence for the trajectory
+
+        `traj`: `md.Trajectory`
+            An OpenMM Trajectory object
+
+    Returns
+    ----------
+
+        `Delta`: `np.ndarray[float]`
+            The asphericity for each frame in the trajectory
+
+    """
+
+    # Computing gyration tensor for each frame
+    q = compute_gyration_tensor(seq, traj)
+
+    # Computing traceless gyration tensor for each frame
+    tr_q = np.trace(q, axis1=1, axis2=2)
+    tr_q_mean = tr_q/3
+    q_hat = q - tr_q_mean.reshape(-1,1,1)*np.identity(3).reshape(-1,3,3)
+
+    # Computing asphericity for each frame
+    tr_q_hat_sq = np.trace(q_hat**2, axis1=1, axis2=2)
+    Delta = 3/2*tr_q_hat_sq/(tr_q**2)
+
+    return Delta
+
+#························································································#
+
+def compute_prolateness(seq, traj: md.Trajectory):
+    """
+    
+    Takes a sequence and trajectory,
+    computes the prolateness (as defined in Aronovitz & Nelson 1986) for each frame in the trajectory.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `seq`: `str|list`
+            The sequence for the trajectory
+
+        `traj`: `md.Trajectory`
+            An OpenMM Trajectory object
+
+    Returns
+    ----------
+
+        `S`: `np.ndarray[float]`
+            The prolateness for each frame in the trajectory
+
+    """
+
+    # Computing gyration tensor for each frame
+    q = compute_gyration_tensor(seq, traj)
+
+    # Computing traceless gyration tensor for each frame
+    tr_q = np.trace(q, axis1=1, axis2=2)
+    tr_q_mean = tr_q/3
+    q_hat = q - tr_q_mean.reshape(-1,1,1)*np.identity(3).reshape(-1,3,3)
+
+    # Computing prolateness for each frame
+    S = 27*np.linalg.det(q_hat)/(tr_q**3)
+
+    return S
