@@ -29,6 +29,55 @@ conditions = pd.DataFrame(
         "temp":300,
         "pH":6.0,
         "ionic":0.165
+    },
+    {
+        "name":"ionic_165",
+        "eps_factor":0.2,
+        "temp":298,
+        "pH":7.0,
+        "ionic":0.165
+    },
+    {
+        "name":"ionic_180",
+        "eps_factor":0.2,
+        "temp":298,
+        "pH":7.0,
+        "ionic":0.180
+    },
+    {
+        "name":"ionic_205",
+        "eps_factor":0.2,
+        "temp":298,
+        "pH":7.0,
+        "ionic":0.205
+    },
+    {
+        "name":"ionic_240",
+        "eps_factor":0.2,
+        "temp":298,
+        "pH":7.0,
+        "ionic":0.240
+    },
+    {
+        "name":"ionic_290",
+        "eps_factor":0.2,
+        "temp":298,
+        "pH":7.0,
+        "ionic":0.290
+    },
+    {
+        "name":"ionic_330",
+        "eps_factor":0.2,
+        "temp":298,
+        "pH":7.0,
+        "ionic":0.330
+    },
+    {
+        "name":"ionic_340",
+        "eps_factor":0.2,
+        "temp":298,
+        "pH":7.0,
+        "ionic":0.340
     }
 ]
 ).set_index('name')
