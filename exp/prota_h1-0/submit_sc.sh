@@ -6,8 +6,8 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:1
 #SBATCH -t 24:00:00
-#SBATCH -o results/out
-#SBATCH -e results/err
+#SBATCH -o results/single_chain.out
+#SBATCH -e results/single_chain.err
 
 
 # Setting input options
@@ -36,6 +36,6 @@ source /groups/sbinlab/fpesce/.bashrc
 conda activate openmm
 
 # Submitting simulation
-python ../../src/simulate_openmm.py -f $input_file -c $input_cond -d $output_dir
+python ../../src/simulate_openmm_fasta.py -f $input_file -c $input_cond -d $output_dir
 
 echo "[`date`] FINISHED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file; $input_cond"
