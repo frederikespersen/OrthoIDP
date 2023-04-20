@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=sc_prota_h1-0
 #SBATCH --partition=sbinlab_gpu
-#SBATCH --array=0-3%4
+#SBATCH --array=0-17%18
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:1
@@ -12,7 +12,7 @@
 
 # Setting input options
 input_seqs=("H1-0_WT" "PROTA_WT")
-input_conds=("default" "Borgia_in_silico")
+input_conds=("default" "Borgia_in_silico" "ionic_165" "ionic_180" "ionic_205" "ionic_240" "ionic_290" "ionic_330" "ionic_340")
 
 # Calculate the total number of tasks
 num_seqs=${#input_seqs[@]}
