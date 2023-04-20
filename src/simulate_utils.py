@@ -269,7 +269,7 @@ def format_terminal_res(seq, res: pd.DataFrame=residues.copy()):
     return seq, res
 
 #························································································#
-def extract_sequences(top_path: str) -> pd.DataFrame:
+def extract_sequences(top_path: str, res: pd.DataFrame=residues.copy()) -> pd.DataFrame:
     """
     
     Takes the path to a .pdb topology, generates a DataFrame containing CALVADOS parameters for each residue in each chain of the topology.
@@ -281,6 +281,9 @@ def extract_sequences(top_path: str) -> pd.DataFrame:
 
         `top_path`: `str`
             The path to a .pdb topology
+    
+        `res`: `pandas.DataFrame`
+            A `residues` DataFrame
 
     Returns
     -------
@@ -320,12 +323,12 @@ def extract_sequences(top_path: str) -> pd.DataFrame:
 
     # Looping over chains
     n = 0
-    residues.set_index('one', inplace=True)
+    res = res.set_index('one')
     for chain in top.chains:
 
         # Looping over residues
-        for i, res in enumerate(chain.residues):
-            seqs.loc[n] = {'chain': chain.index, 'res': res.index, 'aa': res.name} | residues.loc[res.name].to_dict()
+        for i, aa in enumerate(chain.residues):
+            seqs.loc[n] = {'chain': chain.index, 'res': aa.index, 'aa': aa.name} | res.loc[aa.name].to_dict()
             n += 1
 
         # Modifying terminal residues of chain
