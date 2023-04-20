@@ -1,21 +1,21 @@
 #!/bin/bash
 
 ###################################################################################
-# SUBMIT Template
-# ---------------
-# Template for a simulation submission script; Fill out fields marked by '<field>'.
-# Place the file in the corresponding ~/exp/< >/ folder.
+# SUBMIT ALL FASTA IN DIR Template
+# --------------------------------
+# Template for a submitting a all sequences in the fasta files in a directory for simulation
+# Fill out fields marked by '<field>', and place the file in the corresponding ~/exp/< >/ folder.
 ###################################################################################
 
 #SBATCH --job-name=<jobname>
 #SBATCH --partition=<partition>
-#SBATCH --array=<range>%<simultaneous>
+#SBATCH --array=<no. fasta files>%<simultaneous>
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:1
 #SBATCH -t <walltime>
-#SBATCH -o results/out
-#SBATCH -e results/err
+#SBATCH -o results/<jobname>.out
+#SBATCH -e results/<jobname>.err
 
 
 # Getting job input file
@@ -25,7 +25,7 @@ input_file=${input_files[$SLURM_ARRAY_TASK_ID]}
 # Displaying job info
 echo "[`date`] STARTED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file"
 
-# DeiC env settings
+# <server> env settings
 source <source>
 conda <env>
 
