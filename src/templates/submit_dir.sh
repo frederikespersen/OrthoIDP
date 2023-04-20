@@ -3,7 +3,7 @@
 ###################################################################################
 # SUBMIT ALL FASTA IN DIR Template
 # --------------------------------
-# Template for a submitting a all sequences in the fasta files in a directory for simulation
+# Template for a submitting all sequences of the fasta files in a directory for simulation
 # Fill out fields marked by '<field>', and place the file in the corresponding ~/exp/< >/ folder.
 ###################################################################################
 
