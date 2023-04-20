@@ -8,11 +8,12 @@ exp/*/results/
 auth/
 cleanup/
 
-# Other
+# Local
+src/fcode
 .todo.md
-.DS_Store
 test/
 old.zip
-out
-err
-src/fcode
+Remote.ipynb
+
+# Other
+.DS_Store
