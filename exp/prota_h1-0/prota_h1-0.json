@@ -14,5 +14,21 @@
             "species": "Homo sapiens (Human)",
             "sequence": "MSDAAVDTSSEITTKDLKEKKEVVEEAENGRDAPANGNAENEENGEQEADNEVDEEEEEGGEEEEEEEEGDGEEEDGDEDEEAESATGKRAAEDDEDDDVDTKKQKTDEDD"
         }
+    },
+    "data": {
+        "H1-0_WT": {
+            "template": "H1-0",
+            "sequence": "TKGVGASGSFRLAKSDEPKKSVAFKKTKKEIKKVATPKKASKPKKAASKAPTKKPKATPVKKAKKKLAATPKKAKKPKTVKAKPVKASKPKKAKPVKPKAKSSAKRAGKKK",
+            "location": "83:194",
+            "region": "CTD",
+            "variant": "Wild type"
+        },
+        "ProTa_WT": {
+            "template": "ProTa",
+            "sequence": "MSDAAVDTSSEITTKDLKEKKEVVEEAENGRDAPANGNAENEENGEQEADNEVDEEEEEGGEEEEEEEEGDGEEEDGDEDEEAESATGKRAAEDDEDDDVDTKKQKTDEDD",
+            "location": "0:111",
+            "region": "FL",
+            "variant": "Wild type"
+        }
     }
 }
