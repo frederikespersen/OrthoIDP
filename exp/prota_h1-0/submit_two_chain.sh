@@ -11,22 +11,13 @@
 
 
 # Setting input options
-input_tops=("H1-0_PROTA_WT")
+input_top="H1-0_PROTA_WT"
 input_conds=("default" "Borgia_in_silico" "ionic_165" "ionic_180" "ionic_205" "ionic_240" "ionic_290" "ionic_330" "ionic_340")
 
-# Calculate the total number of tasks
-num_seqs=${#input_seqs[@]}
-num_conds=${#input_conds[@]}
-
-# Calculate the current sequence and condition indices
-seq_idx=$(($SLURM_ARRAY_TASK_ID % $num_seqs))
-cond_idx=$((($SLURM_ARRAY_TASK_ID - $seq_idx) / $num_seqs))
-
-# Get the current sequence and condition
-input_seq=${input_seqs[$seq_idx]}
-input_cond=${input_conds[$cond_idx]}
-input_file="data/$input_seq.pdb"
-output_dir="two_chain/$input_cond/$input_seq"
+# Get the current condition
+input_cond=${input_conds[$SLURM_ARRAY_TASK_ID]}
+input_file="data/$input_top.pdb"
+output_dir="two_chain/$input_cond/$input_top"
 
 # Displaying job info
 echo "[`date`] STARTED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file; $input_cond"
