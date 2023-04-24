@@ -8,5 +8,5 @@ The project is divided up into seperate experiments found in **`exp/`**.
 This directory contains:
 - **`exp/`**: Experiments using [CALVADOS](https://doi.org/10.1073/pnas.2111696118) CG MD simulations
 - **`src/`**: Source code
-- `Remote.ipynb`: Notebook for orchestrating work on remote servers
+- `Remote.ipynb`: Notebook for orchestrating work on remote servers (*.gitignored*)
 - `environment.yml`: Conda environment dependencies
