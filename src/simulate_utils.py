@@ -178,7 +178,7 @@ def openmm_simulate(dir: str, boxlength: float, steps: int, top_path: str=None, 
     if os.path.isfile(check_point):
         log.message(f"[{dt.now()}] Reading from check point file '{check_point}'")
         simulation.loadCheckpoint(check_point)
-        simulation.reporters.append(app.dcdreporter.DCDReporter(f'{dir}/pretraj.dcd', stride, append=True))
+        simulation.reporters.append(app.dcdreporter.DCDReporter(f'{dir}/traj.dcd', stride, append=True))
         eqsteps = 0
     
     # Else start from scratch
