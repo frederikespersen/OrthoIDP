@@ -418,15 +418,9 @@ def merge_topologies(trajs: list, boxlength: float=None) -> md.Trajectory:
     """
 
     # Merging topology objects
-    merged_top = trajs[0].top
+    merged_traj = trajs[0]
     for traj in trajs[1:]:
-        merged_top = merged_top.join(traj.top)
-
-    # Merging coordinates
-    merged_xyz = np.concatenate([traj.xyz for traj in trajs], axis=1)
-
-    # Initialising new Trajectory object
-    merged_traj = md.Trajectory(merged_xyz, merged_top, time=0, unitcell_lengths=trajs[0].unitcell_lengths, unitcell_angles=trajs[0].unitcell_angles)
+        merged_traj = merged_traj.stack(traj)
 
     # Setting new box dimensions
     if boxlength:
