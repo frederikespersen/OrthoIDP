@@ -262,85 +262,6 @@ def cider_parameters(seqs) -> pd.DataFrame:
 #······························ T R A J E C T O R Y ·····································#
 #························································································#
 
-def compute_scaling_exponent(traj: md.Trajectory, r0_fix: float=0.68, ij_cutoff=10, plot=False) -> tuple:
-    """
-    
-    Takes a trajectory for a simulation,
-    returns the fitted scaling exponent,
-    which describes the power-law relationsship between residue pair sequence distance and cartesian distance.
-
-    --------------------------------------------------------------------------------
-
-    Parameters
-    ----------
-
-        `traj`: `md.Trajectory`
-            An OpenMM Trajectory object
-        
-        `r0_fix`: `float`
-            A fixed r0 parameter for fitting scaling exponent; If set to `None`, the parameter will be fitted instead.
-
-        `ij_cutoff`: `int`
-            The minimum interresidue sequence distance |i j| for data to have to use for fitting model.
-
-        `plot`: `bool`
-            Whether to plot the fit.
-
-    Returns
-    -------
-
-        `v`: `float`
-            The fitted scaling exponent []
-
-        `v_err`: `float`
-            The error on the fitted scaling exponent []
-
-        `r0`: `float``
-            The (optionally) fitted r0 [nm]
-
-        `r0_err`: `float`
-            The error on the fitted r0 [nm]
-
-    """
-
-    # Finding pairs and calculating interresidue sequence distances
-    pairs = traj.top.select_pairs('all','all')
-    ij = pairs[:,1] - pairs[:,0]
-
-    # Calculating interresidue cartesian distances
-    d = md.compute_distances(traj, pairs)
-    d_mean = d.mean(axis=0)
-    d_mean_err = d.std(axis=0, ddof=0)/np.sqrt(d.shape[0])
-
-    # Defining model (dependent on fixed r0 or not)
-    if r0_fix:
-        model = lambda x, v: r0_fix * np.power(x,v)
-        p0 = [0.5]
-    else:
-        model = lambda x, v, r0: r0 * np.power(x,v)
-        p0 = [0.5, 0.68]
-    
-    # Fitting model
-    mask = ij>ij_cutoff
-    popt, pcov = curve_fit(model, ij[mask], d_mean[mask], p0=p0, sigma=d_mean_err[mask])
-
-    # Extracting fitted value(s)
-    if r0_fix:
-        v, r0 = popt[0], r0_fix
-        v_err, r0_err = np.sqrt(np.diag(pcov))[0], None
-    else:
-        v, r0 = popt
-        v_err, r0_err = np.sqrt(np.diag(pcov))
-    
-    # Plotting
-    if plot:
-        plt.scatter(ij, d_mean, alpha=0.01)
-        plt.plot(np.unique(ij), model(np.unique(ij), *popt), c='r')
-    
-    return v, v_err, r0, r0_err
-
-#························································································#
-
 def log_duration(log_path: str) -> float:
     """
     
@@ -514,35 +435,6 @@ def compute_energy(seq, traj: md.Trajectory, cond='default', potentials=['AH', '
 
 #························································································#
 
-def compute_end_to_end(traj: md.Trajectory):
-    """
-    
-    Takes a trajectory,
-    computes the end-to-end distance of each frame in the trajectory.
-
-    --------------------------------------------------------------------------------
-
-    Parameters
-    ----------
-
-        `traj`: `md.Trajectory`
-            An OpenMM Trajectory object
-
-    Returns
-    ----------
-
-        `Re`: `np.ndarray[float]`
-            The end-to-end distance for each frame in the trajectory
-
-    """
-
-    # Computing end-to-end distance for each frame
-    Re = md.compute_distances(traj, [[0, traj.n_atoms-1]])
-
-    return Re
-
-#························································································#
-
 def compute_gyration_tensor(seq, traj: md.Trajectory):
     """
     
@@ -580,6 +472,35 @@ def compute_gyration_tensor(seq, traj: md.Trajectory):
     q = np.einsum('jim,jin->jmn', si*masses.reshape(1,-1,1),si)/masses.sum()
 
     return q
+
+#························································································#
+
+def compute_end_to_end(traj: md.Trajectory):
+    """
+    
+    Takes a trajectory,
+    computes the end-to-end distance of each frame in the trajectory.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `traj`: `md.Trajectory`
+            An OpenMM Trajectory object
+
+    Returns
+    ----------
+
+        `Re`: `np.ndarray[float]`
+            The end-to-end distance for each frame in the trajectory
+
+    """
+
+    # Computing end-to-end distance for each frame
+    Re = md.compute_distances(traj, [[0, traj.n_atoms-1]])
+
+    return Re
 
 #························································································#
 
@@ -697,3 +618,119 @@ def compute_prolateness(seq, traj: md.Trajectory):
     S = 27*np.linalg.det(q_hat)/(tr_q**3)
 
     return S
+
+#························································································#
+
+def compute_scaling_exponent(traj: md.Trajectory, r0_fix: float=0.68, ij_cutoff=10, plot=False) -> tuple:
+    """
+    
+    Takes a trajectory for a simulation,
+    returns the fitted scaling exponent,
+    which describes the power-law relationsship between residue pair sequence distance and cartesian distance.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `traj`: `md.Trajectory`
+            An OpenMM Trajectory object
+        
+        `r0_fix`: `float`
+            A fixed r0 parameter for fitting scaling exponent; If set to `None`, the parameter will be fitted instead.
+
+        `ij_cutoff`: `int`
+            The minimum interresidue sequence distance |i j| for data to have to use for fitting model.
+
+        `plot`: `bool`
+            Whether to plot the fit.
+
+    Returns
+    -------
+
+        `v`: `float`
+            The fitted scaling exponent []
+
+        `v_err`: `float`
+            The error on the fitted scaling exponent []
+
+        `r0`: `float``
+            The (optionally) fitted r0 [nm]
+
+        `r0_err`: `float`
+            The error on the fitted r0 [nm]
+
+    """
+
+    # Finding pairs and calculating interresidue sequence distances
+    pairs = traj.top.select_pairs('all','all')
+    ij = pairs[:,1] - pairs[:,0]
+
+    # Calculating interresidue cartesian distances
+    d = md.compute_distances(traj, pairs)
+    d_mean = d.mean(axis=0)
+    d_mean_err = d.std(axis=0, ddof=0)/np.sqrt(d.shape[0])
+
+    # Defining model (dependent on fixed r0 or not)
+    if r0_fix:
+        model = lambda x, v: r0_fix * np.power(x,v)
+        p0 = [0.5]
+    else:
+        model = lambda x, v, r0: r0 * np.power(x,v)
+        p0 = [0.5, 0.68]
+    
+    # Fitting model
+    mask = ij>ij_cutoff
+    popt, pcov = curve_fit(model, ij[mask], d_mean[mask], p0=p0, sigma=d_mean_err[mask])
+
+    # Extracting fitted value(s)
+    if r0_fix:
+        v, r0 = popt[0], r0_fix
+        v_err, r0_err = np.sqrt(np.diag(pcov))[0], None
+    else:
+        v, r0 = popt
+        v_err, r0_err = np.sqrt(np.diag(pcov))
+    
+    # Plotting
+    if plot:
+        plt.scatter(ij, d_mean, alpha=0.01)
+        plt.plot(np.unique(ij), model(np.unique(ij), *popt), c='r')
+    
+    return v, v_err, r0, r0_err
+
+#························································································#
+
+def compact_frame(traj_path: str, top_path: str) -> md.Trajectory:
+    """
+    
+    Takes the path to a .dcd trajectory and .pdb topology of a simulation,
+    returns the one frame of the trajectory with the lowest Rg (Most compact).
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `traj_dir`: `str`
+            The path to a directory of a simulation,
+            containing a traj.dcd trajectory and top.pdb topology for a simulation
+
+    Returns
+    -------
+
+        `compact_frame`: `md.Trajectory`
+            An OpenMM Trajectory object containing one frame, corresponding to the most compact
+
+    """
+
+    # Loading trajectory
+    traj = md.load_dcd(traj_path, top_path)
+
+    # Loading sequence
+    seq = ''.join(simulate_utils.extract_sequences(top_path).aa)
+    Rg = compute_rg(seq, traj)
+
+    # Selecting most compact frame
+    compact_frame = traj[Rg == Rg.min()]
+
+    return compact_frame
