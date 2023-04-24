@@ -4,7 +4,6 @@
 #SBATCH --array=0-17%18
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:1
 #SBATCH -t 168:00:00
 #SBATCH -o results/three_chain.out
 #SBATCH -e results/three_chain.err
