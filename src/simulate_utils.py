@@ -386,13 +386,13 @@ def generate_save_topology(seq, boxlength: float, file_path: str) -> None:
     traj.save_pdb(file_path)
 
 #························································································#
-def merge_topologies(trajs: list) -> md.Trajectory:
+def merge_topologies(trajs: list, boxlength: float=None) -> md.Trajectory:
     """
 
     Takes a list of topologies in the format of single-frame MDTraj trajectories,
     merges the topologies into one.
 
-    The unitcell will match that of the first topology.
+    The unitcell will match that of the first topology, if no new box length is specified.
 
     Make sure input topologies doesn't overlap; Consider translating structures by
     modifying the md.Trajectory.xyz attribute of the topology trajectory.
@@ -405,6 +405,9 @@ def merge_topologies(trajs: list) -> md.Trajectory:
         `tops`: `list[md.Trajectory]`
             MDTraj single-frame trajectories of the topologies to combine;
             (I.e. load using `md.load("xxx.pdb")`)
+
+        `boxlength`: `float`
+            An argument to overwride the box size
 
     Returns
     -------
@@ -425,6 +428,14 @@ def merge_topologies(trajs: list) -> md.Trajectory:
     # Initialising new Trajectory object
     merged_traj = md.Trajectory(merged_xyz, merged_top, time=0, unitcell_lengths=trajs[0].unitcell_lengths, unitcell_angles=trajs[0].unitcell_angles)
 
+    # Setting new box dimensions
+    if boxlength:
+        merged_traj.unitcell_lengths = [[boxlength, boxlength, boxlength]]
+
+    # Centering coordinates
+    merged_traj.center_coordinates()
+    merged_traj.xyz += merged_traj.unitcell_lengths[0,0]/2
+    
     return merged_traj
 
 
