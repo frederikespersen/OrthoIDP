@@ -435,6 +435,42 @@ def compute_energy(seq, traj: md.Trajectory, cond='default', potentials=['AH', '
 
 #························································································#
 
+def compute_com(seq, traj: md.Trajectory):
+    """
+    
+    Takes a sequence and trajectory,
+    computes the center of mass (COM) of each frame in the trajectory.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `seq`: `str|list`
+            The sequence for the trajectory
+
+        `traj`: `md.Trajectory`
+            An OpenMM Trajectory object
+
+    Returns
+    ----------
+
+        `com`: `np.ndarray[float]`
+            The center of mass for each frame in the trajectory
+
+    """
+
+    # Deriving sequence used for simulation
+    seq, residues = simulate_utils.format_terminal_res(seq)
+
+    # Computing center of mass for each frame
+    masses = residues.loc[list(seq)].MW.values
+    com = np.sum(traj.xyz*masses[np.newaxis,:,np.newaxis],axis=1)/masses.sum()
+
+    return com
+
+#························································································#
+
 def compute_gyration_tensor(seq, traj: md.Trajectory):
     """
     
@@ -464,11 +500,11 @@ def compute_gyration_tensor(seq, traj: md.Trajectory):
     seq, residues = simulate_utils.format_terminal_res(seq)
 
     # Computing center of mass for each frame
-    masses = residues.loc[list(seq)].MW.values
-    cm = np.sum(traj.xyz*masses[np.newaxis,:,np.newaxis],axis=1)/masses.sum()
+    com = compute_com(seq, traj)
 
     # Computing gyration tensor for each frame
-    si = traj.xyz - cm[:,np.newaxis,:]
+    masses = residues.loc[list(seq)].MW.values
+    si = traj.xyz - com[:,np.newaxis,:]
     q = np.einsum('jim,jin->jmn', si*masses.reshape(1,-1,1),si)/masses.sum()
 
     return q
