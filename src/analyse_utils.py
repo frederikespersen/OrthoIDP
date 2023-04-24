@@ -413,7 +413,8 @@ def compute_energy(seq, traj: md.Trajectory, cond='default', potentials=['AH', '
                 s = (residues.loc[row.aa_i].AH_sigma + residues.loc[row.aa_j].AH_sigma)/2
                 l = (residues.loc[row.aa_i].AH_lambda + residues.loc[row.aa_j].AH_lambda)/2
                 lj = lambda r: 4*e*((s/r)**12-(s/r)**6)
-                ah = lambda r: np.where(r<=s*np.power(2,1/6), lj(r)+e*(1-l), l*lj(r))
+                _ah = lambda r: np.where(r<=s*np.power(2,1/6), lj(r)+e*(1-l), l*lj(r))
+                ah = lambda r: np.where(r<=simulate_utils.AH_cutoff, _ah(r) - _ah(simulate_utils.AH_cutoff), r * 0)
             else:
                 ah = lambda r: r * 0
 
@@ -421,7 +422,8 @@ def compute_energy(seq, traj: md.Trajectory, cond='default', potentials=['AH', '
             if 'DH' in potentials:
                 yukawa_kappa, yukawa_epsilon = simulate_utils.dh_parameters(cond.temp, cond.ionic)
                 q = (residues.loc[row.aa_i].q + residues.loc[row.aa_j].q)/2
-                dh = lambda r: q*yukawa_epsilon*(np.exp(-yukawa_kappa*r)/r - np.exp(-yukawa_kappa*4)/4)
+                _dh = lambda r: q*yukawa_epsilon*(np.exp(-yukawa_kappa*r)/r)
+                dh = lambda r: np.where(r<=simulate_utils.DH_cutoff, _dh(r) - _dh(simulate_utils.DH_cutoff), r * 0)
             else:
                 dh = lambda r: r * 0
 
