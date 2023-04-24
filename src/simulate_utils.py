@@ -215,13 +215,13 @@ def openmm_simulate(dir: str, boxlength: float, steps: int, top_path: str=None, 
 
 
 #························································································#
-#····························· P R E P A R A T I O N ····································#
+#·································· T O P O O G Y ·······································#
 #························································································#
 
 def format_terminal_res(seq, res: pd.DataFrame=residues.copy()):
     """
     
-    DEPRECATED FOR SIMULATION; TODO REMOVE FOR ANALYSIS 
+    DEPRECATED FOR SIMULATION; Still used for analysis of previous results
 
     Takes a sequence and a `residues` DataFrame, modifies the sequence with special terminal residue types 'X' and 'Z'
     for the N- and C-terminal respectively.
@@ -385,8 +385,53 @@ def generate_save_topology(seq, boxlength: float, file_path: str) -> None:
     traj = md.Trajectory(xyz=np.array(coordinates).reshape(N, 3), topology=top, time=0, unitcell_lengths=[boxlength]*3, unitcell_angles=[90]*3)
     traj.save_pdb(file_path)
 
+#························································································#
+def merge_topologies(trajs: list) -> md.Trajectory:
+    """
+
+    Takes a list of topologies in the format of single-frame MDTraj trajectories,
+    merges the topologies into one.
+
+    The unitcell will match that of the first topology.
+
+    Make sure input topologies doesn't overlap; Consider translating structures by
+    modifying the md.Trajectory.xyz attribute of the topology trajectory.
+    
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `tops`: `list[md.Trajectory]`
+            MDTraj single-frame trajectories of the topologies to combine;
+            (I.e. load using `md.load("xxx.pdb")`)
+
+    Returns
+    -------
+
+        `merged_top`: `md.Trajectory`
+            A single-frame trajectory containing the merged topologies
+
+    """
+
+    # Merging topology objects
+    merged_top = trajs[0].top
+    for traj in trajs[1:]:
+        merged_top = merged_top.join(traj.top)
+
+    # Merging coordinates
+    merged_xyz = np.concatenate([traj.xyz for traj in trajs], axis=1)
+
+    # Initialising new Trajectory object
+    merged_traj = md.Trajectory(merged_xyz, merged_top, time=0, unitcell_lengths=trajs[0].unitcell_lengths, unitcell_angles=trajs[0].unitcell_angles)
+
+    return merged_traj
+
 
 #························································································#
+#···································· O P E N M M ·······································#
+#························································································#
+
 def openmm_harmonic_bond(r_0=0.38, k=8033) -> openmm.HarmonicBondForce:
     """
     
@@ -421,7 +466,6 @@ def openmm_harmonic_bond(r_0=0.38, k=8033) -> openmm.HarmonicBondForce:
     hb.setUsesPeriodicBoundaryConditions(True)
 
     return hb
-
 
 #························································································#
 def openmm_ashbaugh_hatch(epsilon_factor: float, r_cutoff=AH_cutoff) -> openmm.CustomNonbondedForce:
@@ -474,7 +518,6 @@ def openmm_ashbaugh_hatch(epsilon_factor: float, r_cutoff=AH_cutoff) -> openmm.C
     ah.setCutoffDistance(r_cutoff*unit.nanometer)
 
     return ah
-
 
 #························································································#
 def openmm_debye_huckel(T: float, c: float, r_cutoff=DH_cutoff) -> openmm.CustomNonbondedForce:
@@ -563,7 +606,6 @@ def ah_parameters(epsilon_factor: float) -> float:
     lj_epsilon = 4.184 * epsilon_factor
 
     return lj_epsilon
-
 
 #························································································#
 def dh_parameters(T: float, c: float) -> tuple:
