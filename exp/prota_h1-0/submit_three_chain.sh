@@ -24,7 +24,7 @@ cond_idx=$((($SLURM_ARRAY_TASK_ID - $top_idx) / $num_tops))
 # Get the current topology and condition
 input_top=${input_tops[$top_idx]}
 input_cond=${input_conds[$cond_idx]}
-input_file="data/$input_top.top"
+input_file="data/$input_top.pdb"
 output_dir="three_chain/$input_cond/$input_top"
 
 # Displaying job info
