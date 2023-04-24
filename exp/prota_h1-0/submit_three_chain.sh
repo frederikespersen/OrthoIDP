@@ -4,7 +4,6 @@
 #SBATCH --array=0-17%18
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:1
 #SBATCH -t 168:00:00
 #SBATCH -o results/three_chain.out
 #SBATCH -e results/three_chain.err
@@ -25,7 +24,7 @@ cond_idx=$((($SLURM_ARRAY_TASK_ID - $top_idx) / $num_tops))
 # Get the current topology and condition
 input_top=${input_tops[$top_idx]}
 input_cond=${input_conds[$cond_idx]}
-input_file="data/$input_top.top"
+input_file="data/$input_top.pdb"
 output_dir="three_chain/$input_cond/$input_top"
 
 # Displaying job info
