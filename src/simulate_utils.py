@@ -384,6 +384,7 @@ def generate_save_topology(seq, boxlength: float, file_path: str) -> None:
     # Saving topology
     traj = md.Trajectory(xyz=np.array(coordinates).reshape(N, 3), topology=top, time=0, unitcell_lengths=[boxlength]*3, unitcell_angles=[90]*3)
     traj.save_pdb(file_path)
+    fix_pdb_conects(file_path)
 
 #························································································#
 def merge_topologies(trajs: list, boxlength: float=None) -> md.Trajectory:
@@ -431,6 +432,68 @@ def merge_topologies(trajs: list, boxlength: float=None) -> md.Trajectory:
     merged_traj.xyz += merged_traj.unitcell_lengths[0,0]/2
     
     return merged_traj
+
+#························································································#
+def fix_pdb_conects(pdb_path: str) -> None:
+    """
+    
+    Takes the path to a PDB-file,
+    overwrites the file such that the CONECT lines matches the specified chains in the model.
+
+    PDB-files created by MDTraj.Trajectory.save("xxx.pdb") appears to not create correct CONECT statements,
+    which disturbs the function of topology-based methods.
+    
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `pdb_path`: `str`
+            The path to the .pdb file to proces
+
+    """
+
+    # Loading file for reading
+    assert '.pdb' in pdb_path
+    with open(pdb_path, 'r') as file:
+        lines = file.readlines()
+
+        # Assembling chains
+        chains = []
+        seq = []
+        for line in lines:
+            if "ATOM" in line:
+                seq += [line.split()[1]]
+            elif "TER" in line:
+                seq += [line.split()[1]]
+                chains.append(seq)
+                seq = []
+        chains = [sorted([int(atom) for atom in chain]) for chain in chains]
+
+        # Assembling new CONECTs
+        conects = []
+        for chain in chains:
+            for i, atom in enumerate(chain):
+                if i == 0:
+                    conect = [atom, atom+1]
+                elif i == len(chain) - 1:
+                    conect = [atom, atom-1]
+                else:
+                    conect = [atom, atom-1, atom+1]
+                conects.append(conect)
+
+        # Formatting new CONECT lines
+        conect_lines = []
+        for conect in conects:
+            conect_line = 'CONECT' + ''.join([' '*(5-len(str(i))) + str(i) for i in conect])
+            conect_lines.append(conect_line + '\n')
+
+    # Overwriting  file
+    with open(pdb_path, 'w') as file:
+        while 'CONECT' not in lines[0]:
+            file.write(lines.pop(0))
+        file.writelines(conect_lines)
+        file.write("END")
 
 
 #························································································#
