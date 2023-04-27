@@ -4,7 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:1
-#SBATCH -t 24:00:00
+#SBATCH -t 168:00:00
 #SBATCH -o results/resubmit.out
 #SBATCH -e results/resubmit.err
 
@@ -22,6 +22,6 @@ source /groups/sbinlab/fpesce/.bashrc
 conda activate openmm
 
 # Submitting simulation
-python ../../src/simulate_openmm_top.py -t $input_file -c $input_cond -d $output_dir -n 900000000
+python ../../src/simulate_openmm_top.py -t $input_file -c $input_cond -d $output_dir -n 1000000000
 
 echo "[`date`] FINISHED Job ID: $SLURM_JOB_ID | Input: $input_file"
