@@ -25,11 +25,6 @@ parser.add_argument('-t', '--top',
                     type=str,
                     required=True,
                     help="path to .pdb topology file to simulate")
-parser.add_argument('-b', '--boxlength',
-                    type=float,
-                    required=False,
-                    default=200,
-                    help="boxlength [nm] for simulation cube (default_ 200 nm)")
 parser.add_argument('-c', '--conditions',
                     type=str,
                     required=False,
@@ -59,7 +54,6 @@ args = parser.parse_args()
 top_path = args.top
 source_path = args.source
 platform = args.platform
-boxlength = args.boxlength
 cond = args.conditions
 dir = args.dir
 steps = args.steps
@@ -88,6 +82,6 @@ os.makedirs(dir, exist_ok=True)
 #························································································#
 
 # Starting simulation with topology
-simulate(top_path=top_path, boxlength=boxlength, dir=dir, steps=steps, eqsteps=1000, cond=cond, platform=platform)
+simulate(top_path=top_path, dir=dir, steps=steps, eqsteps=1000, cond=cond, platform=platform)
 
 #························································································#

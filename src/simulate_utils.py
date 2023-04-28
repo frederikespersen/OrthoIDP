@@ -37,7 +37,7 @@ residues['AH_lambda'] = residues[f'CALVADOS2']
 #······························ S I M U L A T I O N ·····································#
 #························································································#
 
-def openmm_simulate(dir: str, boxlength: float, steps: int, top_path: str=None, sequence: str=None, eqsteps: int=1000,cond: str='default', platform=None, stride: int=3000, verbose=False, log=True, savechk=True) -> None:
+def openmm_simulate(dir: str, steps: int, top_path: str=None, sequence: str=None, boxlength: float=200, eqsteps: int=1000,cond: str='default', platform=None, stride: int=3000, verbose=False, log=True, savechk=True) -> None:
     """
     
     Takes a sequence (single-chain) or a topology (n-chain) as well as simulation specifications,
@@ -52,9 +52,6 @@ def openmm_simulate(dir: str, boxlength: float, steps: int, top_path: str=None, 
     Parameters
     ----------
 
-        `boxlength`: `float`
-            The side length of the simulation (cubic) box [nm]
-
         `dir`: `str`
             Directory for simulation files
 
@@ -68,6 +65,10 @@ def openmm_simulate(dir: str, boxlength: float, steps: int, top_path: str=None, 
         `sequence`: `str`
             A sequence to submit for single-chain simulation;
             Ignored if `top_path` is provided
+
+        `boxlength`: `float`
+            The side length of the simulation (cubic) box [nm];
+            Only used for generating an arbitrary topology for if `sequence` is provided.
 
         `eqsteps`: `int`
             Number of steps to subtract from trajectory as 'equilibration steps'
@@ -119,6 +120,7 @@ def openmm_simulate(dir: str, boxlength: float, steps: int, top_path: str=None, 
 
     # Loading topology
     top = app.pdbfile.PDBFile(top_path)
+    unitcell_vector = top.getTopology().getUnitCellDimensions()
 
     # Retrieving residue parameters for all chains in topology
     seqs = extract_sequences(top_path)
@@ -126,14 +128,14 @@ def openmm_simulate(dir: str, boxlength: float, steps: int, top_path: str=None, 
     # Initiating OpenMM system
     system = openmm.System()
 
-    # Defining simulation box 
-    a = unit.Quantity(np.zeros([3]), unit.nanometers)
-    a[0] = boxlength * unit.nanometers
-    b = unit.Quantity(np.zeros([3]), unit.nanometers)
-    b[1] = boxlength * unit.nanometers
-    c = unit.Quantity(np.zeros([3]), unit.nanometers)
-    c[2] = boxlength * unit.nanometers
-    system.setDefaultPeriodicBoxVectors(a, b, c)
+    # Defining simulation box from topology
+    x = unit.Quantity(np.zeros([3]), unit.nanometers)
+    x[0] = unitcell_vector.x * unit.nanometers
+    y = unit.Quantity(np.zeros([3]), unit.nanometers)
+    y[1] = unitcell_vector.y * unit.nanometers
+    z = unit.Quantity(np.zeros([3]), unit.nanometers)
+    z[2] = unitcell_vector.z * unit.nanometers
+    system.setDefaultPeriodicBoxVectors(x, y, z)
     
     # Initialising energy objects
     r_0=0.38
