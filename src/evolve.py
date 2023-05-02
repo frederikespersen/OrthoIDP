@@ -168,7 +168,7 @@ if restart is None:
 else:
 
     # Loading previous evolution
-    store = pd.read_csv(store_filename)
+    store = pd.read_csv(store_filename, index_col="generation")
 
     # Restarting from latest generation
     if restart == -1:
