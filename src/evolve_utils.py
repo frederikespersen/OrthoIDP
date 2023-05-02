@@ -9,75 +9,28 @@
 
 
 import random
-import mdtraj as md
 import numpy as np
-import pandas as pd
-import pymbar
+from localcider.sequenceParameters import SequenceParameters
 
-import analyse_utils
-import simulate_utils
-from conditions import conditions
-
-
-#························································································#
-#···································· G E N E R A L ·····································#
-#························································································#
-
-def load_g_trajectory(g: int) -> md.Trajectory:
-    """
-    
-    Takes the number of a simulated generation,
-    returns the MDTRaj trajectory of the simulation.
-    
-    --------------------------------------------------------------------------------
-
-    Parameters
-    ----------
-
-        `g`: `int`
-            The number of the generation to load a trajectory for;
-            Must be simulated generation
-
-    Returns
-    ----------
-
-        `traj`: `md.Trajectory`
-            The simulation trajectory
-    
-    """
-
-    # Defining simulation directory
-    dir = f'g{g}'
-
-    # Checking whether exists
-
-    # Loading trajectory
-    try:
-        traj = md.load_dcd(dir+'traj.dcd', dir+'top.pdb')
-    except OSError:
-        raise ValueError(f"Generation {g} does not have simulation data!")
-
-    return traj
 
 #························································································#
 #································ O B S E R V A B L E S ·································#
 #························································································#
 
 structural_measures = {
-    'Rg': lambda seq, traj: analyse_utils.compute_rg(seq, traj).mean(),
-    'nu': lambda seq, traj: analyse_utils.compute_scaling_exponent(traj)
+    'kappa': lambda seq: SequenceParameters(seq).get_kappa()
 }
 """
 
-A dictionary containing structural measures for use in Metropolis criterion.
-All measures are set to take a sequence and trajectory as arguments.
+A dictionary containing measures for use in Metropolis criterion.
+All measures are set to take a sequence as arguments.
 
 --------------------------------------------------------------------------------
 
 Schema
 ------
 
-`<measure_id>`: Function to evaluate measure from sequence and OpenMM trajectory.
+`<measure_id>`: Function to evaluate measure from sequence.
 
 """
 
@@ -123,74 +76,52 @@ def swap_sequence(seq: str) -> str:
 
     return swap
 
-
 #························································································#
-#································ R E W E I G H T I N G ·································#
-#························································································#
-
-def compute_MBAR(seq, pool, cond='default'):
+def mc_move(obs_new: float, obs_old: float, target: float, c: float) -> bool:
     """
-    
-    Takes a new sequence, previous trajectories and the energy of their frames,
-    returns MBAR weights and the estimated number of effective frames.
+
+    Takes the observable of two states, a target, and a control parameter to scale the cost function by,
+    returns whether to perform accept the new state by the Metropolis criterion.
 
     --------------------------------------------------------------------------------
 
     Parameters
     ----------
 
-        `seq`: `str|list`
-            A new sequence to be reweighted against previous trajectories
+        `obs_new`: `float`
+            The observable of the new state
 
-        `pool`: `pd.DataFrame`
-            A DataFrame containing one column 'traj' and fields representing total energy per frame;
-            Row indices represent the generation of the sequence used for calculating energy, and
-            column names represent the generation of the trajectory used for calculating energy.
+        `obs_old`: `float`
+            The observable of the old state
 
-        `cond`: `str`
-            The standard conditions that the simulations were run with; see `conditions` for choices.
+        `target`: `float`
+            The target observable given Metropolis criterion
+        
+         `c`: `float`
+            A parameter to scale the cost function by; Influences acceptance rate
 
     Returns
     ----------
 
-        `weights`: `np.ndarray[float]`
-            The weight of each of the trajectories for reweighting
-
-        `eff_frames`: `float`
-            The effective number of independent frames
-
+        `accept`: `bool`
+            Whether to accept the new state
     
     """
-    # Getting energies from previous simulations
-    Etots = pool.drop(columns='traj').to_numpy()
-    Etots = np.array([np.concatenate(row) for row in Etots])
+    
+    # Calculating cost function
+    L = abs(obs_new - target) - abs(obs_old - target)
 
-    # Calculating the energy of the sequence using previous trajectories
-    Etot = []
-    for traj in pool.traj:
-        Etot.append(analyse_utils.compute_energy(seq, traj, cond).sum(axis=0))
-    Etot = np.array(Etot).flatten()
-    Etots = np.vstack([Etots, Etot])
+    # Calculating probability of acceptance by Metropolis criterion
+    p = min(1, np.exp(-L/c))
 
-    # Normalising energies by RT
-    R = 8.3145 * 1e-3 # kJ/mol·K
-    T = conditions.loc[cond].temp # K
-    Etots /= (R * T)
+    # Monte Carlo sampling
+    if random.random() <= p:
 
-    # Calculating MBAR weights
-    N_frame = len(pool.iloc[-1,-1])
-    N_frames = np.full((len(pool)), N_frame)
-    mbar = pymbar.MBAR(Etots, N_frames)
-    weights = mbar.W_nk[...,-1]
+        # Accepting move
+        accept = True
+    
+    else:
+        # Rejecting move
+        accept = False
 
-    # Calculating the effective number of frames (Using Kullback-Leibler divergence)
-    norm_weights = weights / weights.sum()
-    norm_weights = norm_weights[np.where(norm_weights > 1e-50)]
-    rel_entropy = np.sum(norm_weights * np.log(norm_weights * weights.size))
-    rel_eff_frames = np.exp(-rel_entropy)
-    eff_frames = rel_eff_frames * N_frames.sum()
-
-    # Formatting weights with generation indices
-    weights = pd.Series(weights, index=pool.index)
-
-    return weights, eff_frames
+    return accept

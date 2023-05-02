@@ -2,7 +2,7 @@
     Evolve
     --------------------------------------------------------------------------------
 
-    Script for running Francesco Pesce's IDP evolution algorithm.
+    Script for running a sequence evolution algorithm.
     Takes shell arguments, orchestrates preparations, and initiates simulation.
 
     --------------------------------------------------------------------------------
@@ -17,9 +17,7 @@ import os
 import sys
 import random
 import pandas as pd
-import shutil
 import numpy as np
-import mdtraj as md
 from time import time
 
 
@@ -59,43 +57,36 @@ parser.add_argument('-a', '--simulated_annealing',
                     action='store_true',
                     required=False,
                     help="Whether to simulate annealing by progressively lowering the Monte Carlo control parameter")
+parser.add_argument('-g', '--max_gen',
+                    type=int,
+                    required=False,
+                    default=100000,
+                    help="The maximum amount of generations to generate (default: 100000 generations)")
+parser.add_argument('-i', '--identical_generations',
+                    type=bool,
+                    required=False,
+                    default=True,
+                    help="Whether identical generations (sequences) are allowed or should be skipped (default: True); Consider ")
 parser.add_argument('-s', '--source',
                     type=str,
                     required=False,
                     default=None,
                     help="path source code for simulate utils (default: Same dir as evolve.py)")
-# Simulation parameters
-parser.add_argument('-b', '--boxlength',
-                    type=float,
-                    required=False,
-                    default=200,
-                    help="boxlength [nm] for simulation cube (default_ 200 nm)")
-parser.add_argument('-c', '--conditions',
-                    type=str,
-                    required=False,
-                    default='default',
-                    help="physical conditions to simulate under (default: 'default')")
-parser.add_argument('-n', '--steps',
+parser.add_argument('-p', '--pickle_period',
                     type=int,
                     required=False,
-                    default=100000000,
-                    help="the number of timesteps [10 fs] to run the simulation for (default: 100,000,000 / 1 µs)")
-parser.add_argument('-p', '--platform',
-                    type=str,
-                    required=False,
-                    default='CUDA',
-                    help="computional platform to use (default: CUDA)")
+                    default=10,
+                    help="The pickling period, i.e. how many generations to generate before pickling")
 
 # Parsing arguments
 args = parser.parse_args()
-
 restart = args.restart
 dir = args.dir
 measure = args.measure
 L_at_half_acceptance = args.L_at_half_acceptance
 target = args.target_value
 source_path = args.source
-cond = args.conditions
+
 
 
 #························································································#
@@ -114,7 +105,6 @@ sys.path.append(source_path)
 import evolve_utils
 from utils import log as logger
 from utils import read_fasta
-from simulate_utils import openmm_simulate
 
 #························································································#
 
@@ -137,7 +127,6 @@ log = logger(write=True, print=False, file='evolution.log', timestamp=True)
 
 # Standard settings
 store_filename = 'evolution.pkl'
-max_pool_size = 10
 
 #························································································#
 
@@ -157,35 +146,19 @@ if restart is None:
     # Calculating initial Monte Carlo control parameter
     c = -1 * args.L_at_half_acceptance / np.log(0.5)
 
-    # Running intial simulation
-    if not os.path.isdir(f'g{g}'):
-        log.message(f"Simulating input sequence")
-        os.makedirs(f'g{g}')
-        openmm_simulate(sequence=seq, dir=f'g{g}', boxlength=args.boxlength, cond=args.conditions, steps=args.steps, platform=args.platform)
-    else:
-        log.message(f"Input simulation found")
-
     # Calculating observable
-    traj = md.load_dcd(f'g{g}/traj.dcd', f'g{g}/top.pdb')
-    obs = compute_observable(seq, traj)
+    obs = compute_observable(seq)
     log.message(f"Calculated observable '{measure}' to {obs:.4f}")
     
     # Initialising DataFrame for storing results
     store = pd.DataFrame(columns=['sequence','observable','simulate','mc','c'])
     store.loc[g] = {'sequence': seq,
                     'observable': obs,
-                    'simulate': True,
                     'mc': True,
                     'c': c}
 
     # Pickling initial generation
     store.to_pickle(store_filename)
-
-    # Calculating energy of each frame for reweighting
-    E = evolve_utils.compute_total_energy(seq, traj)
-
-    # Saving trajectory in temporary Series pool
-    pool = pd.DataFrame({'traj':traj}, index = [g])
 
 # Restarting
 else:
@@ -202,43 +175,13 @@ else:
     # Removing generations after restart if exists
     if store[store.index > restart].simulate.sum() > 0:
         log.message(f"Removing simulation data from generations {', '.join([g for g in store.index if g > restart])}")
-        for g in store.index:
-            if g > restart:
-                if store.simulate[g]:
-                    shutil.rmtree('g'+str(g))
-                store = store.drop(g)
-
-    # Loading trajectories and saving them in temporary DataFrame pool
-    log.message("Loading previous trajectories for reweighting")
-    pool = pd.DataFrame(columns=['traj'])
-    for g in store[store.simulate].index[-max_pool_size:]:
-        traj = md.load_dcd(f'g{g}/traj.dcd', f'g{g}/top.pdb')
-        pool.loc[g] = {'traj': traj}
+        store = store.drop([g for g in store.index if g > restart])
 
     # Using latest control parameter value
     c = store.c.iloc[-1]
 
 log.message(f"Targeting a '{measure}' of {target}")
 log.message(f"Starting evolution with Monte Carlo control parameter of {c:.6f}")
-
-#························································································#
-
-# Calculating energies for all sequence in the pool using all trajectories
-# Creating dataframe with rows of used sequences and columns of used trajectories
-
-# Looping over trajectories
-for g in pool.index:
-    traj = pool.traj[g]
-
-    # Looping over sequences
-    Etots = []
-    for seq in store.sequence[pool.index]:
-
-        # Computing energy for each combination
-        Etots.append(evolve_utils.compute_total_energy(seq, traj, cond))
-
-    # Saving results in DataFrame
-    pool[f'{g}'] = Etots
 
 #························································································#
 
@@ -254,13 +197,15 @@ t = time() - t0
 log.message(f"Preparations finished in {t/60:.2f} minutes")
 
 
+
 #························································································#
 #·································· E V O L U T I O N ···································#
 #·································· A L G O R I T H M ···································#
 #························································································#
 
 # Looping over generations
-for g in range(start, 100000):
+n = 0
+for g in range(start, args.max_gen):
 
     # Timing
     t0 = time()
@@ -272,76 +217,44 @@ for g in range(start, 100000):
     log.message(f"INITIALIZING GENERATION {g}")
     last_seq = store[store.mc].sequence.iloc[-1]
     seq = evolve_utils.swap_sequence(last_seq)
-    log.message(f"Generated sequence: {seq}")
 
-    # Checking whether the sequence has been previously generated
-    identical_seqs = store[seq == store.sequence]
+    # Optionally checking whether the sequence has been previously generated:
+    if args.identical_generations:
+        while seq in store.sequence:
+            seq = evolve_utils.swap_sequence(last_seq)
+    
+    log.message(f"Generated sequence: {seq}")
 
     #···················· C O M P U T I N G   O B S E R V A B L E ·······················#
 
-    # Checking whether the sequence has been previously simulated
-    if sum(identical_seqs.simulate) > 0:
+    # Checking whether the sequence has been previously generated
+    if seq in store.sequence:
         
         # Copying old entry
-        log.message(f"Copying previously simulated identical entry in generation {identical_seqs.index[0]}")
-        previous_entry = identical_seqs[identical_seqs.simulate].iloc[0]
+        log.message(f"Copying previous identical entry in generation {store[store.sequence  == seq].index[0]}")
+        former_g = store[store.sequence  == seq].iloc[0]
         store.loc[g] = {'sequence': seq,
-                        'observable': previous_entry.observable,
-                        'simulate': False,
+                        'observable': former_g.observable,
                         'mc': False,
                         'c': c}
     
-    # Else, attempting to calculate observable by reweighting / simulation
+    # Else calculating observable anew
     else:
-        log.message("No previous simulation found for sequence")
-        log.message("Evaluating whether reweighting is possible")
-        weights, eff_frames = evolve_utils.compute_MBAR(seq, pool, cond)
         
-        # Check whether there is sufficient effective frames for reweighting
-        if eff_frames >= 20000:
-            log.message(f"Reweighting (Effective frames: {eff_frames:.0f})")
-
-            # Calculating observable of the sequence using previous trajectories
-            obs_pool = [compute_observable(seq, traj) for traj in pool.traj]
-            obs = np.average(obs_pool, weights=weights)
-
-            # Filling out entry
-            store.loc[g] = {'sequence': seq,
-                            'observable': obs,
-                            'simulate': False,
-                            'mc': False,
-                            'c': c}
-
-        # Else simulate as last resort
-        else:
-            log.message(f"Not enough frames for reweighting (Effective frames: {eff_frames})")
-            log.message("Simulating sequence")
-            os.makedirs(f'g{g}')
-            openmm_simulate(sequence=seq, dir=f'g{g}', boxlength=args.boxlength, cond=args.conditions, steps=args.steps, platform=args.platform)
-
-            # Calculating observable
-            traj = md.load_dcd(f'g{g}/traj.dcd', f'g{g}/top.pdb')
-            obs = compute_observable(seq, traj)
+        # Calculating observable
+        obs = compute_observable(seq)
             
-            # Filling out entry
-            store.loc[g] = {'sequence': seq,
-                            'observable': obs,
-                            'simulate': True,
-                            'mc': False,
-                            'c': c}
-
-            # Updating pool with new simulation
-            if len(pool) == max_pool_size:
-                earlist_g = pool.index[0]
-                pool.drop(index=earlist_g, columns=str(earlist_g), inplace=True)
-            pool.loc[g] = [traj] + [evolve_utils.compute_total_energy(seq, t, cond) for t in pool.traj]
-            pool[f'{g}'] = [evolve_utils.compute_total_energy(s, traj, cond) for s in store.sequence[pool.index]]
+        # Filling out entry
+        store.loc[g] = {'sequence': seq,
+                        'observable': obs,
+                        'mc': False,
+                        'c': c}
 
     log.message(f"Calculated observable '{measure}' to {store.observable[g]:.4f}")
 
     #··················· M O N T E   C A R L O   E V O L U T I O N ······················#
 
-    # Calculating cost function
+    # Determining whether new generation is accepted
     last_g = store[store.mc].index[-1]
     L = abs(store.observable[g] - target) - abs(store.observable[last_g] - target)
 
@@ -365,7 +278,10 @@ for g in range(start, 100000):
     #································ P I C K L I N G ···································#
 
     # Pickling current evolution
-    store.to_pickle(store_filename)
+    n += 1
+    if n >= args.pickle_period:
+        log.message(f"Pickling results to '{store_filename}' after {n} generations")
+        store.to_pickle(store_filename)
 
     # Timing
     t = time() - t0
