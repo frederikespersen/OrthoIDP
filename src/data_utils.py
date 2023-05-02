@@ -17,7 +17,6 @@ from Bio import SwissProt
 from Bio.SwissProt import Record
 
 from residues import residues
-from simulate_utils import format_terminal_res
 import analyse_utils
 
 

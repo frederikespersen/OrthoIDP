@@ -16,7 +16,6 @@ import pymbar
 
 import analyse_utils
 import simulate_utils
-from simulate_utils import format_terminal_res
 from conditions import conditions
 
 

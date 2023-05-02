@@ -332,10 +332,10 @@ def compute_distance_contact(traj: md.Trajectory) -> np.ndarray:
 
 #························································································#
 
-def compute_energy(seq, traj: md.Trajectory, cond='default', potentials=['AH', 'DH']) -> np.ndarray:
+def compute_energy(traj: md.Trajectory, cond='default', potentials=['AH', 'DH']) -> np.ndarray:
     """
     
-    Takes a sequence and distance matrix,
+    Takes a trajectory,
     returns the total energy of each frame calculated using the CALVADOS model.
     This includes the Ashbaugh-Hatch and Debye-Hückel potentials, but ignores any energy from harmonic bonds.
 
@@ -343,9 +343,6 @@ def compute_energy(seq, traj: md.Trajectory, cond='default', potentials=['AH', '
 
     Parameters
     ----------
-
-        `seq`: `str|list`
-            The sequence for the trajectory
 
         `traj`: `md.Trajectory`
             An OpenMM Trajectory object
@@ -365,11 +362,10 @@ def compute_energy(seq, traj: md.Trajectory, cond='default', potentials=['AH', '
     """
 
     # Deriving sequence used for simulation
-    seq, residues = simulate_utils.format_terminal_res(seq)
+    residues = simulate_utils.extract_sequences(traj.topology)
 
     # Defining pairs
     pairs_ij = traj.top.select_pairs('all','all')
-    pairs_aa = np.array(list(itertools.combinations(seq,2)))
 
     # Calculating pairwise distances
     distances = md.compute_distances(traj, pairs_ij)
@@ -377,8 +373,6 @@ def compute_energy(seq, traj: md.Trajectory, cond='default', potentials=['AH', '
     # Creating dataframe for calculating pair energies
     pairs = pd.DataFrame({'i': pairs_ij[:,0],
                           'j': pairs_ij[:,1],
-                          'aa_i': pairs_aa[:,0],
-                          'aa_j': pairs_aa[:,1],
                           'r': [frame for frame in distances.T]})
     
     # Finding bonded pairs
@@ -410,8 +404,8 @@ def compute_energy(seq, traj: md.Trajectory, cond='default', potentials=['AH', '
             # Defining Ashbaugh-Hatch potential for amino acid pair
             if 'AH' in potentials:
                 e = simulate_utils.ah_parameters(cond.eps_factor)
-                s = (residues.loc[row.aa_i].AH_sigma + residues.loc[row.aa_j].AH_sigma)/2
-                l = (residues.loc[row.aa_i].AH_lambda + residues.loc[row.aa_j].AH_lambda)/2
+                s = (residues.loc[row.i].AH_sigma + residues.loc[row.j].AH_sigma)/2
+                l = (residues.loc[row.i].AH_lambda + residues.loc[row.j].AH_lambda)/2
                 lj = lambda r: 4*e*((s/r)**12-(s/r)**6)
                 _ah = lambda r: np.where(r<=s*np.power(2,1/6), lj(r)+e*(1-l), l*lj(r))
                 ah = lambda r: np.where(r<=simulate_utils.AH_cutoff, _ah(r) - _ah(simulate_utils.AH_cutoff), r * 0)
@@ -421,7 +415,7 @@ def compute_energy(seq, traj: md.Trajectory, cond='default', potentials=['AH', '
             # Defining Debye-Hückel potential
             if 'DH' in potentials:
                 yukawa_kappa, yukawa_epsilon = simulate_utils.dh_parameters(cond.temp, cond.ionic)
-                q = (residues.loc[row.aa_i].q + residues.loc[row.aa_j].q)/2
+                q = (residues.loc[row.i].q + residues.loc[row.j].q)/2
                 _dh = lambda r: q*yukawa_epsilon*(np.exp(-yukawa_kappa*r)/r)
                 dh = lambda r: np.where(r<=simulate_utils.DH_cutoff, _dh(r) - _dh(simulate_utils.DH_cutoff), r * 0)
             else:
@@ -437,19 +431,16 @@ def compute_energy(seq, traj: md.Trajectory, cond='default', potentials=['AH', '
 
 #························································································#
 
-def compute_com(seq, traj: md.Trajectory):
+def compute_com(traj: md.Trajectory):
     """
     
-    Takes a sequence and trajectory,
+    Takes a trajectory,
     computes the center of mass (COM) of each frame in the trajectory.
 
     --------------------------------------------------------------------------------
 
     Parameters
     ----------
-
-        `seq`: `str|list`
-            The sequence for the trajectory
 
         `traj`: `md.Trajectory`
             An OpenMM Trajectory object
@@ -463,29 +454,26 @@ def compute_com(seq, traj: md.Trajectory):
     """
 
     # Deriving sequence used for simulation
-    seq, residues = simulate_utils.format_terminal_res(seq)
+    residues = simulate_utils.extract_sequences(traj.topology)
 
     # Computing center of mass for each frame
-    masses = residues.loc[list(seq)].MW.values
+    masses = residues.MW.values
     com = np.sum(traj.xyz*masses[np.newaxis,:,np.newaxis],axis=1)/masses.sum()
 
     return com
 
 #························································································#
 
-def compute_gyration_tensor(seq, traj: md.Trajectory):
+def compute_gyration_tensor(traj: md.Trajectory):
     """
     
-    Takes a sequence and trajectory,
+    Takes a trajectory,
     computes the gyration tensor of each frame in the trajectory.
 
     --------------------------------------------------------------------------------
 
     Parameters
     ----------
-
-        `seq`: `str|list`
-            The sequence for the trajectory
 
         `traj`: `md.Trajectory`
             An OpenMM Trajectory object
@@ -499,13 +487,13 @@ def compute_gyration_tensor(seq, traj: md.Trajectory):
     """
 
     # Deriving sequence used for simulation
-    seq, residues = simulate_utils.format_terminal_res(seq)
+    residues = simulate_utils.extract_sequences(traj.topology)
 
     # Computing center of mass for each frame
-    com = compute_com(seq, traj)
+    com = compute_com(traj)
 
     # Computing gyration tensor for each frame
-    masses = residues.loc[list(seq)].MW.values
+    masses = residues.MW.values
     si = traj.xyz - com[:,np.newaxis,:]
     q = np.einsum('jim,jin->jmn', si*masses.reshape(1,-1,1),si)/masses.sum()
 
@@ -542,19 +530,16 @@ def compute_end_to_end(traj: md.Trajectory):
 
 #························································································#
 
-def compute_rg(seq, traj: md.Trajectory):
+def compute_rg(traj: md.Trajectory):
     """
     
-    Takes a sequence and trajectory,
+    Takes a trajectory,
     computes the radius of gyration for each frame in the trajectory.
 
     --------------------------------------------------------------------------------
 
     Parameters
     ----------
-
-        `seq`: `str|list`
-            The sequence for the trajectory
 
         `traj`: `md.Trajectory`
             An OpenMM Trajectory object
@@ -568,7 +553,7 @@ def compute_rg(seq, traj: md.Trajectory):
     """
 
     # Computing gyration tensor for each frame
-    q = compute_gyration_tensor(seq, traj)
+    q = compute_gyration_tensor(traj)
 
     # Computing radius of gyration for each frame:
     tr_q = np.trace(q, axis1=1, axis2=2)
@@ -578,19 +563,16 @@ def compute_rg(seq, traj: md.Trajectory):
 
 #························································································#
 
-def compute_asphericity(seq, traj: md.Trajectory):
+def compute_asphericity(traj: md.Trajectory):
     """
     
-    Takes a sequence and trajectory,
+    Takes a trajectory,
     computes the asphericity (as defined in Aronovitz & Nelson 1986) for each frame in the trajectory.
 
     --------------------------------------------------------------------------------
 
     Parameters
     ----------
-
-        `seq`: `str|list`
-            The sequence for the trajectory
 
         `traj`: `md.Trajectory`
             An OpenMM Trajectory object
@@ -604,7 +586,7 @@ def compute_asphericity(seq, traj: md.Trajectory):
     """
 
     # Computing gyration tensor for each frame
-    q = compute_gyration_tensor(seq, traj)
+    q = compute_gyration_tensor(traj)
 
     # Computing traceless gyration tensor for each frame
     tr_q = np.trace(q, axis1=1, axis2=2)
@@ -619,19 +601,16 @@ def compute_asphericity(seq, traj: md.Trajectory):
 
 #························································································#
 
-def compute_prolateness(seq, traj: md.Trajectory):
+def compute_prolateness(traj: md.Trajectory):
     """
     
-    Takes a sequence and trajectory,
+    Takes a trajectory,
     computes the prolateness (as defined in Aronovitz & Nelson 1986) for each frame in the trajectory.
 
     --------------------------------------------------------------------------------
 
     Parameters
     ----------
-
-        `seq`: `str|list`
-            The sequence for the trajectory
 
         `traj`: `md.Trajectory`
             An OpenMM Trajectory object
@@ -645,7 +624,7 @@ def compute_prolateness(seq, traj: md.Trajectory):
     """
 
     # Computing gyration tensor for each frame
-    q = compute_gyration_tensor(seq, traj)
+    q = compute_gyration_tensor(traj)
 
     # Computing traceless gyration tensor for each frame
     tr_q = np.trace(q, axis1=1, axis2=2)
@@ -738,10 +717,10 @@ def compute_scaling_exponent(traj: md.Trajectory, r0_fix: float=0.68, ij_cutoff=
 
 #························································································#
 
-def compact_frame(traj_path: str, top_path: str) -> md.Trajectory:
+def compact_frame(traj) -> md.Trajectory:
     """
     
-    Takes the path to a .dcd trajectory and .pdb topology of a simulation,
+    Takes a trajectory,
     returns the one frame of the trajectory with the lowest Rg (Most compact).
 
     --------------------------------------------------------------------------------
@@ -749,9 +728,8 @@ def compact_frame(traj_path: str, top_path: str) -> md.Trajectory:
     Parameters
     ----------
 
-        `traj_dir`: `str`
-            The path to a directory of a simulation,
-            containing a traj.dcd trajectory and top.pdb topology for a simulation
+        `traj`: `md.Trajectory`
+            A MDTraj trajectory
 
     Returns
     -------
@@ -761,12 +739,8 @@ def compact_frame(traj_path: str, top_path: str) -> md.Trajectory:
 
     """
 
-    # Loading trajectory
-    traj = md.load_dcd(traj_path, top_path)
-
     # Loading sequence
-    seq = ''.join(simulate_utils.extract_sequences(top_path).aa)
-    Rg = compute_rg(seq, traj)
+    Rg = compute_rg(traj)
 
     # Selecting most compact frame
     compact_frame = traj[Rg == Rg.min()]

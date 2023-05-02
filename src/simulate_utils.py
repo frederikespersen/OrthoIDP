@@ -123,7 +123,7 @@ def openmm_simulate(dir: str, steps: int, top_path: str=None, sequence: str=None
     unitcell_vector = top.getTopology().getUnitCellDimensions()
 
     # Retrieving residue parameters for all chains in topology
-    seqs = extract_sequences(top_path)
+    seqs = extract_sequences(md.load(top_path).topology)
 
     # Initiating OpenMM system
     system = openmm.System()
@@ -220,72 +220,21 @@ def openmm_simulate(dir: str, steps: int, top_path: str=None, sequence: str=None
 #·································· T O P O O G Y ·······································#
 #························································································#
 
-def format_terminal_res(seq, res: pd.DataFrame=residues.copy()):
+def extract_sequences(top: md.Topology, res: pd.DataFrame=residues.copy()) -> pd.DataFrame:
     """
     
-    DEPRECATED FOR SIMULATION; Still used for analysis of previous results
-
-    Takes a sequence and a `residues` DataFrame, modifies the sequence with special terminal residue types 'X' and 'Z'
-    for the N- and C-terminal respectively.
-    Returns the modified sequence and the modified `residues` DataFrame.
+    Takes a MDTraj topology, generates a DataFrame containing CALVADOS parameters for each residue in each chain of the topology.
 
     --------------------------------------------------------------------------------
 
     Parameters
     ----------
 
-        `seq`: `str|list`
-            An amino acid sequence
-
-        `res`: `pandas.DataFrame`
-            A `residues` DataFrame
-
-    Returns
-    -------
-
-        `seq`: `str`
-            The modified sequence with terminal 'X'/'Z' residues
-
-        `res`: `pandas.DataFrame`
-            A modified `residues` DataFrame with 'X'/'Z' residue types
-
-    """
-
-    # Gettning standard residue data
-    res = res.set_index('one')
-
-    # Adding new residue types, and using original terminal residues as templates
-    res.loc['X'] = res.loc[seq[0]].copy()
-    res.loc['Z'] = res.loc[seq[-1]].copy()
-    res.loc['X','MW'] += 2
-    res.loc['Z','MW'] += 16
-    res.loc['X','q'] += 1
-    res.loc['Z','q'] -= 1
-
-    # Modfiying sequence
-    seq = list(seq)
-    seq[0] = 'X'
-    seq[-1] = 'Z'
-    seq = ''.join(seq)
-
-    return seq, res
-
-#························································································#
-def extract_sequences(top_path: str, res: pd.DataFrame=residues.copy()) -> pd.DataFrame:
-    """
-    
-    Takes the path to a .pdb topology, generates a DataFrame containing CALVADOS parameters for each residue in each chain of the topology.
-
-    --------------------------------------------------------------------------------
-
-    Parameters
-    ----------
-
-        `top_path`: `str`
-            The path to a .pdb topology
+        `top`: `md.Topology`
+            A MDTraj topology
     
         `res`: `pandas.DataFrame`
-            A `residues` DataFrame
+            A `residues` template DataFrame
 
     Returns
     -------
@@ -316,9 +265,6 @@ def extract_sequences(top_path: str, res: pd.DataFrame=residues.copy()) -> pd.Da
             See `residues`
 
     """
-
-    # Loading topology
-    top = md.load(top_path).topology
 
     # Preparing dataframe for storing sequences
     seqs = pd.DataFrame(columns=['chain', 'res', 'aa', 'MW', 'AH_lambda', 'AH_sigma', 'q'])
