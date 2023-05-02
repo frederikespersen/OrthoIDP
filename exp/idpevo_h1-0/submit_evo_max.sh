@@ -1,13 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=h1-0_test_evo
-#SBATCH --partition=sbinlab_gpu
+#SBATCH --job-name=max_seqevo
+#SBATCH --partition=sbinlab_ib2
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --gres=gpu:1
-#SBATCH -t 168:00:00            # 1 week
-#SBATCH --mem=16G
-#SBATCH -o results/test.out
-#SBATCH -e results/test.err
+#SBATCH -t 12:00:00            # 1/2 day
+#SBATCH -o results/max.out
+#SBATCH -e results/max.err
 
 # Getting job input file
 input_file="data/H1-0_AVG.fasta"
@@ -20,6 +18,6 @@ source /groups/sbinlab/fpesce/.bashrc
 conda activate openmm
 
 # Submitting simulation
-python ../../src/evolve.py -d test -f $input_file --measure "Rg" --target_value 10 --L_at_half_acceptance 0.01 --simulated_annealing
+python ../../src/evolve.py --restart -1 --dir max --fasta $input_file --measure kappa --target 1 --L_at_half_acceptance 0.01 --simulated_annealing
 
 echo "[`date`] FINISHED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file"

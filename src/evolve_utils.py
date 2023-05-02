@@ -43,7 +43,7 @@ def swap_sequence(seq: str) -> str:
     """
 
     Takes a sequence,
-    swaps to positions randomly
+    swaps two positions randomly
 
     --------------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ def mc_move(obs_new: float, obs_old: float, target: float, c: float) -> bool:
     """
 
     Takes the observable of two states, a target, and a control parameter to scale the cost function by,
-    returns whether to perform accept the new state by the Metropolis criterion.
+    returns whether to accept the new state by the Metropolis criterion as well as the acceptance probability.
 
     --------------------------------------------------------------------------------
 
@@ -105,6 +105,9 @@ def mc_move(obs_new: float, obs_old: float, target: float, c: float) -> bool:
 
         `accept`: `bool`
             Whether to accept the new state
+
+        `p`: `float`
+            The acceptance probability
     
     """
     
@@ -124,4 +127,4 @@ def mc_move(obs_new: float, obs_old: float, target: float, c: float) -> bool:
         # Rejecting move
         accept = False
 
-    return accept
+    return accept, p

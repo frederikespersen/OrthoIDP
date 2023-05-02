@@ -3,7 +3,7 @@
     --------------------------------------------------------------------------------
 
     Script for running a sequence evolution algorithm.
-    Takes shell arguments, orchestrates preparations, and initiates simulation.
+    Takes shell arguments, orchestrates preparations, and initiates evolution.
 
     --------------------------------------------------------------------------------
 
@@ -15,7 +15,6 @@
 import argparse
 import os
 import sys
-import random
 import pandas as pd
 import numpy as np
 from time import time
@@ -39,12 +38,12 @@ parser.add_argument('-d', '--dir',
 parser.add_argument('-f', '--fasta',
                     type=str,
                     required=True,
-                    help="path to FASTA file with sequence to simulate")
+                    help="path to FASTA file with sequence to evolve")
 parser.add_argument('-m', '--measure',
                     type=str,
                     required=False,
-                    default='Rg',
-                    help="what structural obervable to use as evolutionary constraint. Options: ['Rg': Radius of gyration; 'nu': Scaling exponent]")
+                    default='kappa',
+                    help="what structural obervable to use as evolutionary constraint. Options: ['kappa']")
 parser.add_argument('-t', '--target_value',
                     type=float,
                     required=True,
@@ -71,12 +70,12 @@ parser.add_argument('-s', '--source',
                     type=str,
                     required=False,
                     default=None,
-                    help="path source code for simulate utils (default: Same dir as evolve.py)")
-parser.add_argument('-p', '--pickle_period',
+                    help="path source code for utils (default: Same dir as evolve.py)")
+parser.add_argument('-p', '--save_period',
                     type=int,
                     required=False,
                     default=10,
-                    help="The pickling period, i.e. how many generations to generate before pickling")
+                    help="The saving period, i.e. how many generations to generate before saving")
 parser.add_argument('-l', '--log',
                     action='store_true',
                     required=False,
@@ -130,7 +129,7 @@ log = logger(write=args.log, print=False, file='evolution.log', timestamp=True)
 #························································································#
 
 # Standard settings
-store_filename = 'evolution.pkl'
+store_filename = 'evolution.csv'
 
 #························································································#
 
@@ -155,20 +154,21 @@ if restart is None:
     log.message(f"Calculated observable '{measure}' to {obs:.4f}")
     
     # Initialising DataFrame for storing results
-    store = pd.DataFrame(columns=['sequence','observable','simulate','mc','c'])
+    store = pd.DataFrame(columns=['sequence','observable','mc','c'])
+    store.index.name = 'generation'
     store.loc[g] = {'sequence': seq,
                     'observable': obs,
                     'mc': True,
                     'c': c}
 
-    # Pickling initial generation
-    store.to_pickle(store_filename)
+    # Saving initial generation
+    store.to_csv(store_filename)
 
 # Restarting
 else:
 
-    # Unpickling previous evolution
-    store = pd.read_pickle(store_filename)
+    # Loading previous evolution
+    store = pd.read_csv(store_filename)
 
     # Restarting from latest generation
     if restart == -1:
@@ -177,9 +177,8 @@ else:
     log.message(f"RESTARTING FROM GENERATION {restart}")
     
     # Removing generations after restart if exists
-    if store[store.index > restart].simulate.sum() > 0:
-        log.message(f"Removing simulation data from generations {', '.join([g for g in store.index if g > restart])}")
-        store = store.drop([g for g in store.index if g > restart])
+    log.message(f"Removing simulation data from generations {', '.join([g for g in store.index if g > restart])}")
+    store = store.drop([g for g in store.index if g > restart])
 
     # Using latest control parameter value
     c = store.c.iloc[-1]
@@ -260,13 +259,9 @@ for g in range(start, args.max_gen):
 
     # Determining whether new generation is accepted
     last_g = store[store.mc].index[-1]
-    L = abs(store.observable[g] - target) - abs(store.observable[last_g] - target)
+    accept, p = evolve_utils.mc_move(store.observable.loc[g], store.observable.loc[last_g], target, store.c.loc[g])
 
-    # Calculating probability of acceptance
-    p = min(1, np.exp(-L/c))
-
-    # Monte Carlo sampling
-    if random.random() <= p:
+    if accept:
 
         # Accepting move
         store.mc[g] = True
@@ -279,13 +274,14 @@ for g in range(start, args.max_gen):
 
     log.message(f"MC acceptance rate is currently at {store.mc.sum()/len(store):.2%}%")
 
-    #································ P I C K L I N G ···································#
+    #·································· S A V I N G ·····································#
 
-    # Pickling current evolution
+    # Saving current evolution
     n += 1
-    if n >= args.pickle_period:
-        log.message(f"Pickling results to '{store_filename}' after {n} generations")
-        store.to_pickle(store_filename)
+    if n >= args.save_period:
+        log.message(f"Saving results to '{store_filename}' after {n} generations")
+        n = 0
+        store.to_csv(store_filename)
 
     # Timing
     t = time() - t0
