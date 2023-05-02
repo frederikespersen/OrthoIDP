@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=h1-0_min_evo
-#SBATCH --partition=sbinlab_gpu
+#SBATCH --job-name=min_seqevo
+#SBATCH --partition=sbinlab_ib2
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:1
@@ -20,6 +20,6 @@ source /groups/sbinlab/fpesce/.bashrc
 conda activate openmm
 
 # Submitting simulation
-python ../../src/evolve.py -d min -f $input_file --measure "Rg" --target_value 0 --L_at_half_acceptance 0.01 --simulated_annealing
+python ../../src/evolve.py --dir min --fasta $input_file --measure kappa --target 0 --L_at_half_acceptance 0.001 --simulated_annealing
 
 echo "[`date`] FINISHED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file"
