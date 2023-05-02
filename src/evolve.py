@@ -77,6 +77,10 @@ parser.add_argument('-p', '--pickle_period',
                     required=False,
                     default=10,
                     help="The pickling period, i.e. how many generations to generate before pickling")
+parser.add_argument('-l', '--log',
+                    action='store_true',
+                    required=False,
+                    help="Whether to log results in evolution.log")
 
 # Parsing arguments
 args = parser.parse_args()
@@ -121,7 +125,7 @@ os.makedirs(dir, exist_ok=True)
 os.chdir(dir)
 
 # Setting logging
-log = logger(write=True, print=False, file='evolution.log', timestamp=True)
+log = logger(write=args.log, print=False, file='evolution.log', timestamp=True)
 
 #························································································#
 
