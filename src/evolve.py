@@ -3,7 +3,7 @@
     --------------------------------------------------------------------------------
 
     Script for running a sequence evolution algorithm.
-    Takes shell arguments, orchestrates preparations, and initiates simulation.
+    Takes shell arguments, orchestrates preparations, and initiates evolution.
 
     --------------------------------------------------------------------------------
 
