@@ -11,7 +11,7 @@
 
 # Get the current condition
 input_file="data/H1-0_AVG_CLUST.fasta"
-output_dir="AVG_CLUST"
+output_dir="avg_clust"
 
 # Displaying job info
 echo "[`date`] STARTED Job ID: $SLURM_JOB_ID | Input: $input_file"
