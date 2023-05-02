@@ -43,7 +43,7 @@ def swap_sequence(seq: str) -> str:
     """
 
     Takes a sequence,
-    swaps to positions randomly
+    swaps two positions randomly
 
     --------------------------------------------------------------------------------
 
