@@ -270,7 +270,7 @@ for g in range(start, args.max_gen):
 
     log.message(f"MC acceptance rate is currently at {store.mc.sum()/len(store):.2%}%")
 
-    #································ P I C K L I N G ···································#
+    #·································· S A V I N G ·····································#
 
     # Saving current evolution
     n += 1
