@@ -29,7 +29,7 @@ parser.add_argument('-b', '--boxlength',
                     type=float,
                     required=False,
                     default=200,
-                    help="boxlength [nm] for simulation cube (default_ 200 nm)")
+                    help="boxlength [nm] for simulation cube (default: 200 nm)")
 parser.add_argument('-c', '--conditions',
                     type=str,
                     required=False,
