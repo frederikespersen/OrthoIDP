@@ -1,11 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=sc_prota_variant
-#SBATCH --partition=sbinlab_gpu
+#SBATCH --partition=sbinlab_ib2
 #SBATCH --array=0-19%20
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
-#SBATCH --gres=gpu:1
-#SBATCH -t 24:00:00
+#SBATCH -t 168:00:00                 # 1 week
 #SBATCH -o results/single_chain.out
 #SBATCH -e results/single_chain.err
 
@@ -27,6 +26,6 @@ source /groups/sbinlab/fpesce/.bashrc
 conda activate openmm
 
 # Submitting simulation
-python ../../src/simulate_openmm_fasta.py -f $input_file -c $input_cond -d $output_dir -n 5000000
+python ../../src/simulate_openmm_fasta.py -f $input_file -c $input_cond -d $output_dir -n 5000000 -b 100 -p CPU
 
 echo "[`date`] FINISHED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file; $input_cond"
