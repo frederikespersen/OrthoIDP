@@ -11,7 +11,7 @@
 
 # Setting input options
 input_seqs=(H1-0_VAR_k0.60 H1-0_VAR_k0.21 H1-0_VAR_k0.85 H1-0_VAR_k0.40 H1-0_VAR_k0.07 H1-0_VAR_k0.70 H1-0_VAR_k0.50 H1-0_VAR_k0.30 H1-0_VAR_k0.92 H1-0_VAR_k0.75 H1-0_VAR_k0.55 H1-0_VAR_k0.14 H1-0_VAR_k0.65 H1-0_VAR_k0.80 H1-0_VAR_k0.46 H1-0_VAR_k0.89 H1-0_VAR_k0.36 H1-0_VAR_k0.18 H1-0_VAR_k0.27 H1-0_VAR_k0.11)
-input_cond="ionic_240"
+input_cond="default"
 
 # Get the current sequence
 input_seq=${input_seqs[$SLURM_ARRAY_TASK_ID]}
