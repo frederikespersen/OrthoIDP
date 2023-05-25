@@ -680,7 +680,7 @@ def dh_parameters(T: float, c: float) -> tuple:
 #·························· P O S T P R O C E S S I N G ·································#
 #························································································#
 
-def save_dcd(traj_path: str, top_path: str, file_path: str, eqsteps: int=1000) -> None:
+def save_dcd(traj_path: str, top_path: str, file_path: str, eqsteps: int=0) -> None:
     """
     
     Generates coordinate and trajectory in convenient formats.

@@ -23,6 +23,7 @@ import sys
 import mdtraj as md
 import pandas as pd
 import numpy as np
+import shutil
 
 
 #························································································#
@@ -39,11 +40,11 @@ parser.add_argument('-p', '--top',
                     type=str,
                     required=True,
                     help="The path to the topology PDB file")
-parser.add_argument('-a', '--sel1',
+parser.add_argument('-x', '--sel1',
                     type=str,
                     required=True,
                     help="The first selection of the trajectory (Lik 'chainid 0')")
-parser.add_argument('-b', '--sel2',
+parser.add_argument('-y', '--sel2',
                     type=str,
                     required=True,
                     help="The second selection of the trajectory (Lik 'chainid 0')")
@@ -67,11 +68,11 @@ parser.add_argument('-d', '--debye_huckel',
                     required=False,
                     default=True,
                     help="Whether to include Debye-Hückel potential in energy calculation [Default: True]")
-parser.add_argument('-h', '--harmonic',
+parser.add_argument('-b', '--bond',
                     type=bool,
                     required=False,
                     default=False,
-                    help="Whether to include Harmonic potential in energy calculation [Default: False]")
+                    help="Whether to include Harmonic bond potential in energy calculation [Default: False]")
 
 # Collective variables
 parser.add_argument('-m', '--com',
@@ -114,49 +115,75 @@ os.makedirs(dir, exist_ok=True)
 #························································································#
 
 # Loading trajectory
-traj = md.load_dcd(args.traj, args.top)
+full_traj = md.load_dcd(args.traj, args.top)
 
 #························································································#
 
-# Calculating residue distances between selections
-pairs = traj.top.select_pairs(args.sel1, args.sel2)
-distances = md.compute_distances(traj, pairs)
+# Looping over subsections of the Trajectory to stay within memory constraints
+max_frames = 1000
+temp_dir = dir+'/_temp'
+os.makedirs(temp_dir, exist_ok=True)
+for i in range(len(full_traj)//max_frames):
+    traj = full_traj[i*max_frames:(i+1)*max_frames]
+
+    #························································································#
+
+    # Calculating residue distances between selections
+    pairs = traj.top.select_pairs(args.sel1, args.sel2)
+    distances = md.compute_distances(traj, pairs)
+
+    #························································································#
+
+    # Computing energy
+    E = analyse_utils.compute_energy(traj, args.conditions, distances=distances,
+                                    ah=args.ashbaugh_hatch,
+                                    dh=args.debye_huckel,
+                                    hb=args.bond,
+                                    pairs_ij=pairs)
+
+    # Assembling to DataFrame
+    potentials = []
+    if args.ashbaugh_hatch:
+        potentials.append("Ashbaugh-Hatch [kJ/mol]")
+    if args.debye_huckel:
+        potentials.append("Debye-Hückel [kJ/mol]")
+    if args.bond:
+        potentials.append("Harmonic bond [kJ/mol]")
+    df = pd.DataFrame(E.sum(axis=2).T, columns=potentials)
+
+    #························································································#
+
+    # Computing minimum interresidue distance
+    if args.minimum_inter:
+        df['Minimum interresidue distance [nm]'] = distances.min(axis=1)
+
+    #························································································#
+
+    # Computing center of mass for each frame (Optional)
+    if args.com:
+        com1 = analyse_utils.compute_com(traj.atom_slice(np.unique(pairs[:,0])))
+        com2 = analyse_utils.compute_com(traj.atom_slice(np.unique(pairs[:,1])))
+        com_diff = (((com1-com2)**2).sum(axis=1))**0.5
+        df['Center of mass distance [nm]'] = com_diff
+
+    #························································································#
+
+    # Saving subresults
+    df.to_csv(temp_dir+f'/{i}.csv')
 
 #························································································#
 
-# Computing energy
-E = analyse_utils.compute_energy(traj, args.conditions, distances=distances,
-                                 ah=args.ashbaugh_hatch,
-                                 dh=args.debye_huckel,
-                                 hb=args.harmonic,
-                                 pairs_ij=pairs)
+# Assembling results into one file
+lines = []
+for i, filename in enumerate(os.listdir(temp_dir)):
+    with open(temp_dir+'/'+filename, 'r') as file:
+        if i == 0:
+            lines += file.readlines()
+        else:
+            lines += file.readlines()[1:]
+shutil.rmtree(temp_dir)
+with open(args.output, 'w') as file:
+    file.writelines(lines)
 
-# Assembling to DataFrame
-potentials = []
-if args.ashbaugh_hatch:
-    potentials.append("Ashbaugh-Hatch [kJ/mol]")
-if args.debye_huckel:
-    potentials.append("Debye-Hückel [kJ/mol]")
-if args.harmonic:
-    potentials.append("Harmonic bond [kJ/mol]")
-df = pd.DataFrame(E.sum(axis=2), columns=potentials)
-
-#························································································#
-
-# Computing minimum interresidue distance
-if args.minimum_inter:
-    df['Minimum interresidue distance [nm]'] = distances.min(axis=1)
-
-#························································································#
-
-# Computing center of mass for each frame (Optional)
-if args.com:
-    com1 = analyse_utils.compute_com(traj.atom_slice(np.unique(pairs[:,0])))
-    com2 = analyse_utils.compute_com(traj.atom_slice(np.unique(pairs[:,1])))
-    com_diff = (((com1-com2)**2).sum(axis=1))**0.5
-    df['Center of mass distance [nm]'] = com_diff
-
-#························································································#
-
-# Saving results
-df.to_csv(args.output)
+# Fixing columns
+pd.read_csv(args.output).drop(columns='Unnamed: 0').to_csv(args.output)

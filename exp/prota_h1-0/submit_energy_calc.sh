@@ -1,9 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=ec_prota_h1-0
 #SBATCH --partition=sbinlab_gpu
-#SBATCH --array=0-8%2
+#SBATCH --array=0-8%9
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
+#SBATCH --mem=16G
 #SBATCH --gres=gpu:1
 #SBATCH -t 168:00:00
 #SBATCH -o results/energy_calc.out
@@ -28,6 +29,6 @@ source /groups/sbinlab/fpesce/.bashrc
 conda activate openmm
 
 # Submitting simulation
-python ../../src/interaction_energy.py -t $input_traj -p $input_top -a "chainid 0", -b "chainid 1" -c $input_cond -o $output_file --com --minimum_inter
+python ../../src/interaction_energy.py -t $input_traj -p $input_top -x "chainid 0" -y "chainid 1" -c $input_cond -o $output_file --com --minimum_inter
 
 echo "[`date`] FINISHED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_traj; $input_top"
