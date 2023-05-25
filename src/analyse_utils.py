@@ -16,6 +16,7 @@ from scipy.optimize import curve_fit
 from localcider.sequenceParameters import SequenceParameters
 import mdtraj as md
 import numpy as np
+from numba import jit
 
 import simulate_utils
 from conditions import conditions
@@ -295,49 +296,15 @@ def log_duration(log_path: str) -> float:
 
     return duration
 
-#························································································#
-
-def compute_distance_contact(traj: md.Trajectory) -> np.ndarray:
-    """
-    
-    Takes a trajectory for a simulation,
-    returns the distance between all residue pairs for each frame in square form for a contact map.
-
-    --------------------------------------------------------------------------------
-
-    Parameters
-    ----------
-
-        `traj`: `md.Trajectory``
-            An OpenMM Trajectory object
-
-    Returns
-    -------
-
-        `distances`: `np.ndarray`
-            An array of distances between all residue pairs; Dimensions: (`frame`, `residue1`, `residue2`)
-
-    """
-
-    # Listing residue pairs
-    residue_pairs = np.array([np.array([i,j]) for i in range(traj.n_residues) for j in range(i+1, traj.n_residues)])
-
-    # Computing distances
-    distances = md.compute_contacts(traj, residue_pairs)
-
-    # Reformatting to square form
-    distances = md.geometry.squareform(*distances)
-
-    return distances
 
 #························································································#
 
-def compute_energy(traj: md.Trajectory, cond='default', potentials=['AH', 'DH']) -> np.ndarray:
+def compute_energy(traj: md.Trajectory, cond='default', ah=True, dh=True, hb=False, pairs_ij=None, distances=None) -> np.ndarray:
     """
     
     Takes a trajectory,
-    returns the total energy of each frame calculated using the CALVADOS model.
-    This includes the Ashbaugh-Hatch and Debye-Hückel potentials, but ignores any energy from harmonic bonds.
+    returns the energy of each residue pair of frame calculated using the CALVADOS model.
+    Includes options to choose which potentials to calculate.
 
     --------------------------------------------------------------------------------
 
@@ -350,14 +317,29 @@ def compute_energy(traj: md.Trajectory, cond='default', potentials=['AH', 'DH'])
         `cond`: `str`
             The standard conditions to run the simulation with; see `conditions` for choices.
         
-        `potentials`: `list[`str`] | str`
-            Which potentials to use for computing energy; Choices: [`AH`: Ashbaugh-Hatch; `DH`: Debye-Hückel; `HB`: Harmonic bond]
+        `ah`: `bool`
+            Whether to calculate Ashbaugh-Hatch potential (AH)
 
+        `db`: `bool`
+            Whether to calculate Debye-Hückel potential (DH)
+
+        `hb`: `bool`
+            Whether to calculate harmonic bond potential (HB)
+
+        `pairs_ij`: `np.darray`
+            An array specifying the residue IDs to calculate the energy for (Created using `md.Topology.select_pairs()`);
+            Default is all residue pairs.
+            
+        `distances`: `np.darray`
+            Precalculated distances from md.distances();
+            Default is to calculate from scratch
+            
     Returns
     ----------
 
-        `E`: `np.ndarray[float]`
-            The total energy of each pair in each frame of the trajectory evaluated using the CALVADOS model.
+        `E`: `np.ndarray[float]; [n_potentials: n_frames: n_pairs]`
+            The energy of each pair in each frame of the trajectory evaluated using the CALVADOS model;
+            Order of potentials is always: AH, DH, HB
 
     """
 
@@ -365,67 +347,65 @@ def compute_energy(traj: md.Trajectory, cond='default', potentials=['AH', 'DH'])
     residues = simulate_utils.extract_sequences(traj.topology)
 
     # Defining pairs
-    pairs_ij = traj.top.select_pairs('all','all')
+    if pairs_ij is None:
+        pairs_ij = traj.top.select_pairs('all','all')
 
     # Calculating pairwise distances
-    distances = md.compute_distances(traj, pairs_ij)
+    if distances is None:
+        distances = md.compute_distances(traj, pairs_ij)
 
-    # Creating dataframe for calculating pair energies
-    pairs = pd.DataFrame({'i': pairs_ij[:,0],
-                          'j': pairs_ij[:,1],
-                          'r': [frame for frame in distances.T]})
+
+    # Defining energy calculation functions for optimization
+    @jit
+    def calc_lj(r, s, e):
+        return 4*e*((s/r)**12-(s/r)**6)
+    @jit
+    def calc_ah(r, s, l, e):
+        return np.where(r<=s*np.power(2,1/6), calc_lj(r, s, e)+e*(1-l), l*calc_lj(r, s, e))
+    @jit
+    def calc_dh(r, q, ye, yk):
+        return q*ye*(np.exp(-yk*r)/r)
+    @jit
+    def calc_hb(r, k, r_0):
+        return 1/2 * k * (r - r_0)**2
     
-    # Finding bonded pairs
-    pairs['bonded'] = (pairs.j - pairs.i == 1)
 
-    # Setting conditions
+    # Preparing global parameters
     cond = conditions.loc[cond]
+    r_0=0.38
+    k=8033
+    e = simulate_utils.ah_parameters(cond.eps_factor)
+    yukawa_kappa, yukawa_epsilon = simulate_utils.dh_parameters(cond.temp, cond.ionic)
 
-    # Calculating pairwise energy in each frame
-    E = []
-    for index, row in pairs.iterrows():
+    # Preparing residue pair specific parameters
+    s = (residues.AH_sigma.loc[pairs_ij[:, 0]].to_numpy() + residues.AH_sigma.loc[pairs_ij[:, 1]].to_numpy())/2
+    l = (residues.AH_lambda.loc[pairs_ij[:, 0]].to_numpy() + residues.AH_lambda.loc[pairs_ij[:, 1]].to_numpy())/2
+    q = (residues.q.loc[pairs_ij[:, 0]].to_numpy() + residues.q.loc[pairs_ij[:, 1]].to_numpy())/2
+    chain = residues.chain.to_numpy()
+    bonded = ((chain[pairs_ij[:,1]] == chain[pairs_ij[:,0]]) & (pairs_ij[:,1] - pairs_ij[:,0] == 1))
 
-        # Passing bonded pairs
-        if row.bonded:
+    # Formatting parameters to trajectory
+    r = distances
+    s = s[np.newaxis, :]
+    l = l[np.newaxis, :]
+    q = q[np.newaxis, :]
+    bonded = bonded[np.newaxis, :]
 
-            # Defining harmonic bond energy
-            if 'HB' in potentials:
-                r_0=0.38
-                k=8033
-                hb = lambda r: 1/2 * k * (r - r_0)**2
-            else:
-                hb = lambda r: r * 0
-            
-            # Calculating total energy for each frame
-            E.append(hb(row.r))
-
-        # Calculating total energy for non-bonded pairs
-        else:
-            # Defining Ashbaugh-Hatch potential for amino acid pair
-            if 'AH' in potentials:
-                e = simulate_utils.ah_parameters(cond.eps_factor)
-                s = (residues.loc[row.i].AH_sigma + residues.loc[row.j].AH_sigma)/2
-                l = (residues.loc[row.i].AH_lambda + residues.loc[row.j].AH_lambda)/2
-                lj = lambda r: 4*e*((s/r)**12-(s/r)**6)
-                _ah = lambda r: np.where(r<=s*np.power(2,1/6), lj(r)+e*(1-l), l*lj(r))
-                ah = lambda r: np.where(r<=simulate_utils.AH_cutoff, _ah(r) - _ah(simulate_utils.AH_cutoff), r * 0)
-            else:
-                ah = lambda r: r * 0
-
-            # Defining Debye-Hückel potential
-            if 'DH' in potentials:
-                yukawa_kappa, yukawa_epsilon = simulate_utils.dh_parameters(cond.temp, cond.ionic)
-                q = (residues.loc[row.i].q + residues.loc[row.j].q)/2
-                _dh = lambda r: q*yukawa_epsilon*(np.exp(-yukawa_kappa*r)/r)
-                dh = lambda r: np.where(r<=simulate_utils.DH_cutoff, _dh(r) - _dh(simulate_utils.DH_cutoff), r * 0)
-            else:
-                dh = lambda r: r * 0
-
-            # Calculating total energy for each frame
-            E.append(ah(row.r) + dh(row.r))
-
-    # Returning the total energy for all pairs for each frames
-    E = np.vstack(E)
+    # Calculating energies
+    energies = []
+    if ah:
+        ah = (calc_ah(r, s, l, e) - calc_ah(simulate_utils.AH_cutoff, s, l, e))
+        ah = np.where(~bonded, ah, 0)
+        energies.append(ah)
+    if dh:
+        dh = (calc_dh(r, q, yukawa_epsilon, yukawa_kappa) - calc_dh(simulate_utils.DH_cutoff, q, yukawa_epsilon, yukawa_kappa))
+        dh = np.where(~bonded, dh, 0)
+        energies.append(dh)
+    if hb:
+        hb = calc_hb(r, k, r_0)
+        hb = np.where(bonded, hb, 0)
+        energies.append(hb)
+    E = np.stack(energies)
 
     return E
 
@@ -638,7 +618,7 @@ def compute_prolateness(traj: md.Trajectory):
 
 #························································································#
 
-def compute_scaling_exponent(traj: md.Trajectory, r0_fix: float=0.68, ij_cutoff=10, plot=False) -> tuple:
+def compute_scaling_exponent(traj: md.Trajectory, r0_fix: float=0.68, ij_cutoff=5, plot=False) -> tuple:
     """
     
     Takes a trajectory for a simulation,
@@ -683,9 +663,9 @@ def compute_scaling_exponent(traj: md.Trajectory, r0_fix: float=0.68, ij_cutoff=
     pairs = traj.top.select_pairs('all','all')
     ij = pairs[:,1] - pairs[:,0]
 
-    # Calculating interresidue cartesian distances
+    # Calculating interresidue cartesian distances as quadratic mean
     d = md.compute_distances(traj, pairs)
-    d_mean = d.mean(axis=0)
+    d_mean = np.sqrt(np.square(d).mean(axis=0))
     d_mean_err = d.std(axis=0, ddof=0)/np.sqrt(d.shape[0])
 
     # Defining model (dependent on fixed r0 or not)
