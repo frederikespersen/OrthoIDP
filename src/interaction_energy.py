@@ -104,7 +104,6 @@ sys.path.append(source_path)
 
 # Importing source code
 import analyse_utils
-from conditions import conditions
 
 #························································································#
 
