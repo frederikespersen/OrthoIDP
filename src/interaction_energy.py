@@ -110,7 +110,10 @@ from conditions import conditions
 
 # Creating directory for output
 dir = '/'.join(args.output.split('/')[:-1])
-os.makedirs(dir, exist_ok=True)
+if dir == '': 
+    dir = '.'
+else:
+    os.makedirs(dir, exist_ok=True)
 
 #························································································#
 
@@ -124,7 +127,9 @@ max_frames = 1000
 temp_dir = dir+'/_temp'
 os.makedirs(temp_dir, exist_ok=True)
 for i in range(len(full_traj)//max_frames):
-    traj = full_traj[i*max_frames:(i+1)*max_frames]
+    frames_from = i*max_frames
+    frames_to = (i+1)*max_frames
+    traj = full_traj[frames_from:frames_to]
 
     #························································································#
 
@@ -169,6 +174,7 @@ for i in range(len(full_traj)//max_frames):
     #························································································#
 
     # Saving subresults
+    df.index = [*range(frames_from, frames_to)]
     df.to_csv(temp_dir+f'/{i}.csv')
 
 #························································································#
@@ -186,4 +192,4 @@ with open(args.output, 'w') as file:
     file.writelines(lines)
 
 # Fixing columns
-pd.read_csv(args.output).drop(columns='Unnamed: 0').to_csv(args.output)
+pd.read_csv(args.output, index_col=0).sort_index().to_csv(args.output)
