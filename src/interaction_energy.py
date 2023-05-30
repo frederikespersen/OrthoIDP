@@ -118,6 +118,7 @@ else:
 
 # Loading trajectory
 full_traj = md.load_dcd(args.traj, args.top)
+full_traj = full_traj.image_molecules(anchor_molecules=[set(full_traj.top.chain(0).atoms)], make_whole=True)
 
 #························································································#
 

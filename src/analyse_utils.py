@@ -13,6 +13,7 @@ import itertools
 import pandas as pd
 from matplotlib import pyplot as plt
 from scipy.optimize import curve_fit
+from scipy.integrate import simpson
 from localcider.sequenceParameters import SequenceParameters
 import mdtraj as md
 import numpy as np
@@ -726,3 +727,87 @@ def compact_frame(traj) -> md.Trajectory:
     compact_frame = traj[Rg == Rg.min()]
 
     return compact_frame
+
+
+#························································································#
+#···························· B I O C H E M I S T R Y ···································#
+#························································································#
+
+def compute_Kd(energy, com_diff, T, bins, plot=True) -> float:
+    """
+    
+    Takes arrays of total interaction energy (in kJ/mol) and center of mass distances (in nm),
+    computes and returns $K_d$.
+
+    Takes option to plot a scatter of data alongside binning used for computation.
+
+    --------------------------------------------------------------------------------
+
+    Parameters
+    ----------
+
+        `energy`: `np.darray[float]`
+            A one-dimensional array of the total interaction energy between two species;
+            In kJ/mol units
+        
+        `com_diff`: `np.darray[float]`
+            A one-dimensional array of the center-of-mass distance between two species;
+            In nm units
+
+        `T`: `float`
+            The absolute temperature;
+            In K units
+
+        `bins`: `int`
+            The amount of bins to split the data into
+
+        `plot`: `bool`
+            Whether to plot a scatter of the input data and the computed bins
+
+    Returns
+    -------
+
+        `Kd`: `float`
+            The dissociation constant Kd;
+            in nM units
+
+    """
+    
+    # Binning center of mass difference
+    bin_edges = np.linspace(0, np.max(com_diff), bins + 1)
+    bin_indices = np.digitize(com_diff, bin_edges)
+
+    # Binning energy
+    mean_energy = np.zeros(bins)
+    err_energy = np.zeros(bins)
+    for i in range(bins):
+        bin_mask = (bin_indices == i + 1)
+        mean_energy[i] = np.mean(energy[bin_mask])
+        err_energy[i] = np.std(energy[bin_mask])/np.sqrt(bin_mask.sum())
+    
+    # Filtering NaN-value bins off and setting max = 0 for energies
+    E = mean_energy[~np.isnan(mean_energy)] - mean_energy[~np.isnan(mean_energy)].max()# kJ/mol
+    r = ((bin_edges[:-1] + bin_edges[1:])/2*1e-8)[~np.isnan(mean_energy)] # dm
+
+    # Calculating Kd
+    kB = 8.314462618e-3 # kJ/(mol·K)
+    T = 298 # K
+    N_A = 6.022e+23 # 1/mol
+    pi = np.pi
+    Kd = 1/(4*pi*N_A*simpson((np.exp(-E/(kB*T)) * r**2), r)) # M
+    Kd *= 1e9 # nM
+
+    # Plotting (optionally)
+    if plot:
+        plt.plot(bin_edges[:-1], mean_energy, linestyle='--', color='black', label='Mean')
+        plt.fill_between(bin_edges[:-1], mean_energy-err_energy, mean_energy+err_energy, alpha=0.2, color='darkred', label='± Error of mean')
+        xlim = plt.xlim(left=0)
+        plt.hlines(0, *xlim, linestyles='-', color='grey', linewidth=1, alpha=0.5)
+        plt.scatter(com_diff, energy, alpha=0.05, s=1, color='darkred')
+        plt.xlabel('Center of mass distance [nm]')
+        plt.ylabel('Energy [kJ/mol]')
+        plt.title('Energy binned by collective variable'+'\n$N_{bins}$ = '+f'{bins}')
+        plt.legend(loc='lower right')
+        plt.show()
+    
+    return Kd

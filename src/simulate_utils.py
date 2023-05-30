@@ -705,12 +705,8 @@ def save_dcd(traj_path: str, top_path: str, file_path: str, eqsteps: int=0) -> N
     # Loading trajectory
     traj = md.load(traj_path, top=top_path)
 
-    # Applying periodic boundary conditions to the molecules in each frame of the trajectory
+    # Applying periodic boundary conditions and centering around chain 0 in each frame of the trajectory
     traj = traj.image_molecules(anchor_molecules=[set(traj.top.chain(0).atoms)], make_whole=True)
-
-    # Centering in box
-    traj.center_coordinates()
-    traj.xyz += traj.unitcell_lengths[0,0]/2
 
     # Filtering out equilibration from final trajectory
     tocut = eqsteps
