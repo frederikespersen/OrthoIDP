@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=ec_prota_h1-0
-#SBATCH --partition=sbinlab_gpu
+#SBATCH --partition=sbinlab_ib2
 #SBATCH --array=0-8%9
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
