@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH --job-name=tc_prota_variant
-#SBATCH --partition=sbinlab_gpu
-#SBATCH --array=0-19%6
+#SBATCH --job-name=tc_k2_prota
+#SBATCH --partition=qgpu
+#SBATCH --array=0-19%20
 #SBATCH --gres=gpu:1
-#SBATCH -t 168:00:00                # 1 week
+#SBATCH -t 48:00:00                # 2 days
 #SBATCH -o results/two_chain.out
 #SBATCH -e results/two_chain.err
 
@@ -20,11 +20,11 @@ output_dir="two_chain/$input_cond/$input_top"
 # Displaying job info
 echo "[`date`] STARTED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file; $input_cond"
 
-# DeiC env settings
-source /groups/sbinlab/fpesce/.bashrc
-conda activate openmm
+# ROBUST env settings
+source /home/fknudsen/.bashrc
+conda activate orthoidp
 
 # Submitting simulation
-python ../../src/simulate_openmm_top.py -t $input_file -c $input_cond -d $output_dir -n 1000000000
+python ../../src/simulate_openmm_top.py -t $input_file -c $input_cond -d $output_dir -n 200000000
 
 echo "[`date`] FINISHED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file; $input_cond"
