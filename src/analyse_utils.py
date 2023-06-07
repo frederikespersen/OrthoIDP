@@ -548,7 +548,7 @@ def compute_asphericity(traj: md.Trajectory):
     """
     
     Takes a trajectory,
-    computes the asphericity (as defined in Aronovitz & Nelson 1986) for each frame in the trajectory.
+    computes the asphericity (as defined in Aronovitz & Nelson 1986) averaged over the trajectory.
 
     --------------------------------------------------------------------------------
 
@@ -576,7 +576,7 @@ def compute_asphericity(traj: md.Trajectory):
 
     # Computing asphericity for each frame
     tr_q_hat_sq = np.trace(q_hat**2, axis1=1, axis2=2)
-    Delta = 3/2*tr_q_hat_sq/(tr_q**2)
+    Delta = 3/2*tr_q_hat_sq.mean()/(tr_q.mean()**2)
 
     return Delta
 
@@ -586,7 +586,7 @@ def compute_prolateness(traj: md.Trajectory):
     """
     
     Takes a trajectory,
-    computes the prolateness (as defined in Aronovitz & Nelson 1986) for each frame in the trajectory.
+    computes the prolateness (as defined in Aronovitz & Nelson 1986) averaged over the trajectory.
 
     --------------------------------------------------------------------------------
 
@@ -613,13 +613,13 @@ def compute_prolateness(traj: md.Trajectory):
     q_hat = q - tr_q_mean.reshape(-1,1,1)*np.identity(3).reshape(-1,3,3)
 
     # Computing prolateness for each frame
-    S = 27*np.linalg.det(q_hat)/(tr_q**3)
+    S = 27*np.linalg.det(q_hat).mean()/(tr_q.mean()**3)
 
     return S
 
 #························································································#
 
-def compute_scaling_exponent(traj: md.Trajectory, r0_fix: float=0.68, ij_cutoff=5, plot=False) -> tuple:
+def compute_scaling_exponent(traj: md.Trajectory, r0_fix: float=0.518, ij_cutoff=5, plot=False) -> tuple:
     """
     
     Takes a trajectory for a simulation,
@@ -691,8 +691,10 @@ def compute_scaling_exponent(traj: md.Trajectory, r0_fix: float=0.68, ij_cutoff=
     
     # Plotting
     if plot:
-        plt.scatter(ij, d_mean, alpha=0.01)
-        plt.plot(np.unique(ij), model(np.unique(ij), *popt), c='r')
+        plt.scatter(ij, d_mean, alpha=0.01, color='darkred')
+        plt.plot(np.unique(ij), model(np.unique(ij), *popt), c='black')
+        plt.xlabel("$| i - j |$")
+        plt.ylabel("$\sqrt{\ \overline{{r_{i,j}}^2}\ }$")
     
     return v, v_err, r0, r0_err
 
@@ -790,11 +792,11 @@ def compute_Kd(energy, com_diff, T, bins, plot=True) -> float:
     r = ((bin_edges[:-1] + bin_edges[1:])/2*1e-8)[~np.isnan(mean_energy)] # dm
 
     # Calculating Kd
-    kB = 8.314462618e-3 # kJ/(mol·K)
+    R = 8.314462618e-3 # kJ/(mol·K)
     T = 298 # K
     N_A = 6.022e+23 # 1/mol
     pi = np.pi
-    Kd = 1/(4*pi*N_A*simpson((np.exp(-E/(kB*T)) * r**2), r)) # M
+    Kd = 1/(4*pi*N_A*simpson((np.exp(-E/(R*T)) * r**2), r)) # M
     Kd *= 1e9 # nM
 
     # Plotting (optionally)
