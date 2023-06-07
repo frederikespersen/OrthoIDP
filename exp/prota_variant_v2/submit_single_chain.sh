@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --job-name=sc_prota_variant
-#SBATCH --partition=sbinlab_gpu
+#SBATCH --partition=qgpu
 #SBATCH --array=0-19%20
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:1
-#SBATCH -t 168:00:00                 # 1 week
+#SBATCH -t 48:00:00                 # 2 days
 #SBATCH -o results/single_chain.out
 #SBATCH -e results/single_chain.err
 
@@ -22,9 +22,8 @@ output_dir="single_chain/$input_cond/$input_seq"
 # Displaying job info
 echo "[`date`] STARTED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file; $input_cond"
 
-# DeiC env settings
-source /groups/sbinlab/fpesce/.bashrc
-conda activate openmm
+# ROBUST env settings
+conda activate orthoidp
 
 # Submitting simulation
 python ../../src/simulate_openmm_fasta.py -f $input_file -c $input_cond -d $output_dir -n 10000000 -b 100
