@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=sc_prota_variant
 #SBATCH --partition=sbinlab_gpu
-#SBATCH --array=0-19%4
+#SBATCH --array=0-19%20
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:1
