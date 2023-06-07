@@ -1,35 +1,30 @@
 #!/bin/bash
-#SBATCH --job-name=tc_prota_variant
-#SBATCH --partition=sbinlab_gpu
-#SBATCH --array=0-19%2
-#SBATCH --nodes=1
-#SBATCH --cpus-per-task=1
+#SBATCH --job-name=tc_k2_prota
+#SBATCH --partition=qgpu
+#SBATCH --array=0-19%20
 #SBATCH --gres=gpu:1
-#SBATCH -t 168:00:00                # 1 week
+#SBATCH -t 48:00:00               # 2 days
 #SBATCH -o results/two_chain.out
 #SBATCH -e results/two_chain.err
 
 
 # Setting input options
-h10_vars=(H1-0_VAR_k0.60 H1-0_VAR_k0.21 H1-0_VAR_k0.85 H1-0_VAR_k0.40 H1-0_VAR_k0.07 H1-0_VAR_k0.70 H1-0_VAR_k0.50 H1-0_VAR_k0.30 H1-0_VAR_k0.92 H1-0_VAR_k0.75 H1-0_VAR_k0.55 H1-0_VAR_k0.14 H1-0_VAR_k0.65 H1-0_VAR_k0.80 H1-0_VAR_k0.46 H1-0_VAR_k0.89 H1-0_VAR_k0.36 H1-0_VAR_k0.18 H1-0_VAR_k0.27 H1-0_VAR_k0.11)
-prota_var="_PROTA_WT"
-boxsize="_25nm"
+input_tops=(H1-0_VAR_Rg3.44_PROTA_WT_25nm H1-0_VAR_Rg3.61_PROTA_WT_25nm H1-0_VAR_Rg3.75_PROTA_WT_25nm H1-0_VAR_Rg3.86_PROTA_WT_25nm H1-0_VAR_Rg3.96_PROTA_WT_25nm H1-0_VAR_Rg4.07_PROTA_WT_25nm H1-0_VAR_Rg4.22 H1-0_VAR_Rg3.50_PROTA_WT_25nm H1-0_VAR_Rg3.66_PROTA_WT_25nm H1-0_VAR_Rg3.79_PROTA_WT_25nm H1-0_VAR_Rg3.90_PROTA_WT_25nm H1-0_VAR_Rg3.99_PROTA_WT_25nm H1-0_VAR_Rg4.15_PROTA_WT_25nm H1-0_VAR_Rg4.25 H1-0_VAR_Rg3.56_PROTA_WT_25nm H1-0_VAR_Rg3.72_PROTA_WT_25nm H1-0_VAR_Rg3.83_PROTA_WT_25nm H1-0_VAR_Rg3.93_PROTA_WT_25nm H1-0_VAR_Rg4.03_PROTA_WT_25nm H1-0_VAR_Rg4.19)
 input_cond="ionic_240"
 
 # Get the current sequence
-h10_var=${h10_vars[$SLURM_ARRAY_TASK_ID]}
-input_top=$h10_var$prota_var$boxsize
+input_top=${input_tops[$SLURM_ARRAY_TASK_ID]}
 input_file="data/$input_top.pdb"
 output_dir="two_chain/$input_cond/$input_top"
 
 # Displaying job info
 echo "[`date`] STARTED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file; $input_cond"
 
-# DeiC env settings
-source /groups/sbinlab/fpesce/.bashrc
-conda activate openmm
+# ROBUST env settings
+source /home/fknudsen/.bashrc
+conda activate orthoidp
 
 # Submitting simulation
-python ../../src/simulate_openmm_top.py -t $input_file -c $input_cond -d $output_dir -n 2000000000
+python ../../src/simulate_openmm_top.py -t $input_file -c $input_cond -d $output_dir -n 200000000
 
 echo "[`date`] FINISHED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file; $input_cond"
