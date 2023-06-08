@@ -22,6 +22,8 @@ from numba import jit
 import simulate_utils
 from conditions import conditions
 
+plt.rcParams["font.family"] = "STIXGeneral"
+
 
 #························································································#
 #································· G E N E R A L ········································#
@@ -787,8 +789,9 @@ def compute_Kd(energy, com_diff, T, bins, plot=True) -> float:
         mean_energy[i] = np.mean(energy[bin_mask])
         err_energy[i] = np.std(energy[bin_mask])/np.sqrt(bin_mask.sum())
     
-    # Filtering NaN-value bins off and setting max = 0 for energies
-    E = mean_energy[~np.isnan(mean_energy)] - mean_energy[~np.isnan(mean_energy)].max()# kJ/mol
+    # Filtering NaN-value bins off and adjusting for offset in energy when no contact is made (i.e. longest CoM distance, if sampled properly)
+    offset = np.array(energy)[np.array(com_diff).argmax()] # kJ/mol
+    E = mean_energy[~np.isnan(mean_energy)] - offset # kJ/mol
     r = ((bin_edges[:-1] + bin_edges[1:])/2*1e-8)[~np.isnan(mean_energy)] # dm
 
     # Calculating Kd
