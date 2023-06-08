@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=tc_wt_prota
-#SBATCH --partition=qgpu
+#SBATCH --job-name=tc_prota_h1-0
+#SBATCH --partition=sbinlab_gpu
 #SBATCH --array=0-8%9
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:1
-#SBATCH -t 48:00:00
+#SBATCH -t 24:00:00
 #SBATCH -o results/two_chain_25nm.out
 #SBATCH -e results/two_chain_25nm.err
 
@@ -22,9 +22,9 @@ output_dir="two_chain_25nm/$input_cond/$input_top"
 # Displaying job info
 echo "[`date`] STARTED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file; $input_cond"
 
-# ROBUST env settings
-source /home/fknudsen/.bashrc
-conda activate orthoidp
+# DeiC env settings
+source /groups/sbinlab/fpesce/.bashrc
+conda activate openmm
 
 # Submitting simulation
 python ../../src/simulate_openmm_top.py -t $input_file -c $input_cond -d $output_dir -n 1000000000

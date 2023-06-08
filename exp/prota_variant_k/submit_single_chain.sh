@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=sc_k_prota
+#SBATCH --job-name=sc_prota_variant
 #SBATCH --partition=qgpu
 #SBATCH --array=0-19%20
 #SBATCH --nodes=1
@@ -11,8 +11,7 @@
 
 
 # Setting input options
-input_seqs=(H1-0_VAR_k0.07 H1-0_VAR_k0.20 H1-0_VAR_k0.36 H1-0_VAR_k0.50 H1-0_VAR_k0.65 H1-0_VAR_k0.79 H1-0_VAR_k0.93 H1-0_VAR_k0.11 H1-0_VAR_k0.27 H1-0_VAR_k0.40 H1-0_VAR_k0.55 H1-0_VAR_k0.70 H1-0_VAR_k0.84 H1-0_VAR_k0.98 H1-0_VAR_k0.14 H1-0_VAR_k0.30 H1-0_VAR_k0.46 H1-0_VAR_k0.60 H1-0_VAR_k0.75 H1-0_VAR_k0.90)
-
+input_seqs=(H1-0_VAR_k0.60 H1-0_VAR_k0.21 H1-0_VAR_k0.85 H1-0_VAR_k0.40 H1-0_VAR_k0.07 H1-0_VAR_k0.70 H1-0_VAR_k0.50 H1-0_VAR_k0.30 H1-0_VAR_k0.92 H1-0_VAR_k0.75 H1-0_VAR_k0.55 H1-0_VAR_k0.14 H1-0_VAR_k0.65 H1-0_VAR_k0.80 H1-0_VAR_k0.46 H1-0_VAR_k0.89 H1-0_VAR_k0.36 H1-0_VAR_k0.18 H1-0_VAR_k0.27 H1-0_VAR_k0.11)
 input_cond="default"
 
 # Get the current sequence
@@ -24,7 +23,6 @@ output_dir="single_chain/$input_cond/$input_seq"
 echo "[`date`] STARTED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file; $input_cond"
 
 # ROBUST env settings
-source /home/fknudsen/.bashrc
 conda activate orthoidp
 
 # Submitting simulation

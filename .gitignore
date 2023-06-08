@@ -11,6 +11,7 @@ cleanup/
 # Local
 src/fcode
 .todo.md
+.archive/
 test/
 old.zip
 Remote.ipynb

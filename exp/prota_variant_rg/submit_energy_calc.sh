@@ -1,11 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=ec_rg_prota
-#SBATCH --partition=qgpu
+#SBATCH --job-name=ec_prota_variant
+#SBATCH --partition=sbinlab_ib
 #SBATCH --array=0-19%20
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=16G
-#SBATCH --gres=gpu:1
 #SBATCH -t 24:00:00
 #SBATCH -o results/energy_calc.out
 #SBATCH -e results/energy_calc.err
