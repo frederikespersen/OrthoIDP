@@ -25,6 +25,6 @@ source /home/fknudsen/.bashrc
 conda activate orthoidp
 
 # Submitting simulation
-python ../../src/simulate_openmm_top.py -t $input_file -c $input_cond -d $output_dir -n 200000000
+python ../../src/simulate_openmm_top.py -t $input_file -c $input_cond -d $output_dir -n 1000000000
 
 echo "[`date`] FINISHED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file; $input_cond"
