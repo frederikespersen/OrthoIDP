@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=para_h1
+#SBATCH --job-name=sc_para_h1
 #SBATCH --partition=sbinlab_gpu
 #SBATCH --array=0-9%10
 #SBATCH --nodes=1
