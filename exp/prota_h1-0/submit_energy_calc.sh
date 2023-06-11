@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=ec_prota_h1-0
-#SBATCH --partition=sbinlab_ib2
+#SBATCH --partition=qgpu
 #SBATCH --array=0-8%9
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
@@ -16,7 +16,7 @@ input_conds=("default" "Borgia_in_silico" "ionic_165" "ionic_180" "ionic_205" "i
 
 # Getting arguments
 input_cond=${input_conds[$SLURM_ARRAY_TASK_ID]}
-input_dir="results/two_chain_100nm/$input_cond/H1-0_PROTA_WT"
+input_dir="results/two_chain_25nm/$input_cond/H1-0_PROTA_WT_25nm"
 input_traj="$input_dir/traj.dcd"
 input_top="$input_dir/top.pdb"
 output_file="$input_dir/interaction_energy.csv"
@@ -24,9 +24,9 @@ output_file="$input_dir/interaction_energy.csv"
 # Displaying job info
 echo "[`date`] STARTED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_traj; $input_top"
 
-# DeiC env settings
-source /groups/sbinlab/fpesce/.bashrc
-conda activate openmm
+# ROBUST env settings
+source /home/fknudsen/.bashrc
+conda activate orthoidp
 
 # Submitting simulation
 python ../../src/interaction_energy.py -t $input_traj -p $input_top -x "chainid 0" -y "chainid 1" -c $input_cond -o $output_file --com --minimum_inter
