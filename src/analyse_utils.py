@@ -131,7 +131,7 @@ A list of the one-letter codes of the naturally occuring amino acids.
 
 
 #························································································#
-amino_acid_types = {
+amino_acid_types = pd.Series({
     'A': 'Hydrophobic',
     'C': 'Polar',
     'D': 'Negative',
@@ -152,10 +152,10 @@ amino_acid_types = {
     'V': 'Hydrophobic',
     'W': 'Hydrophobic',
     'Y': 'Polar'
-}
+})
 """
 
-A dict of the general types (Hydrophobic, Polar, Positive, Negative, Special) of amino acids.
+A pd.Series of the general types (Hydrophobic, Polar, Positive, Negative, Special) of amino acids.
 
 --------------------------------------------------------------------------------
 
@@ -809,10 +809,8 @@ def compute_Kd(energy, com_diff, T, bins, plot=True) -> float:
         xlim = plt.xlim(left=0)
         plt.hlines(0, *xlim, linestyles='-', color='grey', linewidth=1, alpha=0.5)
         plt.scatter(com_diff, energy, alpha=0.05, s=1, color='darkred')
-        plt.xlabel('Center of mass distance [nm]')
-        plt.ylabel('Energy [kJ/mol]')
-        plt.title('Energy binned by collective variable'+'\n$N_{bins}$ = '+f'{bins}')
-        plt.legend(loc='lower right')
+        plt.xlabel('Center of mass distance\n[nm]', fontsize=12)
+        plt.ylabel('Interaction energy\n[kJ/mol]', fontsize=12)
         plt.show()
     
     return Kd
