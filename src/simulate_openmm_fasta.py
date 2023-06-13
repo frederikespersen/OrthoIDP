@@ -2,7 +2,7 @@
     Simulate_OpenMM
     --------------------------------------------------------------------------------
 
-    Script for running an OpenMM simulation.
+    Script for running an OpenMM simulation from a FASTA sequence.
     Takes shell arguments, orchestrates preparations, and initiates simulation.
 
     --------------------------------------------------------------------------------
