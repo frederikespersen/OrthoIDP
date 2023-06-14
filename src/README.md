@@ -15,6 +15,6 @@ This directory contains:
 - `evolve_utils.py`: Utilitary functions for `evolve.py`
 - `residues.py`: Residue-level data and parameters as a Python object
 - `conditions.py`: Standard condition sets foorsimulatin as a Python object
-- `pretraj_fixer.py`: Script for preprocessing prematurely terminated simulations
+- `pretraj_fixer.py`: Script for postprocessing prematurely terminated simulations
 - **`templates/`**: Templates to fill out for submitting simulations
     - `submit.sh`: **Template** Shell script for submitting a simulation with Slurm
