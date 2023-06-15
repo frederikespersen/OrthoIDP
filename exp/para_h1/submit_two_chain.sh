@@ -9,8 +9,8 @@
 
 
 # Setting input options
-input_tops=(H1-0_PROTA_WT_25nm H1-1_PROTA_WT_25nmH1-3_PROTA_WT_25nmH1-5_PROTA_WT_25nmH1-7_PROTA_WT_25nm H1-10_PROTA_WT_25nmH1-2_PROTA_WT_25nmH1-4_PROTA_WT_25nmH1-6_PROTA_WT_25nmH1-8_PROTA_WT_25nm)
-input_cond="ionic_240"
+input_tops=(H1-0_PROTA_WT_25nm H1-1_PROTA_WT_25nm H1-3_PROTA_WT_25nm H1-5_PROTA_WT_25nm H1-7_PROTA_WT_25nm H1-10_PROTA_WT_25nm H1-2_PROTA_WT_25nm H1-4_PROTA_WT_25nm H1-6_PROTA_WT_25nm H1-8_PROTA_WT_25nm)
+input_cond="ionic_290"
 
 # Get the current sequence
 input_top=${input_tops[$SLURM_ARRAY_TASK_ID]}
@@ -25,6 +25,6 @@ source /home/fknudsen/.bashrc
 conda activate orthoidp
 
 # Submitting simulation
-python ../../src/simulate_openmm_top.py -t $input_file -c $input_cond -d $output_dir -n 1000000000
+python ../../src/simulate_openmm_top.py -t $input_file -c $input_cond -d $output_dir -n 500000000
 
 echo "[`date`] FINISHED Job Array ID: $SLURM_ARRAY_TASK_ID | Job ID: $SLURM_JOB_ID | Input: $input_file; $input_cond"

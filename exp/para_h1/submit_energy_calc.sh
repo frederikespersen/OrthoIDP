@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=ec_k_prota_variant
+#SBATCH --job-name=ec_para_prota_variant
 #SBATCH --partition=qgpu
-#SBATCH --array=0-19%20
+#SBATCH --array=0-9%10
 #SBATCH --gres=gpu:1
 #SBATCH --mem=16G
 #SBATCH -t 24:00:00
@@ -10,7 +10,7 @@
 
 
 # Setting input options
-input_tops=(H1-0_VAR_k0.07_PROTA_WT_25nm H1-0_VAR_k0.20_PROTA_WT_25nm H1-0_VAR_k0.36_PROTA_WT_25nm H1-0_VAR_k0.50_PROTA_WT_25nm H1-0_VAR_k0.65_PROTA_WT_25nm H1-0_VAR_k0.79_PROTA_WT_25nm H1-0_VAR_k0.93_PROTA_WT_25nm H1-0_VAR_k0.11_PROTA_WT_25nm H1-0_VAR_k0.27_PROTA_WT_25nm H1-0_VAR_k0.40_PROTA_WT_25nm H1-0_VAR_k0.55_PROTA_WT_25nm H1-0_VAR_k0.70_PROTA_WT_25nm H1-0_VAR_k0.84_PROTA_WT_25nm H1-0_VAR_k0.98_PROTA_WT_25nm H1-0_VAR_k0.14_PROTA_WT_25nm H1-0_VAR_k0.30_PROTA_WT_25nm H1-0_VAR_k0.46_PROTA_WT_25nm H1-0_VAR_k0.60_PROTA_WT_25nm H1-0_VAR_k0.75_PROTA_WT_25nm H1-0_VAR_k0.90_PROTA_WT_25nm)
+input_tops=(H1-0_PROTA_WT_25nm H1-1_PROTA_WT_25nm H1-3_PROTA_WT_25nm H1-5_PROTA_WT_25nm H1-7_PROTA_WT_25nm H1-10_PROTA_WT_25nm H1-2_PROTA_WT_25nm H1-4_PROTA_WT_25nm H1-6_PROTA_WT_25nm H1-8_PROTA_WT_25nm)
 input_cond="ionic_290"
 
 # Getting arguments

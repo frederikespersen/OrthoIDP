@@ -2,6 +2,8 @@
 #SBATCH --job-name=tc_k2_prota
 #SBATCH --partition=qgpu
 #SBATCH --array=0-19%20
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:1
 #SBATCH -t 72:00:00                 # 3 days
 #SBATCH -o results/two_chain.out
@@ -10,7 +12,7 @@
 
 # Setting input options
 input_tops=(H1-0_VAR_k0.07_PROTA_WT_25nm H1-0_VAR_k0.20_PROTA_WT_25nm H1-0_VAR_k0.36_PROTA_WT_25nm H1-0_VAR_k0.50_PROTA_WT_25nm H1-0_VAR_k0.65_PROTA_WT_25nm H1-0_VAR_k0.79_PROTA_WT_25nm H1-0_VAR_k0.93_PROTA_WT_25nm H1-0_VAR_k0.11_PROTA_WT_25nm H1-0_VAR_k0.27_PROTA_WT_25nm H1-0_VAR_k0.40_PROTA_WT_25nm H1-0_VAR_k0.55_PROTA_WT_25nm H1-0_VAR_k0.70_PROTA_WT_25nm H1-0_VAR_k0.84_PROTA_WT_25nm H1-0_VAR_k0.98_PROTA_WT_25nm H1-0_VAR_k0.14_PROTA_WT_25nm H1-0_VAR_k0.30_PROTA_WT_25nm H1-0_VAR_k0.46_PROTA_WT_25nm H1-0_VAR_k0.60_PROTA_WT_25nm H1-0_VAR_k0.75_PROTA_WT_25nm H1-0_VAR_k0.90_PROTA_WT_25nm)
-input_cond="ionic_240"
+input_cond="ionic_290"
 
 # Get the current sequence
 input_top=${input_tops[$SLURM_ARRAY_TASK_ID]}
