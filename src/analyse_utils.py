@@ -17,7 +17,6 @@ from scipy.integrate import simpson
 from localcider.sequenceParameters import SequenceParameters
 import mdtraj as md
 import numpy as np
-from numba import jit
 
 import simulate_utils
 from conditions import conditions
@@ -358,17 +357,13 @@ def compute_energy(traj: md.Trajectory, cond='default', ah=True, dh=True, hb=Fal
         distances = md.compute_distances(traj, pairs_ij)
 
 
-    # Defining energy calculation functions for optimization
-    @jit
+    # Defining energy calculation functions
     def calc_lj(r, s, e):
         return 4*e*((s/r)**12-(s/r)**6)
-    @jit
     def calc_ah(r, s, l, e):
         return np.where(r<=s*np.power(2,1/6), calc_lj(r, s, e)+e*(1-l), l*calc_lj(r, s, e))
-    @jit
     def calc_dh(r, q, ye, yk):
         return q*ye*(np.exp(-yk*r)/r)
-    @jit
     def calc_hb(r, k, r_0):
         return 1/2 * k * (r - r_0)**2
     
@@ -383,7 +378,7 @@ def compute_energy(traj: md.Trajectory, cond='default', ah=True, dh=True, hb=Fal
     # Preparing residue pair specific parameters
     s = (residues.AH_sigma.loc[pairs_ij[:, 0]].to_numpy() + residues.AH_sigma.loc[pairs_ij[:, 1]].to_numpy())/2
     l = (residues.AH_lambda.loc[pairs_ij[:, 0]].to_numpy() + residues.AH_lambda.loc[pairs_ij[:, 1]].to_numpy())/2
-    q = (residues.q.loc[pairs_ij[:, 0]].to_numpy() + residues.q.loc[pairs_ij[:, 1]].to_numpy())/2
+    q = (residues.q.loc[pairs_ij[:, 0]].to_numpy() * residues.q.loc[pairs_ij[:, 1]].to_numpy())
     chain = residues.chain.to_numpy()
     bonded = ((chain[pairs_ij[:,1]] == chain[pairs_ij[:,0]]) & (pairs_ij[:,1] - pairs_ij[:,0] == 1))
 
