@@ -1,9 +1,8 @@
 #!/bin/bash
-#SBATCH --job-name=ec_k_prota
+#SBATCH --job-name=ec_k_prota_variant
 #SBATCH --partition=qgpu
-#SBATCH --array=0-19%20
-#SBATCH --nodes=1
-#SBATCH --cpus-per-task=1
+#SBATCH --array=0-19%2
+#SBATCH --gres=gpu:1
 #SBATCH --mem=16G
 #SBATCH -t 24:00:00
 #SBATCH -o results/energy_calc.out
