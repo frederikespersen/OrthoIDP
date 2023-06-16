@@ -17,4 +17,4 @@ This directory contains:
 - `conditions.py`: Standard condition sets foorsimulatin as a Python object
 - `pretraj_fixer.py`: Script for postprocessing prematurely terminated simulations
 - **`templates/`**: Templates to fill out for submitting simulations
-    - `submit.sh`: **Template** Shell script for submitting a simulation with Slurm
+    - `submit_*.sh`: **Template** Shell script for submitting a simulation with Slurm

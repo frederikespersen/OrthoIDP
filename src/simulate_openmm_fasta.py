@@ -7,7 +7,7 @@
 
     --------------------------------------------------------------------------------
 
-    Run `python openmm_simulate.py -h` for documentation on arguments.
+    Run `python openmm_simulate_top.py -h` for documentation on arguments.
 
 """
 
