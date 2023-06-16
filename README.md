@@ -8,6 +8,6 @@ The project is divided up into seperate experiments found in **`exp/`**.
 This directory contains:
 - **`exp/`**: Experiments, mainly consisting of simulations using [CALVADOS](https://doi.org/10.1073/pnas.2111696118) CG MD simulations
 - **`src/`**: Source code
-- **`figs/`**: Original resolution figures from the thesis paper
+- **`figures/`**: Original resolution figures from the thesis paper
 - `Thesis.pdf`: The final project thesis
 - `environment.txt`: Conda environment
