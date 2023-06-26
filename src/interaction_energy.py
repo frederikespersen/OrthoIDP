@@ -43,11 +43,11 @@ parser.add_argument('-p', '--top',
 parser.add_argument('-x', '--sel1',
                     type=str,
                     required=True,
-                    help="The first selection of the trajectory (Lik 'chainid 0')")
+                    help="The first selection of the trajectory (Like 'chainid 0')")
 parser.add_argument('-y', '--sel2',
                     type=str,
                     required=True,
-                    help="The second selection of the trajectory (Lik 'chainid 0')")
+                    help="The second selection of the trajectory (Like 'chainid 1')")
 parser.add_argument('-c', '--conditions',
                     type=str,
                     required=True,
