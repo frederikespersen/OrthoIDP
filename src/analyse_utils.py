@@ -783,27 +783,34 @@ def compute_Kd(energy, com_diff, T, bins, plot=True) -> float:
         bin_mask = (bin_indices == i + 1)
         mean_energy[i] = np.mean(energy[bin_mask])
         err_energy[i] = np.std(energy[bin_mask])/np.sqrt(bin_mask.sum())
-    
-    # Filtering NaN-value bins off and adjusting for offset in energy when no contact is made (i.e. longest CoM distance, if sampled properly)
-    offset = np.array(energy)[np.array(com_diff).argmax()] # kJ/mol
-    E = mean_energy[~np.isnan(mean_energy)] - offset # kJ/mol
-    r = ((bin_edges[:-1] + bin_edges[1:])/2*1e-8)[~np.isnan(mean_energy)] # dm
 
-    # Calculating Kd
+    # Defining constants
     R = 8.314462618e-3 # kJ/(mol·K)
-    T = 298 # K
     N_A = 6.022e+23 # 1/mol
     pi = np.pi
-    Kd = 1/(4*pi*N_A*simpson((np.exp(-E/(R*T)) * r**2), r)) # M
+
+    # Filtering NaN-value bins off
+    r = (((bin_edges[:-1] + bin_edges[1:])/2)*1e-8)[~np.isnan(mean_energy)] # dm
+    E = mean_energy[~np.isnan(mean_energy)] # kJ/mol
+    E_err = err_energy[~np.isnan(mean_energy)] # kJ/mol
+
+    # Calculating effective potential mean force
+    pmf = E + 2*R*T*np.log(r) # kJ/mol
+
+    # Adjusting for offset in energy when no contact is made (i.e. longest CoM distance, if sampled properly)
+    offset = pmf[-1] # kJ/mol
+    pmf -= offset # kJ/mol
+
+    # Calculating Kd
+    Kd = 1/(4*pi*N_A*simpson((np.exp(-(pmf)/((R*T)**2)) * (r**2)), r)) # M
     Kd *= 1e9 # nM
 
-    # Plotting (optionally)
     if plot:
-        plt.plot(bin_edges[:-1], mean_energy, linestyle='--', color='black', label='Mean')
-        plt.fill_between(bin_edges[:-1], mean_energy-err_energy, mean_energy+err_energy, alpha=0.2, color='darkred', label='± Error of mean')
+        plt.plot(r*1e8, pmf, linestyle='--', color='black', label='Mean')
+        plt.fill_between(r*1e8, pmf-E_err, pmf+E_err, alpha=0.2, color='darkred', label='± Error of mean')
         xlim = plt.xlim(left=0)
         plt.hlines(0, *xlim, linestyles='-', color='grey', linewidth=1, alpha=0.5)
-        plt.scatter(com_diff, energy, alpha=0.05, s=1, color='darkred')
+        plt.scatter(com_diff, energy - energy[com_diff.idxmax()], alpha=0.05, s=1, color='darkred')
         plt.xlabel('Center of mass distance\n[nm]', fontsize=12)
         plt.ylabel('Interaction energy\n[kJ/mol]', fontsize=12)
         plt.show()
