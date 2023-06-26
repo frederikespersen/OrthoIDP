@@ -1,19 +1,18 @@
 #!/bin/bash
 #SBATCH --job-name=nu_predict
-#SBATCH --partition=sbinlab_ib2
-#SBATCH --array=0-9999%100
+#SBATCH --partition=qgpu
+#SBATCH --array=0-999%10
 #SBATCH -t 48:00:00
 #SBATCH --cpus-per-task=1
-#SBATCH --nodes=1
 #SBATCH -o results/predict_nu.out
 #SBATCH -e results/predict_nu.err
 
 
 # Getting arguments
-split = 10000
-split_idx = $SLURM_ARRAY_TASK_ID
-input_file="data/idr_orthologs.csv"
-output_file="data/idr_orthologs_processed.csv"
+split=1000
+split_idx=$SLURM_ARRAY_TASK_ID
+input_file="results/idr_orthologs.csv"
+output_file="results/idr_orthologs_processed.csv"
 
 # Creating output file
 if
